@@ -1,2 +1,2 @@
 # Wayfinder
-This is the wayfinder project
+Welcome to the Wayfinder Project!
