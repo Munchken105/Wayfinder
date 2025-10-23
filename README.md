@@ -30,7 +30,7 @@ npm run dev
 
 This will start the development server for the backend.
 
-### Step 4: From the root directory, run the commands:
+### Step 4: On a separate terminal and from the root directory, run the commands:
 
 ```bash
 cd frontend
@@ -47,6 +47,6 @@ npm run dev
 
 This will start the development server for the frontend.
 
-### Step 6: Visit [http://localhost:5173](http://localhost:5173) to open the frontend.
+### Step 6: Open a browser and visit [http://localhost:5173](http://localhost:5173) to open the frontend.
 
 This should connect to the backend automatically.
