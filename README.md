@@ -3,7 +3,7 @@ Welcome to the Wayfinder Project!
 
 ## How to run locally
 
-### Step 1. Clone the Repository
+### Step 1: Clone the Repository
 
 First, clone the repository to your local machine using Git:
 
