@@ -1,0 +1,87 @@
+.home-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 32px;
+  background: #eff4fb; /* light UB-friendly background */
+}
+
+/* Device frame wrapper (matches mock with a thick border box around the UI) */
+.device-frame {
+  width: min(920px, 95vw);
+  background: #0f1e2e; /* deep navy shell */
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+
+/* White screen like the mock */
+.screen {
+  background: #ffffff;
+  border-radius: 10px;
+  min-height: 540px;
+  padding: 40px 36px 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  border: 2px solid #e3eaf6;
+}
+
+.library-image {
+  width: min(560px, 100%);
+  height: auto;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  margin-top: 8px;
+}
+
+.home-title {
+  margin: 28px 0 22px;
+  font-size: clamp(1.6rem, 3.6vw, 2.2rem);
+  font-weight: 650;
+  letter-spacing: 0.2px;
+  color: #005BBB; /* UB Blue */
+  text-align: center;
+}
+
+.start-button {
+  background: #005BBB; /* UB Blue */
+  color: #ffffff;
+  border: none;
+  padding: 14px 56px;
+  border-radius: 6px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(0, 91, 187, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.start-button:hover {
+  background: #004799; /* darker UB Blue */
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(0, 71, 153, 0.45);
+}
+
+.start-button:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 12px rgba(0, 91, 187, 0.35);
+}
+
+.start-button:focus-visible {
+  outline: 3px solid #99c2ff;
+  outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  .device-frame {
+    padding: 12px;
+    border-radius: 12px;
+  }
+  .screen {
+    padding: 24px 16px 40px;
+  }
+}
