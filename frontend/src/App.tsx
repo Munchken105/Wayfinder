@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import HomePage from "./components/HomePage";
+import SearchBar from "./components/SearchBar";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -13,7 +14,9 @@ function App() {
       {currentPage === "navigation" && (
         <div style={{ textAlign: "center", marginTop: "50px" }}>
           <h1>Navigation Page</h1>
-          <p>Navigation functionality coming soon...</p>
+          <div className="w-full">
+            <SearchBar placeholder="Type to search" />
+          </div>
           <button onClick={() => setCurrentPage("home")}>Back to Home</button>
         </div>
       )}
