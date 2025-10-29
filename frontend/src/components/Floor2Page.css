@@ -1,0 +1,44 @@
+.floor2-container {
+  display: flex;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 200px;
+  background-color: #ffffff; 
+  border-right: 2px solid rgb(0, 98, 184);
+}
+.Map-Content
+ {
+  flex: 1;
+  padding: 40px;
+  background-color: #ffffff;
+}
+
+.sidebar-heading {
+    text-align: center;
+}
+
+.sidebar-boxes {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 10px;
+  width: 100%;
+}
+
+.sidebar-box {
+  background-color: #D9D9D9;
+  padding: 10px;
+  border-radius: 20px; 
+  text-align: center;
+  color: rgb(0, 0, 0);
+  font-weight: 500;
+  border: 1px solid #444;
+  cursor: pointer;
+}
+
+.sidebar-box:hover {
+  background-color: #005BBB;
+  color: rgb(255, 255, 255);
+}
