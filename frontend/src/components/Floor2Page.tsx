@@ -1,5 +1,7 @@
 import "./Floor2Page.css";
 
+import libraryImg from "../assets/Floor2layout.jpg";
+const libraryImageUrl = libraryImg;
 
 function Floor2Page({ onBack }: { onBack: () => void }) {
   return (
@@ -21,6 +23,11 @@ function Floor2Page({ onBack }: { onBack: () => void }) {
 
       <div className="Map-Content">
         <h1>Floor 2 Map</h1>
+        <img
+            src={libraryImageUrl}
+            alt="Lockwood Library"
+            className="library-image"
+          />
         <button onClick={onBack}>Go Back to Navigate</button>
       </div>
     </div>
