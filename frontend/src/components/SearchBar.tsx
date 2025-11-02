@@ -1,25 +1,28 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+import "./SearchBar.css";
 
 interface SearchResult {
   id: number;
-  name: string;
-  department?: string;
-  tag?: string;
+  first_name: string;
+  last_name: string;
+  room?: string;
+  subjects?: string;
 }
 
 interface SearchBarProps {
   placeholder?: string;
-  onResults?: (results: SearchResult[]) => void; // optional callback
+  onResults?: (results: SearchResult[]) => void;
 }
 
 export default function SearchBar({ placeholder = "Search...", onResults }: SearchBarProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!query.trim()) return;
 
     setLoading(true);
@@ -28,7 +31,8 @@ export default function SearchBar({ placeholder = "Search...", onResults }: Sear
       const data = await res.json();
       const r = data.results || [];
       setResults(r);
-      if (onResults) onResults(r); // send results up if parent needs it
+      if (onResults) onResults(r);
+      setSearched(true);
     } catch (err) {
       console.error("Search error:", err);
     } finally {
@@ -36,36 +40,55 @@ export default function SearchBar({ placeholder = "Search...", onResults }: Sear
     }
   };
 
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setResults([]);
+        setSearched(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="relative inline-block w-full max-w-md">
-      <form onSubmit={handleSearch} className="flex">
+    <div className="search-bar-container" ref={containerRef}>
+      <form onSubmit={handleSearch} className="search-bar-form">
         <input
           type="text"
-          className="flex-1 border rounded-l p-2 outline-none"
+          className="search-bar-input"
           placeholder={placeholder}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 rounded-r hover:bg-blue-700"
-        >
+        <button type="submit" className="search-bar-button">
           {loading ? "..." : "Search"}
         </button>
       </form>
 
-      {results.length > 0 && (
-        <ul className="absolute bg-white border mt-1 w-full rounded shadow-md z-10">
-          {results.map((r) => (
-            <li
-              key={r.id}
-              className="p-2 hover:bg-gray-100 cursor-pointer"
-              onClick={() => alert(`Selected: ${r.name}`)}
-            >
-              <strong>{r.name}</strong>
-              {r.department && <span className="text-gray-500"> — {r.department}</span>}
-            </li>
-          ))}
+      {searched && (
+        <ul className="search-bar-results">
+          {results.length > 0 ? (
+            results.map((r) => (
+              <li
+                key={r.id}
+                onClick={() => {
+                  alert(`Selected: ${r.first_name} ${r.last_name}`);
+                  setResults([]);
+                  setSearched(false);
+                }}
+              >
+                <strong>{r.first_name} {r.last_name}</strong>
+                {r.room && <span> {r.room}</span>}
+                {r.subjects && <span> {r.subjects}</span>}
+              </li>
+            ))
+          ) : (
+            <li className="search-bar-no-results">No results found</li>
+          )}
         </ul>
       )}
     </div>
