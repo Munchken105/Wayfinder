@@ -87,6 +87,6 @@ npm run dev
 
 This will start the development server for the frontend.
 
-### Step 6: Open a browser and visit [http://localhost:5173](http://localhost:5173) to open the frontend.
+### Step 8 - Open a browser and visit [http://localhost:5173](http://localhost:5173) to open the frontend
 
 This should connect to the backend automatically.
