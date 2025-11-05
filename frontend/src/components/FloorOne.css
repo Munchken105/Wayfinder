@@ -1,0 +1,57 @@
+.floor-buttons{
+    background-color: #cdcccc;
+    color: rgb(0, 0, 0);
+    width: 12vw;
+    height: 7vh;
+    text-align: center;
+    border-color: rgb(255, 255, 255);
+    border-radius: 25px;
+    font-size: 17px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+#floor1{
+    background-color: #005BBB;
+    color: white;
+}
+
+.floors-sidebar{
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    text-align: center;
+    align-items: center;
+    width: 17vw;
+}
+
+.key{
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    width: 17vw;
+}
+
+.floor1-title{
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.leftside-stuff{
+    flex-shrink: 0;
+    height: 100vh;
+}
+
+.floor1-map{
+    display: flex;
+}
+
+.floor1{
+    flex-direction: row;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+}
+
+#floor1Map{
+}
