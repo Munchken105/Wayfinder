@@ -29,46 +29,113 @@ interface PathResult {
 
 // Single floor building graph - all rooms on the same floor
 const nodes: Node[] = [
-  // Rooms
-  { id: "room_202", name: "Room 202", type: "room", floor: 2 },
-  { id: "classroom_b20", name: "Classroom B20", type: "room", floor: 2 },
-  { id: "room_201", name: "Room 201", type: "room", floor: 2 },
-  { id: "room_203", name: "Room 203", type: "room", floor: 2 },
-  { id: "room_204", name: "Room 204", type: "room", floor: 2 },
-  { id: "lab_a1", name: "Lab A1", type: "room", floor: 2 },
-  { id: "office_b", name: "Office B", type: "room", floor: 2 },
-  
-  // Hallways and junctions
-  { id: "hall_main", name: "Main Hallway", type: "hallway", floor: 2 },
-  { id: "hall_north", name: "North Hallway", type: "hallway", floor: 2 },
-  { id: "hall_south", name: "South Hallway", type: "hallway", floor: 2 },
-  { id: "junction_center", name: "Central Junction", type: "junction", floor: 2 },
-  { id: "junction_north", name: "North Junction", type: "junction", floor: 2 },
-  { id: "entrance_main", name: "Main Entrance", type: "entrance", floor: 2 },
+  // Rooms along the right side
+  { id: "221A", name: "Room 221A", type: "room", floor: 2 },
+  { id: "221B", name: "Room 221B", type: "room", floor: 2 },
+  { id: "221C", name: "Room 221C", type: "room", floor: 2 },
+  { id: "221D", name: "Room 221D", type: "room", floor: 2 },
+  { id: "222", name: "Room 222", type: "room", floor: 2 },
+  { id: "222A", name: "Room 222A", type: "room", floor: 2 },
+  { id: "223", name: "Room 223", type: "room", floor: 2 },
+  { id: "223A", name: "Room 223A", type: "room", floor: 2 },
+  { id: "224A", name: "Library Search Station (224A)", type: "room", floor: 2 },
+  { id: "226", name: "Room 226", type: "room", floor: 2 },
+  { id: "227", name: "Room 227", type: "room", floor: 2 },
+  { id: "228", name: "Room 228", type: "room", floor: 2 },
+  { id: "229", name: "Room 229", type: "room", floor: 2 },
+  { id: "230", name: "Room 230", type: "room", floor: 2 },
+  { id: "232", name: "Room 232", type: "room", floor: 2 },
+
+  // Rooms on the left side
+  { id: "C201", name: "Room C201", type: "room", floor: 2 },
+  { id: "C202", name: "Room C202", type: "room", floor: 2 },
+  { id: "234", name: "Room 234", type: "room", floor: 2 },
+  { id: "235", name: "Room 235", type: "room", floor: 2 },
+  { id: "235A", name: "Reception Desk (235A)", type: "entrance", floor: 2 },
+  { id: "235B", name: "Room 235B", type: "room", floor: 2 },
+  { id: "235C", name: "Room 235C", type: "room", floor: 2 },
+  { id: "235D", name: "Room 235D", type: "room", floor: 2 },
+  { id: "235E", name: "Room 235E", type: "room", floor: 2 },
+  { id: "235F", name: "Room 235F", type: "room", floor: 2 },
+  { id: "236", name: "Room 236", type: "room", floor: 2 },
+  { id: "237", name: "Room 237", type: "room", floor: 2 },
+  { id: "237A", name: "Room 237A", type: "room", floor: 2 },
+  { id: "242", name: "Room 242", type: "room", floor: 2 },
+  { id: "242A", name: "Room 242A", type: "room", floor: 2 },
+
+  // Special areas and entrances
+  { id: "C235", name: "Main Entrance", type: "entrance", floor: 2 },
+  { id: "C218", name: "Rescue Area", type: "room", floor: 2 },
+  { id: "233", name: "Auditorium Area", type: "room", floor: 2 },
+  { id: "233A", name: "Main Auditorium", type: "room", floor: 2 },
+  { id: "233B", name: "Computer Area 233B", type: "room", floor: 2 },
+  { id: "233H", name: "Seating Area 233H", type: "room", floor: 2 },
+  { id: "E240", name: "Elevator E240", type: "entrance", floor: 2 },
+  { id: "E239", name: "Elevator E239", type: "entrance", floor: 2 },
+
+  // Study areas (replacing hallways/junctions)
+  { id: "221", name: "Study Area 221 (left of 224A)", type: "room", floor: 2 },
+  { id: "study_main_ns", name: "Main Study Area (NS)", type: "room", floor: 2 },
+  { id: "study_main_ew", name: "East-West Study Area", type: "room", floor: 2 },
+  { id: "study_235", name: "Study Area 235", type: "room", floor: 2 },
+  { id: "study_233", name: "Study Area 233", type: "room", floor: 2 },
 ];
 
 // Adjacency list - all connections on the same floor
 const graph: { [key: string]: string[] } = {
-  // Room connections to hallways
-  "room_202": ["hall_north"],
-  "room_201": ["hall_north"],
-  "room_203": ["hall_north"],
-  "classroom_b20": ["hall_south"],
-  "room_204": ["hall_south"],
-  "lab_a1": ["hall_south"],
-  "office_b": ["hall_main"],
+  // Main entrance and elevator connections (now connect to study areas)
+  "C235": ["235A", "study_235", "study_main_ns"],
+  "E240": ["study_main_ns", "study_main_ew"],
+  "E239": ["study_main_ns", "233B"],
+  "235A": ["E240", "E239", "study_235"],
   
-  // Hallway connections
-  "hall_north": ["room_202", "room_201", "room_203", "junction_north"],
-  "hall_south": ["classroom_b20", "room_204", "lab_a1", "junction_center"],
-  "hall_main": ["office_b", "entrance_main", "junction_center"],
-  
-  // Junction connections
-  "junction_north": ["hall_north", "junction_center"],
-  "junction_center": ["hall_south", "hall_main", "junction_north"],
-  
-  // Entrance
-  "entrance_main": ["hall_main"],
+  // Right side room connections (connect to main study areas)
+  "221A": ["study_main_ns"],
+  "221B": ["study_main_ns"],
+  "221C": ["study_main_ns"],
+  "221D": ["study_main_ns"],
+  "222": ["study_main_ns"],
+  "222A": ["study_main_ns"],
+  "223": ["study_main_ns"],
+  "223A": ["study_main_ns"],
+  "224A": ["study_main_ew", "221"],
+  "226": ["study_main_ns"],
+  "227": ["study_main_ns"],
+  "228": ["study_main_ns"],
+  "229": ["study_main_ns"],
+  "230": ["study_main_ns"],
+  "232": ["study_main_ns"],
+
+  // Left side room connections (connect to study area 235)
+  "C201": ["study_main_ns"],
+  "C202": ["study_main_ns"],
+  "234": ["study_235"],
+  "235": ["study_235"],
+  "235B": ["study_235"],
+  "235C": ["study_235"],
+  "235D": ["study_235"],
+  "235E": ["study_235"],
+  "235F": ["study_235"],
+  "236": ["study_235"],
+  "237": ["study_235"],
+  "237A": ["study_235"],
+  "242": ["study_235"],
+  "242A": ["study_235"],
+
+  // Special areas
+  "C218": ["study_main_ns"],
+  "233": ["study_233"],
+  "233A": ["study_233"],
+  "233B": ["E239"],
+  "233H": ["study_233"],
+
+  // Study area connections (replacing hallways/junctions)
+  "study_main_ns": ["C235", "E240", "E239", "221A", "221B", "221C", "221D", "222", "222A", "223", "223A", 
+                   "226", "227", "228", "229", "230", "232", "C201", "C202", "C218", "221", "study_main_ew"],
+  "study_main_ew": ["224A", "study_main_ns", "study_233"],
+  "study_235": ["C235", "234", "235", "235A", "235B", "235C", "235D", "235E", 
+               "235F", "236", "237", "237A", "242", "242A", "study_main_ns"],
+  "study_233": ["233", "233A", "233H", "study_main_ew"]
 };
 
 // ! BFS algorithm for shortest path (fewest steps)
@@ -185,10 +252,27 @@ app.get("/api/nodes", (req: Request, res: Response) => {
   });
 });
 
-// Get all rooms
+// Get all locations
 app.get("/api/rooms", (req: Request, res: Response) => {
-  const rooms = nodes.filter(node => node.type === 'room');
-  res.json({ rooms });
+  // Include all location types: rooms, entrances, elevators, and junctions
+  const locations = nodes.filter(node => 
+    node.type === 'room' || 
+    node.type === 'entrance' || 
+    node.type === 'junction'
+  );
+  
+  // Sort locations by type and name for better organization in dropdown
+  const sortedLocations = locations.sort((a, b) => {
+    // First sort by type
+    if (a.type !== b.type) {
+      const typeOrder: { [key: string]: number } = { entrance: 1, room: 2, junction: 3 };
+      return (typeOrder[a.type] || 99) - (typeOrder[b.type] || 99);
+    }
+    // Then sort by name
+    return a.name.localeCompare(b.name);
+  });
+
+  res.json({ rooms: sortedLocations });
 });
 
 // Find shortest path using BFS
@@ -200,7 +284,7 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
   if (!start || !end) {
     return res.status(400).json({ 
       error: "Both start and end parameters are required",
-      example: "/api/navigation/from/room_202/to/classroom_b20"
+      example: "/api/navigation/from/223/to/classroom_b20"
     });
   }
 
@@ -240,6 +324,142 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
     });
   }
 
+  // Special routing rule: if destination is a study area, route must go via the nearest elevator first
+  const isStudyTarget = endNode.id.startsWith("study") || endNode.name.toLowerCase().includes("study") || endNode.id === "221" || endNode.id === "233H";
+
+  // If the user starts at the main entrance, prefer the path Main Entrance -> Reception Desk (235A) -> Elevator -> Study Area
+  if (startNode.id === "C235" && isStudyTarget) {
+    const reception = nodes.find(n => n.id === "235A");
+    if (reception) {
+      const pathToReception = findShortestPathBFS(startNode.id, reception.id);
+      if (pathToReception) {
+        // Find elevator reachable from reception that can reach destination
+        const elevators = nodes.filter(n => n.type === 'entrance' && /^E\d+/.test(n.id));
+        let chosenElev: Node | null = null;
+        let bestScore = Infinity;
+        let pathReceptionToElev: PathResult | null = null;
+        let pathElevToDest: PathResult | null = null;
+
+        for (const el of elevators) {
+          const p1 = findShortestPathBFS(reception.id, el.id);
+          const p2 = findShortestPathBFS(el.id, endNode.id);
+          if (p1 && p2) {
+            const score = p1.steps + p2.steps;
+            if (score < bestScore) {
+              bestScore = score;
+              chosenElev = el;
+              pathReceptionToElev = p1;
+              pathElevToDest = p2;
+            }
+          }
+        }
+
+        if (chosenElev && pathReceptionToElev && pathElevToDest) {
+          const leg1 = pathToReception.path; // start -> reception
+          const leg2 = pathReceptionToElev.path; // reception -> elevator
+          const leg3 = pathElevToDest.path; // elevator -> dest
+
+          // combine without duplicating nodes at joins
+          const combinedPath = [...leg1, ...leg2.slice(1), ...leg3.slice(1)];
+
+          const instr1 = generateInstructions(leg1);
+          const instr2 = generateInstructions(leg2);
+          const instr3 = generateInstructions(leg3);
+
+          const finalInstructions = [
+            ...instr1,
+            `Check in at the Reception Desk (${reception.name})`,
+            ...instr2.slice(1),
+            `Take the elevator at ${chosenElev.name} to continue to ${endNode.name}`,
+            ...instr3.slice(1)
+          ];
+
+          return res.json({
+            start: startNode.name,
+            end: endNode.name,
+            totalSteps: combinedPath.length - 1,
+            floor: `${startNode.floor}F`,
+            path: combinedPath.map(nodeId => {
+              const node = nodes.find(n => n.id === nodeId);
+              return {
+                id: nodeId,
+                name: node?.name || 'Unknown',
+                type: node?.type || 'unknown',
+                floor: node?.floor || 2
+              };
+            }),
+            instructions: finalInstructions
+          });
+        }
+      }
+    }
+    // fall through to generic study routing if receptionist-based route not possible
+  }
+
+  if (isStudyTarget) {
+    // Find elevator nodes available in this floor
+    const elevators = nodes.filter(n => n.type === 'entrance' && /^E\d+/.test(n.id));
+
+    // Pick the elevator with shortest path to the destination
+    let bestElevator: Node | null = null;
+    let bestDist = Infinity;
+    let bestElevatorPath: PathResult | null = null;
+
+    for (const el of elevators) {
+      const p = findShortestPathBFS(el.id, endNode.id);
+      if (p && p.steps < bestDist) {
+        bestDist = p.steps;
+        bestElevator = el;
+        bestElevatorPath = p;
+      }
+    }
+
+    // If we found an elevator that reaches the study area, build composite route start -> elevator -> destination
+    if (bestElevator && bestElevatorPath) {
+      const pathToElevator = findShortestPathBFS(startNode.id, bestElevator.id);
+
+      // If either leg is missing, fall back to direct path
+      if (!pathToElevator) {
+        // fallback to direct
+      } else {
+        const leg1 = pathToElevator.path; // start -> elevator
+        const leg2 = bestElevatorPath.path; // elevator -> dest
+
+        // combine without duplicating elevator
+        const combinedPath = [...leg1, ...leg2.slice(1)];
+
+        // Build instructions: instr1 + explicit elevator instruction + instr2 (without its start line)
+        const instr1 = generateInstructions(leg1);
+        const instr2 = generateInstructions(leg2);
+
+        // Compose final instructions
+        const finalInstructions = [
+          ...instr1,
+          `Take the elevator at ${bestElevator.name} to continue to ${endNode.name}`,
+          ...instr2.slice(1) // remove 'Start at ...' from second leg
+        ];
+
+        return res.json({
+          start: startNode.name,
+          end: endNode.name,
+          totalSteps: combinedPath.length - 1,
+          floor: `${startNode.floor}F`,
+          path: combinedPath.map(nodeId => {
+            const node = nodes.find(n => n.id === nodeId);
+            return {
+              id: nodeId,
+              name: node?.name || 'Unknown',
+              type: node?.type || 'unknown',
+              floor: node?.floor || 2
+            };
+          }),
+          instructions: finalInstructions
+        });
+      }
+    }
+    // else fall through to direct path if no elevator route found
+  }
+
   const pathResult = findShortestPathBFS(startNode.id, endNode.id);
 
   if (!pathResult) {
@@ -266,13 +486,13 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
 
 // Specific route for Room 202 to Classroom B20 (same floor)
 app.get("/api/navigation/room202-to-b20", (req: Request, res: Response) => {
-  const pathResult = findShortestPathBFS("room_202", "classroom_b20");
+  const pathResult = findShortestPathBFS("223", "classroom_b20");
   
   if (!pathResult) {
     return res.status(404).json({ error: "No path found from Room 202 to Classroom B20" });
   }
 
-  const startNode = nodes.find(n => n.id === "room_202");
+  const startNode = nodes.find(n => n.id === "223");
   const endNode = nodes.find(n => n.id === "classroom_b20");
 
   res.json({
