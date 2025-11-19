@@ -266,8 +266,8 @@ function App() {
             <SearchBar placeholder="Type to search" />
           </div>
           <button onClick={() => setCurrentPage("home")}>Back to Home</button>
-          
         </div>
+      </div>
       )}
       {currentPage === "floor2map" && (
       <Floor2Page onBack={() => setCurrentPage("navigation")} />
