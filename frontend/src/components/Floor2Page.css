@@ -1,6 +1,6 @@
 .floor2-container {
   display: flex;
-  height: 100vh;
+  flex-direction: row;
 }
 
 .sidebar {
@@ -8,11 +8,9 @@
   background-color: #ffffff; 
   border-right: 2px solid rgb(0, 98, 184);
 }
-.Map-Content
- {
-  flex: 1;
-  padding: 40px;
-  background-color: #ffffff;
+.Map-Content {
+  flex-grow: 1;
+  padding: 10px;
 }
 
 .sidebar-heading {
@@ -44,6 +42,73 @@
 }
 
 .library-image {
-  display: flex;
-  width: 50%;
+  width: 1000px;   /* <— IMPORTANT: fixed size */
+  max-width: none;
+  margin: 0;
+  display: block;
+}
+
+.map_wrapper {
+  position: relative;
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+
+.hotspot-marker {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: red;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.test-marker {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: red;
+  pointer-events: none;
+}
+
+.hotspot {
+  position: absolute;
+  background: rgba(255, 255, 0, 0.35);
+  border: 1px solid rgba(255, 255, 0, 0.7);
+  cursor: pointer;
+}
+.hotspot:hover {
+  background: rgba(255, 255, 0, 0.6);
+}
+
+.info-panel {
+  position: absolute;
+  top: 0;
+  left: -250px; 
+  width: 250px;
+  height: 100%;
+  background: white;
+  border-right: 2px solid #333;
+  padding: 10px;
+  box-shadow: 4px 0 6px rgba(0,0,0,0.2);
+  transition: left 0.3s ease;
+  z-index: 100;
+}
+
+.info-panel.show {
+  left: 0; 
+}
+
+.close-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+.close-btn:hover {
+  color: red;
 }
