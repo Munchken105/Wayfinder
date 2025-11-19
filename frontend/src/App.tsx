@@ -2,6 +2,7 @@ import { useState } from "react";
 import "./App.css";
 import HomePage from "./components/HomePage";
 import Floor2Page from "./components/Floor2Page";
+import SearchBar from "./components/SearchBar";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -16,6 +17,9 @@ function App() {
           <h1>Navigation Page</h1>
           <p>Navigation functionality coming soon...</p>
           <button onClick={() => setCurrentPage("floor2map")}>Go to Floor 2</button>
+          <div className="w-full">
+            <SearchBar placeholder="Type to search" />
+          </div>
           <button onClick={() => setCurrentPage("home")}>Back to Home</button>
           
         </div>
