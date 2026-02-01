@@ -93,16 +93,16 @@ This should connect to the backend automatically.
 
 ## Tailscale SSH
 
-###Step 1 - Go to tailscale.com Login using the Wayfinder Gmail Account (Found on our private Doc)
+### Step 1 - Go to tailscale.com Login using the Wayfinder Gmail Account (Found on our private Doc)
 
-###Step 2 Connect to tailnet
+### Step 2 Connect to tailnet
 
 Open Terminal
 ```bash
 tailscale up
 ```
 
-###Step 3 - ssh
+### Step 3 - ssh
 ```bash
 ssh wayfinder@2ndFloor
 ```
