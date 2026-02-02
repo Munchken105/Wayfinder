@@ -102,14 +102,9 @@ function App() {
       {currentPage === "navigation" && (
         <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "30px" }}>
-            <h1>Building Navigation</h1>
-            <p>Select your start and end locations to find the shortest path</p>
-            <button 
-              onClick={() => setCurrentPage("home")}
-              style={{ marginBottom: "20px" }}
-            >
-              Back to Home
-            </button>
+            <h1>Navigation Page</h1>
+            <button className="floor-button" onClick={() => setCurrentPage("floor2map")}>View Floors</button>
+            <p>Select your start and end locations to find the shortest path.</p>
           </div>
 
           {/* Location Selection Form */}
@@ -257,15 +252,12 @@ function App() {
             </div>
           )}
 
-          {/* Quick Examples removed by request */}
         <div style={{ textAlign: "center", marginTop: "50px" }}>
-          <h1>Navigation Page</h1>
-          <p>Navigation functionality coming soon...</p>
-          <button onClick={() => setCurrentPage("floor2map")}>Go to Floor 2</button>
+          <p>Search for a librarian!</p>
           <div className="w-full">
             <SearchBar placeholder="Type to search" />
           </div>
-          <button onClick={() => setCurrentPage("home")}>Back to Home</button>
+          <button className="back-button" onClick={() => setCurrentPage("home")}>Back to Home</button>
         </div>
       </div>
       )}
