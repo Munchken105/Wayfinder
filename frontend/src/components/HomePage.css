@@ -29,7 +29,7 @@
   border: 2px solid #e3eaf6;
 }
 
-.library-image {
+.lockwood-library-image {
   width: min(560px, 100%);
   height: auto;
   object-fit: cover;
