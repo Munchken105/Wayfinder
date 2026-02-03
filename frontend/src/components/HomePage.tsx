@@ -17,7 +17,7 @@ function HomePage({ onStart }: HomePageProps) {
           <img
             src={libraryImageUrl}
             alt="Lockwood Library"
-            className="library-image"
+            className="lockwood-library-image"
           />
           <h1 className="home-title">Lockwood Library Wayfinder</h1>
           <button className="start-button" onClick={onStart}>
