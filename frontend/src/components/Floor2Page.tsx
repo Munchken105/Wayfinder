@@ -1,5 +1,6 @@
 import "./Floor2Page.css";
 import { useState } from "react";
+import SearchBar from "./SearchBar";
 
 import libraryImg from "../assets/Floor2layout.jpg";
 const libraryImageUrl = libraryImg;
@@ -20,12 +21,11 @@ function Floor2Page({ onBack }: { onBack: () => void }) {
 
   };
 
-  
-    
-
   return (
     <div className="floor2-container">
-      
+      <div className="searchbar-container">
+        <SearchBar placeholder="Type to search" />
+      </div>
       <div className="sidebar">
          <h2 className="sidebar-heading">Library Floors</h2>
 
@@ -36,10 +36,10 @@ function Floor2Page({ onBack }: { onBack: () => void }) {
           <button className="sidebar-box">Floor 2</button>
           <button className="sidebar-box">Floor 1</button>
           <button className="sidebar-box">Basement</button>
+          <button className="back-button" onClick={onBack}>Back to Home</button>
         </div>
-
       </div>
-
+      
       <div className="Map-Content">
         <h1>Floor 2 Map</h1>
         <div className="map_wrapper">
@@ -184,18 +184,6 @@ function Floor2Page({ onBack }: { onBack: () => void }) {
               })} 
             ></div>
 
-
-
-
-
-
-
-
-
-
-
-
-
           {/*-----------------------------------------USE TO FIND COORDINATE-------------------------------------------*/}
 
           {lastClick && (
@@ -215,13 +203,11 @@ function Floor2Page({ onBack }: { onBack: () => void }) {
             </div>
           )}
 
-          
-
         </div>
         
-        <button onClick={onBack}>Go Back to Navigate</button>
       </div>
     </div>
+    
   );
 }
 
