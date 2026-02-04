@@ -1,25 +1,516 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+/* ==========================================================================
+   Wayfinder "Scientific Journal" Theme
+   Based on University at Buffalo Brand Identity
+   ========================================================================== */
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+:root {
+    /* UB Primary Palette */
+    --ub-blue: #005bbb;
+    --hayes-hall-white: #ffffff;
+
+    /* UB Secondary Palette */
+    --letchworth-autumn: #e56a54;
+    --solar-strand: #ffc72c;
+    --greiner-green: #ebec00;
+    --lake-lasalle: #00a69c;
+    --capen-brick: #990000;
+    --bronze-buffalo: #ad841f;
+    --olmsted-green: #6da04b;
+    --niagara-whirlpool: #006570;
+    --victor-e-blue: #2f9fd0;
+    --harriman-blue: #002f56;
+    --baird-point: #e4e4e4;
+    --putnam-gray: #666666;
+
+    /* Functional Semantic Variables */
+    --color-text-body: #222222;
+    /* Near black for readability */
+    --color-text-header: #000000;
+    --color-link: var(--ub-blue);
+    --color-accent: var(--ub-blue);
+    --color-border: #000000;
+    /* Stark black borders */
+    --color-background-page: var(--hayes-hall-white);
+    /* The "Paper" */
+    --color-background-app: var(--baird-point);
+    /* The "Desk" */
+
+    /* Typography */
+    --font-serif: 'Lora', 'Times New Roman', Times, serif;
+    --font-sans: 'Open Sans', Helvetica, Arial, sans-serif;
+    /* Captions/Figures */
+
+    /* Layout */
+    --paper-width: 1200px;
+    --spacing-std: 1rem;
 }
 
+/* ==========================================================================
+   Reset & Base
+   ========================================================================== */
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  background-color: #f5f7fa;
+    background-color: var(--color-background-app);
+    color: var(--color-text-body);
+    font-family: var(--font-serif);
+    line-height: 1.6;
+    margin: 0;
+    padding: 2rem;
+    font-size: 16px;
 }
 
-h1 {
-  line-height: 1.1;
+/* The "Paper" Container */
+.container {
+    max-width: var(--paper-width);
+    margin: 0 auto;
+    background-color: var(--color-background-page);
+    padding: 3rem 4rem;
+    /* Wide margins like a paper */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid #d1d1d1;
+    min-height: 90vh;
 }
 
+/* ==========================================================================
+   Header Section (The "Title" of the Paper)
+   ========================================================================== */
+.app-main {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.controls-panel {
+    flex: 0 0 350px;
+    /* Sidebar width */
+    border-right: 1px solid #ddd;
+    padding-right: 2rem;
+}
+
+.map-panel {
+    flex: 1;
+}
+
+/* Header Styling */
+.panel-header {
+    border-bottom: 3px double #000;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    text-align: center;
+    width: 100%;
+}
+
+.app-title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: var(--ub-blue);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+}
+
+.current-location {
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--putnam-gray);
+    margin-top: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.current-location strong {
+    color: var(--color-text-body);
+    font-style: normal;
+}
+
+/* Abstract / Section Headers */
+.section-title,
+.route-title {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--color-text-header);
+    border-bottom: 1px solid #000;
+    padding-bottom: 0.25rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+}
+
+/* ==========================================================================
+   Search & Inputs ("Parameters")
+   ========================================================================== */
+.search-container {
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.5rem 0;
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    border: none;
+    border-bottom: 1px solid var(--putnam-gray);
+    border-radius: 0;
+    background: transparent;
+    color: var(--color-text-body);
+    transition: border-color 0.2s;
+}
+
+.search-input:focus {
+    border-bottom-color: var(--ub-blue);
+    outline: none;
+    background: rgba(0, 91, 187, 0.05);
+    /* faint blue tint */
+}
+
+.search-button {
+    position: absolute;
+    right: 0;
+    top: 0.5rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: var(--ub-blue);
+}
+
+/* Autocomplete - "References" style */
+.autocomplete-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid var(--putnam-gray);
+    z-index: 100;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.suggestion-item {
+    padding: 0.5rem;
+    border-bottom: 1px dotted #ccc;
+    cursor: pointer;
+    font-size: 0.95rem;
+}
+
+.suggestion-item:hover {
+    background-color: var(--baird-point);
+}
+
+/* ==========================================================================
+   Categories as "Methodology" List
+   ========================================================================== */
+.category-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.category-btn {
+    background: none;
+    border: 1px solid var(--putnam-gray);
+    padding: 0.5rem 1rem;
+    text-align: left;
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 2px;
+}
+
+.category-btn:hover {
+    background-color: var(--baird-point);
+    border-color: var(--ub-blue);
+    color: var(--ub-blue);
+}
+
+.category-icon {
+    margin-right: 0.5rem;
+    filter: sepia(100%) hue-rotate(190deg) saturate(500%);
+    /* Blue-ish tint */
+}
+
+/* ==========================================================================
+   Map - "Figure 1"
+   ========================================================================== */
+.map-container {
+    border: 1px solid #000;
+    padding: 1rem;
+    background-color: #fafafa;
+    position: relative;
+    /* Maintain aspect ratio or height */
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    /* Ensure panzoom doesn't spill over */
+}
+
+.map-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.map-svg {
+    max-width: 100%;
+    max-height: 100%;
+    /* Ensure it doesn't collapse */
+    width: 100%;
+    height: auto;
+}
+
+/* Caption style for the map */
+.map-panel::after {
+    content: "Fig. 1. Spatial representation of Level " attr(data-active-floor) ". Interactive navigation elements are highlighted.";
+    display: block;
+    text-align: center;
+    font-family: var(--font-sans);
+    /* Captions often sans in serif papers */
+    font-size: 0.9rem;
+    color: var(--putnam-gray);
+    margin-top: 1rem;
+    font-style: italic;
+}
+
+/* Map Controls - "Instruments" */
+.map-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+.floor-btn {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    padding: 0.25rem 0.75rem;
+    background: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    color: var(--putnam-gray);
+}
+
+.floor-btn.active {
+    color: var(--ub-blue);
+    border-bottom: 2px solid var(--ub-blue);
+}
+
+.zoom-controls {
+    display: flex;
+    gap: 5px;
+}
+
+.zoom-btn {
+    border: 1px solid #ddd;
+    background: white;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-family: monospace;
+}
+
+/* ==========================================================================
+   Directions - "Results"
+   ========================================================================== */
+.directions-list {
+    margin-top: 1rem;
+    counter-reset: step-counter;
+    /* CSS Counters for 1, 2, 3... */
+}
+
+.direction-step {
+    position: relative;
+    padding-left: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.step-number {
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-weight: bold;
+    color: var(--ub-blue);
+    font-family: var(--font-sans);
+}
+
+.step-number::after {
+    content: ".";
+}
+
+/* We hide the original circle number style */
+.direction-step .step-number {
+    width: auto;
+    height: auto;
+    background: none;
+    border-radius: 0;
+    display: inline;
+}
+
+.step-instruction {
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+.step-landmark {
+    display: block;
+    border: 1px dotted #999;
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    background: #f9f9f9;
+    text-align: center;
+    color: var(--putnam-gray);
+}
+
+.back-button {
+    font-family: var(--font-sans);
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    color: var(--ub-blue);
+    margin-bottom: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ==========================================================================
+   QR Code - "Supplementary Data"
+   ========================================================================== */
+.qr-compact {
+    border: 1px solid var(--putnam-gray);
+    padding: 1rem;
+    margin-top: 2rem;
+    text-align: center;
+    background: white;
+    color: black;
+    box-shadow: none;
+    border-radius: 0;
+}
+
+.qr-compact-text {
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    color: #444;
+    margin-top: 0.5rem;
+}
+
+/* ==========================================================================
+   Responsive Mobile - Keeping the "Paper" feel but stacked
+   ========================================================================== */
+@media (max-width: 1024px) {
+    .container {
+        padding: 1rem;
+        width: 100%;
+        box-shadow: none;
+        border: none;
+    }
+
+    .app-main {
+        flex-direction: column;
+    }
+
+    .controls-panel {
+        flex: auto;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        padding-right: 0;
+        padding-bottom: 2rem;
+    }
+
+    .map-container {
+        min-height: 400px;
+    }
+}
+/* Map Animations & Marker Styles */
+@keyframes dash {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.2); /* Sligthly larger pulse */
+    opacity: 0.9;
+  }
+}
+
+.route-start, .route-end {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* ==========================================================================
+   Map SVG Overrides - "Technical Figure" Style
+   ========================================================================== */
+.map-svg .floor-background {
+    fill: #ffffff !important;
+}
+
+.map-svg .room-fill,
+.map-svg .special-fill {
+    fill: #ffffff !important;
+    filter: none !important;
+    stroke: #000000 !important;
+    stroke-width: 1px !important;
+}
+
+.map-svg .wall-stroke {
+    stroke: #000000 !important;
+    stroke-width: 1.5px !important;
+}
+
+/* Typography inside the map */
+.map-svg text,
+.map-svg .text-primary,
+.map-svg .text-secondary,
+.map-svg .text-special {
+    font-family: var(--font-sans) !important;
+    fill: #000000 !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.map-svg .text-secondary {
+    font-weight: 400 !important;
+    font-size: 0.8em !important; 
+    fill: #333333 !important; /* Slightly lighter for hierarchy */
+    text-transform: none;
+}
+
+/* Default Markers (inactive) */
+.map-svg .destination-marker,
+.map-svg .stairs-marker {
+    fill: #ffffff !important;
+    stroke: #000000 !important;
+    stroke-width: 1px !important;
+}
+
+/* The 'You Are Here' Kiosk (static) */
+.map-svg .kiosk-marker {
+    fill: #000000 !important;
+    stroke: none !important;
+}

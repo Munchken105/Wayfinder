@@ -91,7 +91,7 @@ const graph: { [key: string]: string[] } = {
   "E240": ["study_main_ns", "study_main_ew"],
   "E239": ["study_main_ns", "233B"],
   "235A": ["E240", "E239", "study_235"],
-  
+
   // Right side room connections (connect to main study areas)
   "221A": ["study_main_ns"],
   "221B": ["study_main_ns"],
@@ -133,11 +133,11 @@ const graph: { [key: string]: string[] } = {
   "233H": ["study_233"],
 
   // Study area connections (replacing hallways/junctions)
-  "study_main_ns": ["C235", "E240", "E239", "221A", "221B", "221C", "221D", "222", "222A", "223", "223A", 
-                   "226", "227", "228", "229", "230", "232", "C201", "C202", "C218", "221", "study_main_ew"],
+  "study_main_ns": ["C235", "E240", "E239", "221A", "221B", "221C", "221D", "222", "222A", "223", "223A",
+    "226", "227", "228", "229", "230", "232", "C201", "C202", "C218", "221", "study_main_ew"],
   "study_main_ew": ["224A", "study_main_ns", "study_233"],
-  "study_235": ["C235", "234", "235", "235A", "235B", "235C", "235D", "235E", 
-               "235F", "236", "237", "237A", "242", "242A", "study_main_ns"],
+  "study_235": ["C235", "234", "235", "235A", "235B", "235C", "235D", "235E",
+    "235F", "236", "237", "237A", "242", "242A", "study_main_ns"],
   "study_233": ["233", "233A", "233H", "study_main_ew"]
 };
 
@@ -154,7 +154,7 @@ function findShortestPathBFS(startNodeId: string, endNodeId: string): PathResult
 
   const visited = new Set<string>();
   const queue: { node: string; path: string[] }[] = [];
-  
+
   // Start BFS
   queue.push({ node: startNodeId, path: [startNodeId] });
   visited.add(startNodeId);
@@ -170,7 +170,7 @@ function findShortestPathBFS(startNodeId: string, endNodeId: string): PathResult
     for (const neighbor of neighbors) {
       if (!visited.has(neighbor)) {
         const newPath = [...path, neighbor];
-        
+
         // Found destination
         if (neighbor === endNodeId) {
           const instructions = generateInstructions(newPath);
@@ -194,7 +194,7 @@ function findShortestPathBFS(startNodeId: string, endNodeId: string): PathResult
 // Generate human-readable instructions from path
 function generateInstructions(path: string[]): string[] {
   const instructions: string[] = [];
-  
+
   const startNode = nodes.find(n => n.id === path[0]);
   instructions.push(`Start at ${startNode?.name || 'starting point'}`);
 
@@ -234,7 +234,7 @@ function generateInstructions(path: string[]): string[] {
 
   const endNode = nodes.find(n => n.id === path[path.length - 1]);
   instructions.push(`Arrive at ${endNode?.name || 'destination'}`);
-  
+
   return instructions;
 }
 
@@ -258,12 +258,12 @@ app.get("/api/nodes", (req: Request, res: Response) => {
 // Get all locations
 app.get("/api/rooms", (req: Request, res: Response) => {
   // Include all location types: rooms, entrances, elevators, and junctions
-  const locations = nodes.filter(node => 
-    node.type === 'room' || 
-    node.type === 'entrance' || 
+  const locations = nodes.filter(node =>
+    node.type === 'room' ||
+    node.type === 'entrance' ||
     node.type === 'junction'
   );
-  
+
   // Sort locations by type and name for better organization in dropdown
   const sortedLocations = locations.sort((a, b) => {
     // First sort by type
@@ -285,33 +285,33 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
 
   // Check if parameters are provided
   if (!start || !end) {
-    return res.status(400).json({ 
+    return res.status(400).json({
       error: "Both start and end parameters are required",
       example: "/api/navigation/from/223/to/classroom_b20"
     });
   }
 
-  const startNode = nodes.find(n => 
-    n.id === start || 
+  const startNode = nodes.find(n =>
+    n.id === start ||
     n.name.toLowerCase().includes(start.toLowerCase()) ||
     n.id.toLowerCase().includes(start.toLowerCase())
   );
-  
-  const endNode = nodes.find(n => 
-    n.id === end || 
+
+  const endNode = nodes.find(n =>
+    n.id === end ||
     n.name.toLowerCase().includes(end.toLowerCase()) ||
     n.id.toLowerCase().includes(end.toLowerCase())
   );
 
   if (!startNode) {
-    return res.status(404).json({ 
+    return res.status(404).json({
       error: `Start location '${start}' not found`,
       availableRooms: nodes.filter(n => n.type === 'room').map(n => ({ id: n.id, name: n.name, floor: n.floor }))
     });
   }
 
   if (!endNode) {
-    return res.status(404).json({ 
+    return res.status(404).json({
       error: `End location '${end}' not found`,
       availableRooms: nodes.filter(n => n.type === 'room').map(n => ({ id: n.id, name: n.name, floor: n.floor }))
     });
@@ -319,7 +319,7 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
 
   // Check if both rooms are on the same floor
   if (startNode.floor !== endNode.floor) {
-    return res.status(400).json({ 
+    return res.status(400).json({
       error: "Multi-floor navigation not supported",
       message: "This building only has single-floor navigation. Both rooms must be on the same floor.",
       startFloor: `${startNode.floor}F`,
@@ -490,7 +490,7 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
 // Specific route for Room 202 to Classroom B20 (same floor)
 app.get("/api/navigation/room202-to-b20", (req: Request, res: Response) => {
   const pathResult = findShortestPathBFS("223", "classroom_b20");
-  
+
   if (!pathResult) {
     return res.status(404).json({ error: "No path found from Room 202 to Classroom B20" });
   }
@@ -519,15 +519,15 @@ app.get("/api/navigation/room202-to-b20", (req: Request, res: Response) => {
 // Get available routes on this floor
 app.get("/api/floor/:floorNumber/routes", (req: Request, res: Response) => {
   const floorNumber = req.params.floorNumber;
-  
+
   if (!floorNumber) {
     return res.status(400).json({ error: "Floor number is required" });
   }
 
-  const floorRooms = nodes.filter(node => 
+  const floorRooms = nodes.filter(node =>
     node.type === 'room' && node.floor.toString() === floorNumber
   );
-  
+
   res.json({
     floor: `${floorNumber}F`,
     availableRooms: floorRooms.map(room => ({
@@ -541,9 +541,9 @@ app.get("/api/floor/:floorNumber/routes", (req: Request, res: Response) => {
 // Health check
 app.get("/health", (req: Request, res: Response) => {
   const floor2Rooms = nodes.filter(n => n.type === 'room' && n.floor === 2);
-  
-  res.json({ 
-    status: "healthy", 
+
+  res.json({
+    status: "healthy",
     timestamp: new Date().toISOString(),
     algorithm: "BFS (Breadth-First Search)",
     navigationType: "Single Floor Only",
@@ -567,9 +567,9 @@ app.use((req: Request, res: Response) => {
   res.status(404).json({ error: "Route not found" });
 });
 
-app.listen(PORT, () => {
+app.listen(Number(PORT), '0.0.0.0', () => {
   const floor2Rooms = nodes.filter(n => n.type === 'room' && n.floor === 2);
-  
+
   console.log(`Single Floor Navigation server running on port ${PORT}`);
   console.log(`Algorithm: BFS (Breadth-First Search)`);
   console.log(`Navigation Type: Single Floor Only (Floor 2)`);
