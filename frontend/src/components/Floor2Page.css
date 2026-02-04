@@ -43,7 +43,7 @@
 
 .library-image {
   width: 1000px;   /* <— IMPORTANT: fixed size */
-  max-width: none;
+  max-width: 100%;
   margin: 0;
   display: block;
 }
@@ -111,4 +111,9 @@
 }
 .close-btn:hover {
   color: red;
+}
+
+.searchbar-container {
+  margin-left: 20px;
+  margin-right: 20px;
 }
