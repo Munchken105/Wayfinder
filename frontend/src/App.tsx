@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import HomePage from "./components/HomePage";
-import Floor2Page from "./components/Floor2Page";
+import Floor2Page from "./components/FloorsPage";
 import SearchBar from "./components/SearchBar";
 
 interface Room {
@@ -253,7 +253,6 @@ function App() {
           )}
 
         <div style={{ textAlign: "center", marginTop: "50px" }}>
-          <p>Search for a librarian!</p>
           <div className="w-full">
             <SearchBar placeholder="Type to search" />
           </div>
