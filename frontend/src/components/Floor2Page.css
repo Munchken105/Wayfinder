@@ -11,6 +11,7 @@
 .Map-Content {
   flex-grow: 1;
   padding: 10px;
+  position: relative;
 }
 
 .sidebar-heading {
@@ -84,10 +85,11 @@
 
 .info-panel {
   position: absolute;
-  top: 0;
+  top: 40px;
   left: -250px; 
-  width: 250px;
-  height: 100%;
+  width: 100%;
+  max-width: 304px;
+  height: calc(100% - 40px);
   background: white;
   border-right: 2px solid #333;
   padding: 10px;
