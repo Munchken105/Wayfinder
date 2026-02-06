@@ -11,6 +11,7 @@
 .Map-Content {
   flex-grow: 1;
   padding: 10px;
+  position: relative;
 }
 
 .sidebar-heading {
@@ -43,7 +44,7 @@
 
 .library-image {
   width: 1000px;   /* <— IMPORTANT: fixed size */
-  max-width: 100%;
+  max-width: none;
   margin: 0;
   display: block;
 }
@@ -84,10 +85,11 @@
 
 .info-panel {
   position: absolute;
-  top: 0;
+  top: 40px;
   left: -250px; 
-  width: 250px;
-  height: 100%;
+  width: 100%;
+  max-width: 304px;
+  height: calc(100% - 40px);
   background: white;
   border-right: 2px solid #333;
   padding: 10px;
@@ -111,9 +113,4 @@
 }
 .close-btn:hover {
   color: red;
-}
-
-.searchbar-container {
-  margin-left: 20px;
-  margin-right: 20px;
 }
