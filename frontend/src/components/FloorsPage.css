@@ -37,15 +37,13 @@
 }
 
 .sidebar-box:hover {
-  background-color: #005BBB;
+  background-color: #92c7ff;
   color: rgb(255, 255, 255);
 }
 
-.library-image {
-  width: 1000px;   /* <— IMPORTANT: fixed size */
-  max-width: 100%;
-  margin: 0;
-  display: block;
+.sidebar-box.active {
+  background-color: #005BBB;
+  color: rgb(255, 255, 255);
 }
 
 .map_wrapper {

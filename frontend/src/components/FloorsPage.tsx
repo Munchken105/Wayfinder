@@ -9,7 +9,7 @@ import floor3Img from "../assets/Floor3layout.jpg";
 import floor4Img from "../assets/Floor4layout.jpg";
 import floor5Img from "../assets/Floor5layout.jpg";
 
-function LibraryFloorMap({ onBack }) {
+function LibraryFloorMap({ onBack }: {onBack: () => void}) {
 
   const [lastClick, setLastClick] = useState<{ x: number; y: number } | null>(null); // this is for knowing where to set up boxes
   const [selectedRoom, setSelectedRoom] = useState<{ name: string; description: string;} | null>(null); // this is for making the clicking of the rooms useful
@@ -22,7 +22,7 @@ function LibraryFloorMap({ onBack }) {
     };
 
   //------------------------------------------Initializing the Map-----------------------------------------------------
-  const [activeFloor, setActiveFloor] = useState<string | null> (null);
+  const [activeFloor, setActiveFloor] = useState<string | null> ("Floor 2");
   const ChosenMapImage = () => {
     if (activeFloor == "Basement") return <img src={BasementImg} className="libary-image" onClick={handleImageClick}/>;
     if (activeFloor == "Floor 1") return <img src={floor1Img} className="libary-image" onClick={handleImageClick}/>;
