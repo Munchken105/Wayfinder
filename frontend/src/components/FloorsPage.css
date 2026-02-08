@@ -42,13 +42,6 @@
   color: rgb(255, 255, 255);
 }
 
-.library-image {
-  width: 1000px;   /* <— IMPORTANT: fixed size */
-  max-width: none;
-  margin: 0;
-  display: block;
-}
-
 .map_wrapper {
   position: relative;
   display: inline-block;
