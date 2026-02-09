@@ -9,35 +9,17 @@ export interface NavigationResult {
   instructions: string[];
 }
 
-const getApiBase = () => {
-  const host = import.meta.env.VITE_LOCAL_IP || window.location.hostname;
-  // If accessing via localhost, use localhost:5000 (for local dev)
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return 'http://localhost:5000';
-  }
-  // Otherwise use IP:5000
-  return `http://${host}:5000`;
-}
-
 export function useNavigation() {
-  const [startRoom, setStartRoom] = useState("");
-  const [endRoom, setEndRoom] = useState("");
   const [navigationResult, setNavigationResult] = useState<NavigationResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const reset = () => {
-
-    setStartRoom("");
-    setEndRoom("");
     setNavigationResult(null);
     setError("");
-
   }
 
-  const findPath = async (from: string, to: string) => { //At the moment, from should only be "Main Entrance"
-    setStartRoom(from);
-    setEndRoom(to);
+  const findPath = async (from: string, to: string) => {
     if (!to || !from) {
       setError("Please select both start and end locations");
       return;
@@ -54,7 +36,12 @@ export function useNavigation() {
 
     try {
       const response = await fetch(
-        `${getApiBase()}/api/navigation/from/${from}/to/${to}`
+        `/api/navigation/from/${from}/to/${to}`,
+        {
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+          },
+        }
       );
       const data = await response.json();
 
