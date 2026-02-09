@@ -5,16 +5,46 @@ const path = require('path');
 
 // 1. Detect Local LAN IP
 function getLocalIP() {
+    // 1. Check for manual override
+    if (process.env.HOST_IP) {
+        console.log(`ℹ️ Using manual override IP: ${process.env.HOST_IP}`);
+        return process.env.HOST_IP;
+    }
+
     const interfaces = os.networkInterfaces();
+    const candidates = [];
+
     for (const name of Object.keys(interfaces)) {
         for (const iface of interfaces[name]) {
             // Skip internal (localhost) and non-IPv4 addresses
             if (iface.family === 'IPv4' && !iface.internal) {
-                return iface.address;
+                candidates.push({ name, address: iface.address });
             }
         }
     }
-    return 'localhost';
+
+    if (candidates.length === 0) return 'localhost';
+
+    console.log('🔎 Detected Network Interfaces:');
+    candidates.forEach(c => console.log(`   - ${c.name}: ${c.address}`));
+
+    // 2. Prioritize common LAN interface names (Wi-Fi, Ethernet, wlan, en)
+    // Avoid common VM/container interfaces (docker, vether, br, vmnet, wsl)
+    const preferred = candidates.find(c => {
+        const n = c.name.toLowerCase();
+        return (n.includes('wi-fi') || n.includes('wlan') || n.includes('en') || n.includes('eth')) &&
+            !n.includes('docker') && !n.includes('veth') && !n.includes('br') && !n.includes('vmnet') && !n.includes('wsl');
+    });
+
+    if (preferred) {
+        console.log(`✅ Selected preferred interface: ${preferred.name}`);
+        return preferred.address;
+    }
+
+    // 3. Fallback to the first candidate
+    const first = candidates[0];
+    console.log(`⚠️ No preferred interface found. Defaulting to: ${first.name}`);
+    return first.address;
 }
 
 const IP = getLocalIP();
