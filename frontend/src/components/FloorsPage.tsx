@@ -95,6 +95,65 @@ function LibraryFloorMap({ onBack }: {onBack: () => void}) {
             </div>)
           }
         {/*----------------------------------------------------------------------------------------------------------*/} 
+        
+        {activeFloor === "Floor 1" && (
+            <>
+              <div
+                className="hotspot"
+                style={{ top: "177px", left: "184px", width: "68px", height: "88px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 116", description: "Banana 0" })}
+              ></div>
+
+              <div
+                className="hotspot"
+                style={{ top: "177px", left: "254px", width: "46px", height: "88px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 117", description: "Banana 1" })}
+              ></div>
+
+              <div
+                className="hotspot"
+                style={{ top: "177px", left: "300px", width: "60px", height: "88px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 118", description: "Banana 2" })}
+              ></div>
+
+              <div
+                className="hotspot"
+                style={{ top: "177px", left: "360px", width: "92px", height: "88px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 119", description: "Banana 3" })}
+              ></div>
+
+              <div
+                className="hotspot"
+                style={{ top: "337px", left: "886px", width: "80px", height: "57px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 108", description: "Banana 4" })}
+              ></div>
+
+              <div
+                className="hotspot"
+                style={{ top: "395px", left: "819px", width: "144px", height: "122px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 109", description: "Banana 5" })}
+              ></div>
+
+              <div
+                className="hotspot"
+                style={{ top: "518px", left: "819px", width: "144px", height: "88px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 110", description: "Banana 6" })}
+              ></div>
+
+              <div
+                className="hotspot"
+                style={{ top: "112px", left: "819px", width: "144px", height: "74px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 105A", description: "Banana 7A" })}
+              ></div>
+              
+              <div
+                className="hotspot"
+                style={{ top: "180px", left: "819px", width: "70px", height: "120px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 105B", description: "Banana 7B" })}
+              ></div>
+
+            </>
+          )}
 
         {activeFloor === "Floor 2" && (
             <>
