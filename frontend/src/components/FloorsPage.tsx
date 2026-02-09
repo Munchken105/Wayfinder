@@ -145,12 +145,6 @@ function LibraryFloorMap({ onBack }: {onBack: () => void}) {
                 style={{ top: "112px", left: "819px", width: "144px", height: "74px", position: "absolute" }}
                 onClick={() => setSelectedRoom({ name: "Room 105A", description: "Banana 7A" })}
               ></div>
-              
-              <div
-                className="hotspot"
-                style={{ top: "180px", left: "819px", width: "70px", height: "120px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 105B", description: "Banana 7B" })}
-              ></div>
 
             </>
           )}
@@ -210,6 +204,23 @@ function LibraryFloorMap({ onBack }: {onBack: () => void}) {
                 style={{ top: "6px", left: "1006px", width: "28px", height: "79px", position: "absolute" }}
                 onClick={() => setSelectedRoom({ name: "Room 232", description: "Banana 9" })}
               ></div>
+            </>
+          )}
+
+          {activeFloor === "Floor 2" && (
+            <>
+              <div
+                className="hotspot"
+                style={{ top: "6px", left: "390px", width: "110px", height: "78px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 221", description: "Banana 1" })}
+              ></div>
+
+              <div
+                className="hotspot"
+                style={{ top: "6px", left: "506px", width: "52px", height: "78px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 221-D", description: "Banana 2" })}
+              ></div>
+
             </>
           )}
           
