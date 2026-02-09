@@ -24,7 +24,7 @@ function LibraryFloorMap({ onBack } : { onBack: () => void }) {
     };
 
   //------------------------------------------Initializing the Map-----------------------------------------------------
-  const [activeFloor, setActiveFloor] = useState<string | null> (null);
+  const [activeFloor, setActiveFloor] = useState<string | null> ("Floor 2");
   const ChosenMapImage = () => {
     if (activeFloor == "Basement") return <img src={BasementImg} className="libary-image" onClick={handleImageClick}/>;
     if (activeFloor == "Floor 1") return <img src={floor1Img} className="libary-image" onClick={handleImageClick}/>;
@@ -115,6 +115,59 @@ function LibraryFloorMap({ onBack } : { onBack: () => void }) {
             </div>)
           }
         {/*----------------------------------------------------------------------------------------------------------*/} 
+        
+        {activeFloor === "Floor 1" && (
+            <>
+              <div
+                className="hotspot"
+                style={{ top: "177px", left: "184px", width: "68px", height: "88px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 116", description: "Banana 0" })}
+              ></div>
+
+              <div
+                className="hotspot"
+                style={{ top: "177px", left: "254px", width: "46px", height: "88px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 117", description: "Banana 1" })}
+              ></div>
+
+              <div
+                className="hotspot"
+                style={{ top: "177px", left: "300px", width: "60px", height: "88px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 118", description: "Banana 2" })}
+              ></div>
+
+              <div
+                className="hotspot"
+                style={{ top: "177px", left: "360px", width: "92px", height: "88px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 119", description: "Banana 3" })}
+              ></div>
+
+              <div
+                className="hotspot"
+                style={{ top: "337px", left: "886px", width: "80px", height: "57px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 108", description: "Banana 4" })}
+              ></div>
+
+              <div
+                className="hotspot"
+                style={{ top: "395px", left: "819px", width: "144px", height: "122px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 109", description: "Banana 5" })}
+              ></div>
+
+              <div
+                className="hotspot"
+                style={{ top: "518px", left: "819px", width: "144px", height: "88px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 110", description: "Banana 6" })}
+              ></div>
+
+              <div
+                className="hotspot"
+                style={{ top: "112px", left: "819px", width: "144px", height: "74px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 105A", description: "Banana 7A" })}
+              ></div>
+
+            </>
+          )}
 
         {activeFloor === "Floor 2" && (
             <>
@@ -171,6 +224,23 @@ function LibraryFloorMap({ onBack } : { onBack: () => void }) {
                 style={{ top: "6px", left: "1006px", width: "28px", height: "79px", position: "absolute" }}
                 onClick={() => setSelectedRoom({ name: "Room 232", description: "Banana 9" })}
               ></div>
+            </>
+          )}
+
+          {activeFloor === "Floor 2" && (
+            <>
+              <div
+                className="hotspot"
+                style={{ top: "6px", left: "390px", width: "110px", height: "78px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 221", description: "Banana 1" })}
+              ></div>
+
+              <div
+                className="hotspot"
+                style={{ top: "6px", left: "506px", width: "52px", height: "78px", position: "absolute" }}
+                onClick={() => setSelectedRoom({ name: "Room 221-D", description: "Banana 2" })}
+              ></div>
+
             </>
           )}
           
