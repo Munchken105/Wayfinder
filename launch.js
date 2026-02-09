@@ -90,6 +90,15 @@ const backendProc = runProcess('Backend', 'npm', ['run', 'dev'], path.join(__dir
 // 4. Start Frontend
 const frontendProc = runProcess('Frontend', 'npm', ['run', 'dev', '--', '--host'], path.join(__dirname, 'frontend'));
 
+// 5. Windows Firewall Warning
+if (process.platform === 'win32') {
+    console.log('\n⚠️  WINDOWS DETECTED  ⚠️');
+    console.log('If you cannot connect from your phone:');
+    console.log('1. A "Windows Security Alert" popup may have appeared. Click "Allow Access".');
+    console.log('2. Ensure "Private" AND "Public" networks are checked if you are on university Wi-Fi.');
+    console.log('3. You may need to manually allow "Node.js" through the Firewall for ports 5000 & 5173.\n');
+}
+
 // 5. Cleanup on Exit
 process.on('SIGINT', () => {
     console.log('\n🛑 Stopping servers...');
