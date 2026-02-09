@@ -27,7 +27,12 @@ export default function SearchBar({ placeholder = "Search...", onResults }: Sear
 
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/search?q=${query}`);
+      const host = import.meta.env.VITE_LOCAL_IP || window.location.hostname;
+      const apiBase = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:5000'
+        : `http://${host}:5000`;
+
+      const res = await fetch(`${apiBase}/search?q=${query}`);
       const data = await res.json();
       const r = data.results || [];
       setResults(r);

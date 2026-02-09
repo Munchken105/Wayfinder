@@ -9,6 +9,16 @@ export interface NavigationResult {
   instructions: string[];
 }
 
+const getApiBase = () => {
+  const host = import.meta.env.VITE_LOCAL_IP || window.location.hostname;
+  // If accessing via localhost, use localhost:5000 (for local dev)
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return 'http://localhost:5000';
+  }
+  // Otherwise use IP:5000
+  return `http://${host}:5000`;
+}
+
 export function useNavigation() {
   const [startRoom, setStartRoom] = useState("");
   const [endRoom, setEndRoom] = useState("");
@@ -17,12 +27,12 @@ export function useNavigation() {
   const [error, setError] = useState("");
 
   const reset = () => {
-    
-      setStartRoom("");
-      setEndRoom("");
-      setNavigationResult(null);
-      setError("");
-    
+
+    setStartRoom("");
+    setEndRoom("");
+    setNavigationResult(null);
+    setError("");
+
   }
 
   const findPath = async (from: string, to: string) => { //At the moment, from should only be "Main Entrance"
@@ -44,7 +54,7 @@ export function useNavigation() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/navigation/from/${from}/to/${to}`
+        `${getApiBase()}/api/navigation/from/${from}/to/${to}`
       );
       const data = await response.json();
 

@@ -1,5 +1,5 @@
 import "./FloorsPage.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import WayfindPage from "./WayfindPage";
 
@@ -10,113 +10,164 @@ import floor3Img from "../assets/Floor3layout.jpg";
 import floor4Img from "../assets/Floor4layout.jpg";
 import floor5Img from "../assets/Floor5layout.jpg";
 
-function LibraryFloorMap({ onBack } : { onBack: () => void }) {
+function LibraryFloorMap({ onBack, initialTarget }: { onBack: () => void; initialTarget?: string }) {
 
   const [lastClick, setLastClick] = useState<{ x: number; y: number } | null>(null); // this is for knowing where to set up boxes
-  const [selectedRoom, setSelectedRoom] = useState<{ name: string; description: string;} | null>(null); // this is for making the clicking of the rooms useful
+  const [selectedRoom, setSelectedRoom] = useState<{ name: string; description: string; } | null>(null); // this is for making the clicking of the rooms useful
   const [wayfindClicked, setWayfindClicked] = useState(false)
-  const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => 
-    {
+  const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
     const x = e.nativeEvent.offsetX;
     const y = e.nativeEvent.offsetY;
     console.log(`Clicked at: ${x}, ${y}`);
     setLastClick({ x, y });
-    };
+  };
 
   //------------------------------------------Initializing the Map-----------------------------------------------------
-  const [activeFloor, setActiveFloor] = useState<string | null> (null);
+  const [activeFloor, setActiveFloor] = useState<string | null>(null);
   const ChosenMapImage = () => {
-    if (activeFloor == "Basement") return <img src={BasementImg} className="libary-image" onClick={handleImageClick}/>;
-    if (activeFloor == "Floor 1") return <img src={floor1Img} className="libary-image" onClick={handleImageClick}/>;
-    if (activeFloor == "Floor 2") return <img src={floor2Img} className="libary-image" onClick={handleImageClick}/>;
-    if (activeFloor == "Floor 3") return <img src={floor3Img} className="libary-image" onClick={handleImageClick}/>;
-    if (activeFloor == "Floor 4") return <img src={floor4Img} className="libary-image" onClick={handleImageClick}/>;
-    if (activeFloor == "Floor 5") return <img src={floor5Img} className="libary-image" onClick={handleImageClick}/>;
+    if (activeFloor == "Basement") return <img src={BasementImg} className="libary-image" onClick={handleImageClick} />;
+    if (activeFloor == "Floor 1") return <img src={floor1Img} className="libary-image" onClick={handleImageClick} />;
+    if (activeFloor == "Floor 2") return <img src={floor2Img} className="libary-image" onClick={handleImageClick} />;
+    if (activeFloor == "Floor 3") return <img src={floor3Img} className="libary-image" onClick={handleImageClick} />;
+    if (activeFloor == "Floor 4") return <img src={floor4Img} className="libary-image" onClick={handleImageClick} />;
+    if (activeFloor == "Floor 5") return <img src={floor5Img} className="libary-image" onClick={handleImageClick} />;
 
     return <div className="Selection">Select a Floor</div>
   };
+
+
+  // State to track if we show the selection buttons OR the wayfinding results
+  const [showWayfinding, setShowWayfinding] = useState(false);
+  const [wayfindingTarget, setWayfindingTarget] = useState<string>("");
+
+  const handleWayfindClick = () => {
+    if (selectedRoom) {
+      setWayfindingTarget(selectedRoom.name);
+      setShowWayfinding(true);
+      setSelectedRoom(null); // Close the popup
+    }
+  };
+
+  const handleBackToFloors = () => {
+    setShowWayfinding(false);
+    setWayfindingTarget("");
+  };
+
+  // Handle Initial Target (Handoff)
+  useEffect(() => {
+    // @ts-ignore
+    if (typeof initialTarget !== 'undefined' && initialTarget) {
+      // @ts-ignore
+      setWayfindingTarget(initialTarget);
+      setShowWayfinding(true);
+      setActiveFloor("Floor 2");
+    }
+  }, [initialTarget]);
 
 
   return (
     <div className="floor2-container">
       <div className="searchbar-container">
         <SearchBar placeholder="Type to search" />
-                {selectedRoom && (
-            <div className="info-panel show">
-              <button className="close-btn" onClick={() => {setSelectedRoom(null); setWayfindClicked(false)}}>Close</button>
-              <h3>{selectedRoom.name}</h3>
-              <p>{selectedRoom.description}</p>
+        {selectedRoom && (
+          <div className="info-panel show">
+            <button className="close-btn" onClick={() => { setSelectedRoom(null); setWayfindClicked(false) }}>Close</button>
+            <h3>{selectedRoom.name}</h3>
+            <p>{selectedRoom.description}</p>
 
-              {!wayfindClicked && <button onClick={() => setWayfindClicked(true)}>Wayfind</button>}
+            {/* WAYFIND BUTTON */}
+            <button
+              onClick={handleWayfindClick}
+              style={{
+                backgroundColor: '#005bbb',
+                color: 'white',
+                border: 'none',
+                padding: '8px 16px',
+                marginTop: '10px',
+                cursor: 'pointer',
+                borderRadius: '4px'
+              }}
+            >
+              Wayfind ➔
+            </button>
 
-              {
-                wayfindClicked && 
-                <WayfindPage 
-                room = {selectedRoom.name}
-                />
-              }
-
-            </div>
-          )}
+          </div>
+        )}
 
       </div>
       <div className="sidebar">
-         <h2 className="sidebar-heading">Library Floors</h2>
 
-        <div className="sidebar-boxes">
-          <button 
-            className={`sidebar-box ${activeFloor === "Floor 5" ? "active" : ""}`}
-            onClick={() => setActiveFloor("Floor 5")}
-          >Floor 5</button>
-          
-          <button 
-            className={`sidebar-box ${activeFloor === "Floor 4" ? "active" : ""}`}
-            onClick={() => setActiveFloor("Floor 4")}
-          >Floor 4</button>
+        {/* Conditional Sidebar Content */}
+        {!showWayfinding ? (
+          <>
+            <h2 className="sidebar-heading">Library Floors</h2>
+            <div className="sidebar-boxes">
+              <button
+                className={`sidebar-box ${activeFloor === "Floor 5" ? "active" : ""}`}
+                onClick={() => setActiveFloor("Floor 5")}
+              >Floor 5</button>
 
-          <button 
-            className={`sidebar-box ${activeFloor === "Floor 3" ? "active" : ""}`}
-            onClick={() => setActiveFloor("Floor 3")}
-          >Floor 3</button>
+              <button
+                className={`sidebar-box ${activeFloor === "Floor 4" ? "active" : ""}`}
+                onClick={() => setActiveFloor("Floor 4")}
+              >Floor 4</button>
 
-          
-          <button 
-            className={`sidebar-box ${activeFloor === "Floor 2" ? "active" : ""}`}
-            onClick={() => setActiveFloor("Floor 2")}
-          >Floor 2</button>
-
-          
-          <button 
-            className={`sidebar-box ${activeFloor === "Floor 1" ? "active" : ""}`}
-            onClick={() => setActiveFloor("Floor 1")}
-          >Floor 1</button>
-
-          <button 
-            className={`sidebar-box ${activeFloor === "Basement" ? "active" : ""}`}
-            onClick={() => setActiveFloor("Basement")}
-          >Basement</button>
+              <button
+                className={`sidebar-box ${activeFloor === "Floor 3" ? "active" : ""}`}
+                onClick={() => setActiveFloor("Floor 3")}
+              >Floor 3</button>
 
 
-          <button className="back-button" onClick={onBack}>Back to Home</button>
-        </div>
+              <button
+                className={`sidebar-box ${activeFloor === "Floor 2" ? "active" : ""}`}
+                onClick={() => setActiveFloor("Floor 2")}
+              >Floor 2</button>
+
+
+              <button
+                className={`sidebar-box ${activeFloor === "Floor 1" ? "active" : ""}`}
+                onClick={() => setActiveFloor("Floor 1")}
+              >Floor 1</button>
+
+              <button
+                className={`sidebar-box ${activeFloor === "Basement" ? "active" : ""}`}
+                onClick={() => setActiveFloor("Basement")}
+              >Basement</button>
+
+
+              <button className="back-button" onClick={onBack}>Back to Home</button>
+            </div>
+          </>
+        ) : (
+          <div style={{ padding: '10px' }}>
+            <button
+              className="back-button"
+              onClick={handleBackToFloors}
+              style={{ marginBottom: '10px', fontSize: '0.8rem' }}
+            >
+              ← Back to Floors
+            </button>
+            <WayfindPage room={wayfindingTarget} />
+          </div>
+        )}
       </div>
-      
+
       <div className="Map-Content">
         <h1>{activeFloor ? `${activeFloor} Map` : "Library Directory"}</h1>
         <div className="map_wrapper">
-        {ChosenMapImage()}
+          {ChosenMapImage()}
 
-        {/*-----------------------------------------USE TO FIND COORDINATE-------------------------------------------*/}
+          {/*-----------------------------------------USE TO FIND COORDINATE-------------------------------------------*/}
 
           {lastClick && (
             <div
-            className="hotspot-marker"
-            style={{top: `${lastClick.y}px`, left: `${lastClick.x}px`}}>  
+              className="hotspot-marker"
+              style={{ top: `${lastClick.y}px`, left: `${lastClick.x}px` }}>
             </div>)
           }
-        {/*----------------------------------------------------------------------------------------------------------*/} 
+          {/*----------------------------------------------------------------------------------------------------------*/}
 
-        {activeFloor === "Floor 2" && (
+          {activeFloor === "Floor 2" && (
             <>
               <div
                 className="hotspot"
@@ -173,10 +224,10 @@ function LibraryFloorMap({ onBack } : { onBack: () => void }) {
               ></div>
             </>
           )}
-          
+
         </div>
       </div>
-          {/* -----------------------------------------Shows the information page on the left-------------------------------------------
+      {/* -----------------------------------------Shows the information page on the left-------------------------------------------
           {selectedRoom && (
             <div className="info-panel show">
               <button className="close-btn" onClick={() => setSelectedRoom(null)}>Close</button>
@@ -187,5 +238,5 @@ function LibraryFloorMap({ onBack } : { onBack: () => void }) {
     </div>
   );
 }
-    
+
 export default LibraryFloorMap;
