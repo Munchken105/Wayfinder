@@ -92,11 +92,15 @@ const frontendProc = runProcess('Frontend', 'npm', ['run', 'dev', '--', '--host'
 
 // 5. Windows Firewall Warning
 if (process.platform === 'win32') {
-    console.log('\n⚠️  WINDOWS DETECTED  ⚠️');
-    console.log('If you cannot connect from your phone:');
-    console.log('1. A "Windows Security Alert" popup may have appeared. Click "Allow Access".');
-    console.log('2. Ensure "Private" AND "Public" networks are checked if you are on university Wi-Fi.');
-    console.log('3. You may need to manually allow "Node.js" through the Firewall for ports 5000 & 5173.\n');
+    console.log('\n⚠️  WINDOWS FIREWALL DETECTED  ⚠️');
+    console.log('If you cannot connect from your phone (site stuck loading), usually the Firewall is blocking it.');
+    console.log('------------------------------------------------------------------------------------------');
+    console.log('✅ SOLUTION 1: When the "Windows Security Alert" pops up, check BOTH "Private" and "Public" boxes and click "Allow Access".');
+    console.log('------------------------------------------------------------------------------------------');
+    console.log('✅ SOLUTION 2 (If you missed the popup):');
+    console.log('   Run this command in PowerShell as Administrator to open the ports:');
+    console.log('   New-NetFirewallRule -DisplayName "Allow Wayfinder" -Direction Inbound -LocalPort 5000,5173 -Protocol TCP -Action Allow');
+    console.log('------------------------------------------------------------------------------------------\n');
 }
 
 // 5. Cleanup on Exit
