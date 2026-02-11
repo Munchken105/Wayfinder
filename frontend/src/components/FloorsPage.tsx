@@ -36,11 +36,30 @@ function LibraryFloorMap({ onBack } : { onBack: () => void }) {
     return <div className="Selection">Select a Floor</div>
   };
 
+  const floorFromRoom = (room: string): string => {
+    const num = parseInt(room.replace(/\D/g, ""), 10);
+
+    if (isNaN(num)) return "Floor 2";
+    if (num < 100) return "Basement";
+    if (num < 200) return "Floor 1";
+    if (num < 300) return "Floor 2";
+    if (num < 400) return "Floor 3";
+    if (num < 500) return "Floor 4";
+    return "Floor 5";
+  };
 
   return (
     <div className="floor2-container">
       <div className="searchbar-container">
-        <SearchBar placeholder="Type to search" />
+        <SearchBar placeholder="Type to search" onSelectResult={(room, description) => {
+          const floor = floorFromRoom(room);
+          setActiveFloor(floor);
+          const roomNumber = room.split(" ")[0];
+          setSelectedRoom({
+            name: "Room " + roomNumber,
+            description: description,
+          });
+        }}/>
                 {selectedRoom && (
             <div className="info-panel show">
               <button className="close-btn" onClick={() => {setSelectedRoom(null); setWayfindClicked(false)}}>Close</button>
