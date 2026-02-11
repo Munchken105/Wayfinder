@@ -12,9 +12,10 @@ interface SearchResult {
 interface SearchBarProps {
   placeholder?: string;
   onResults?: (results: SearchResult[]) => void;
+  onSelectResult: (room: string, description: string) => void;
 }
 
-export default function SearchBar({ placeholder = "Search...", onResults }: SearchBarProps) {
+export default function SearchBar({ placeholder = "Search...", onResults, onSelectResult }: SearchBarProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
@@ -76,7 +77,9 @@ export default function SearchBar({ placeholder = "Search...", onResults }: Sear
               <li
                 key={r.id}
                 onClick={() => {
-                  alert(`Selected: ${r.first_name} ${r.last_name}`);
+                  if (r.room) {
+                    onSelectResult(r.room, `${r.first_name} ${r.last_name}`);
+                  }
                   setResults([]);
                   setSearched(false);
                 }}
