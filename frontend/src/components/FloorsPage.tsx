@@ -1,6 +1,7 @@
 import "./FloorsPage.css";
 import { useState } from "react";
 import SearchBar from "./SearchBar";
+import WayfindPage from "./WayfindPage";
 
 import BasementImg from "../assets/Basementlayout.jpg";
 import floor1Img from "../assets/Floor1layout.jpg";
@@ -9,10 +10,11 @@ import floor3Img from "../assets/Floor3layout.jpg";
 import floor4Img from "../assets/Floor4layout.jpg";
 import floor5Img from "../assets/Floor5layout.jpg";
 
-function LibraryFloorMap({ onBack }: {onBack: () => void}) {
+function LibraryFloorMap({ onBack } : { onBack: () => void }) {
 
   const [lastClick, setLastClick] = useState<{ x: number; y: number } | null>(null); // this is for knowing where to set up boxes
   const [selectedRoom, setSelectedRoom] = useState<{ name: string; description: string;} | null>(null); // this is for making the clicking of the rooms useful
+  const [wayfindClicked, setWayfindClicked] = useState(false)
   const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => 
     {
     const x = e.nativeEvent.offsetX;
@@ -39,6 +41,24 @@ function LibraryFloorMap({ onBack }: {onBack: () => void}) {
     <div className="floor2-container">
       <div className="searchbar-container">
         <SearchBar placeholder="Type to search" />
+                {selectedRoom && (
+            <div className="info-panel show">
+              <button className="close-btn" onClick={() => {setSelectedRoom(null); setWayfindClicked(false)}}>Close</button>
+              <h3>{selectedRoom.name}</h3>
+              <p>{selectedRoom.description}</p>
+
+              {!wayfindClicked && <button onClick={() => setWayfindClicked(true)}>Wayfind</button>}
+
+              {
+                wayfindClicked && 
+                <WayfindPage 
+                room = {selectedRoom.name}
+                />
+              }
+
+            </div>
+          )}
+
       </div>
       <div className="sidebar">
          <h2 className="sidebar-heading">Library Floors</h2>
@@ -754,14 +774,14 @@ function LibraryFloorMap({ onBack }: {onBack: () => void}) {
           
         </div>
       </div>
-          {/*-----------------------------------------Shows the information page on the left-------------------------------------------*/}
+          {/* -----------------------------------------Shows the information page on the left-------------------------------------------
           {selectedRoom && (
             <div className="info-panel show">
               <button className="close-btn" onClick={() => setSelectedRoom(null)}>Close</button>
               <h3>{selectedRoom.name}</h3>
               <p>{selectedRoom.description}</p>
             </div>
-          )}
+          )} */}
     </div>
   );
 }
