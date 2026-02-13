@@ -50,35 +50,6 @@ function LibraryFloorMap({ onBack } : { onBack: () => void }) {
 
   return (
     <div className="floor2-container">
-      <div className="searchbar-container">
-        <SearchBar placeholder="Type to search" onSelectResult={(room, description) => {
-          const floor = floorFromRoom(room);
-          setActiveFloor(floor);
-          const roomNumber = room.split(" ")[0];
-          setSelectedRoom({
-            name: "Room " + roomNumber,
-            description: description,
-          });
-        }}/>
-                {selectedRoom && (
-            <div className="info-panel show">
-              <button className="close-btn" onClick={() => {setSelectedRoom(null); setWayfindClicked(false)}}>Close</button>
-              <h3>{selectedRoom.name}</h3>
-              <p>{selectedRoom.description}</p>
-
-              {!wayfindClicked && <button onClick={() => setWayfindClicked(true)}>Wayfind</button>}
-
-              {
-                wayfindClicked && 
-                <WayfindPage 
-                room = {selectedRoom.name}
-                />
-              }
-
-            </div>
-          )}
-
-      </div>
       <div className="sidebar">
          <h2 className="sidebar-heading">Library Floors</h2>
 
@@ -123,7 +94,15 @@ function LibraryFloorMap({ onBack } : { onBack: () => void }) {
       <div className="Map-Content">
         {/* <h1>{activeFloor ? `${activeFloor} Map` : "Library Directory"}</h1> */}
         <div className="searchbar-container">
-        <SearchBar placeholder="Type to search" />
+        <SearchBar placeholder="Type to search" onSelectResult={(room, description) => {
+          const floor = floorFromRoom(room);
+          setActiveFloor(floor);
+          const roomNumber = room.split(" ")[0];
+          setSelectedRoom({
+            name: "Room " + roomNumber,
+            description: description,
+          });
+        }}/>
                 {selectedRoom && (
             <div className="info-panel show">
               <button className="close-btn" onClick={() => {setSelectedRoom(null); setWayfindClicked(false)}}>Close</button>
