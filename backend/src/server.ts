@@ -18,10 +18,11 @@ const PORT = process.env.PORT || 5000;
 interface Node {
   id: string;
   name: string;
-  type: 'room' | 'hallway' | 'junction' | 'entrance';
+  type: 'room' | 'hallway' | 'computer_area' | 'study_area' | 'entrance' | 'bathroom' | 'elevator' | 'stairs';
   floor: number;
   x?: number;
   y?: number;
+  coord?: [number, number];
 }
 
 interface PathResult {
@@ -32,113 +33,57 @@ interface PathResult {
 
 // Single floor building graph - all rooms on the same floor
 const nodes: Node[] = [
-  // Rooms along the right side
-  { id: "221A", name: "Room 221A", type: "room", floor: 2 },
-  { id: "221B", name: "Room 221B", type: "room", floor: 2 },
-  { id: "221C", name: "Room 221C", type: "room", floor: 2 },
-  { id: "221D", name: "Room 221D", type: "room", floor: 2 },
-  { id: "222", name: "Room 222", type: "room", floor: 2 },
-  { id: "222A", name: "Room 222A", type: "room", floor: 2 },
-  { id: "223", name: "Room 223", type: "room", floor: 2 },
-  { id: "223A", name: "Room 223A", type: "room", floor: 2 },
-  { id: "224A", name: "Library Search Station (224A)", type: "room", floor: 2 },
-  { id: "226", name: "Room 226", type: "room", floor: 2 },
-  { id: "227", name: "Room 227", type: "room", floor: 2 },
-  { id: "228", name: "Room 228", type: "room", floor: 2 },
-  { id: "229", name: "Room 229", type: "room", floor: 2 },
-  { id: "230", name: "Room 230", type: "room", floor: 2 },
-  { id: "232", name: "Room 232", type: "room", floor: 2 },
+  // All available rooms on the second floors
+  { id: "room_221", name: "Room 221", type: "room", floor: 2, coord:[438, 90] },
+  { id: "room_221D", name: "Room 221D", type: "room", floor: 2, coord:[530, 90]},
+  { id: "room_222", name: "Room 222", type: "room", floor: 2, coord:[580, 90] },
+  { id: "room_222A", name: "Room 222A", type: "room", floor: 2, coord:[650, 90] },
+  { id: "room_223", name: "Room 223", type: "room", floor: 2, coord:[740, 75] },
+  { id: "room_223", name: "Room 223", type: "room", floor: 2, coord:[670, 45]},
+  { id: "room_228", name: "Room 228", type: "room", floor: 2, coord:[975, 85] },
+  { id: "room_229", name: "Room 229", type: "room", floor: 2, coord:[941, 58] },
+  { id: "room_230", name: "Room 230", type: "room", floor: 2, coord:[941, 30] },
+  { id: "room_232", name: "Room 232", type: "room", floor: 2, coord:[1005, 58]},
 
-  // Rooms on the left side
-  { id: "C201", name: "Room C201", type: "room", floor: 2 },
-  { id: "C202", name: "Room C202", type: "room", floor: 2 },
-  { id: "234", name: "Room 234", type: "room", floor: 2 },
-  { id: "235", name: "Room 235", type: "room", floor: 2 },
-  { id: "235A", name: "Reception Desk (235A)", type: "entrance", floor: 2 },
-  { id: "235B", name: "Room 235B", type: "room", floor: 2 },
-  { id: "235C", name: "Room 235C", type: "room", floor: 2 },
-  { id: "235D", name: "Room 235D", type: "room", floor: 2 },
-  { id: "235E", name: "Room 235E", type: "room", floor: 2 },
-  { id: "235F", name: "Room 235F", type: "room", floor: 2 },
-  { id: "236", name: "Room 236", type: "room", floor: 2 },
-  { id: "237", name: "Room 237", type: "room", floor: 2 },
-  { id: "237A", name: "Room 237A", type: "room", floor: 2 },
-  { id: "242", name: "Room 242", type: "room", floor: 2 },
-  { id: "242A", name: "Room 242A", type: "room", floor: 2 },
-
-  // Special areas and entrances
-  { id: "C235", name: "Main Entrance", type: "entrance", floor: 2 },
-  { id: "C218", name: "Rescue Area", type: "room", floor: 2 },
-  { id: "233", name: "Auditorium Area", type: "room", floor: 2 },
-  { id: "233A", name: "Main Auditorium", type: "room", floor: 2 },
-  { id: "233B", name: "Computer Area 233B", type: "room", floor: 2 },
-  { id: "233H", name: "Seating Area 233H", type: "room", floor: 2 },
-  { id: "E240", name: "Elevator E240", type: "entrance", floor: 2 },
-  { id: "E239", name: "Elevator E239", type: "entrance", floor: 2 },
+  // Passageways and entrances of the second floor
+  { id: "main_entrance", name: "Main Entrance", type: "entrance", floor: 2, coord:[530, 620]},
+  { id: "top_comp_area", name: "Computer Area 1", type: "computer_area", floor: 2, coord: [825, 197]},
+  { id: "right_comp_area", name: "Computer Area 2", type: "computer_area", floor: 2, coord:[942, 407]},
+  { id: "elevator_001", name: "Elevator 1", type: "elevator", floor: 2, coord:[723, 513]},
+  { id: "elevator_002", name: "Elevator 2", type: "elevator", floor: 2, coord:[744, 492]},
+  { id: "floor_1_stairs", name: "Stairs to Floor 1", type: "stairs", floor: 2, coord:[452, 518]},
+  { id: "bathroom_002", name: "Bathroom (2nd Floor)", type: "bathroom", floor: 2, coord:[870, 85]},
 
   // Study areas (replacing hallways/junctions)
-  { id: "221", name: "Study Area 221 (left of 224A)", type: "room", floor: 2 },
-  { id: "study_main_ns", name: "Main Study Area (NS)", type: "room", floor: 2 },
-  { id: "study_main_ew", name: "East-West Study Area", type: "room", floor: 2 },
-  { id: "study_235", name: "Study Area 235", type: "room", floor: 2 },
-  { id: "study_233", name: "Study Area 233", type: "room", floor: 2 },
+  { id: "left_study_area", name: "Study Area 01", type: "study_area", floor: 2, coord:[560, 208]},
+  { id: "right_study_area", name: "Study Area 02", type: "study_area", floor: 2, coord: [974, 215]},
 ];
 
 // Adjacency list - all connections on the same floor
 const graph: { [key: string]: string[] } = {
   // Main entrance and elevator connections (now connect to study areas)
-  "C235": ["235A", "study_235", "study_main_ns"],
-  "E240": ["study_main_ns", "study_main_ew"],
-  "E239": ["study_main_ns", "233B"],
-  "235A": ["E240", "E239", "study_235"],
-  
-  // Right side room connections (connect to main study areas)
-  "221A": ["study_main_ns"],
-  "221B": ["study_main_ns"],
-  "221C": ["study_main_ns"],
-  "221D": ["study_main_ns"],
-  "222": ["study_main_ns"],
-  "222A": ["study_main_ns"],
-  "223": ["study_main_ns"],
-  "223A": ["study_main_ns"],
-  "224A": ["study_main_ew", "221"],
-  "226": ["study_main_ns"],
-  "227": ["study_main_ns"],
-  "228": ["study_main_ns"],
-  "229": ["study_main_ns"],
-  "230": ["study_main_ns"],
-  "232": ["study_main_ns"],
-
-  // Left side room connections (connect to study area 235)
-  "C201": ["study_main_ns"],
-  "C202": ["study_main_ns"],
-  "234": ["study_235"],
-  "235": ["study_235"],
-  "235B": ["study_235"],
-  "235C": ["study_235"],
-  "235D": ["study_235"],
-  "235E": ["study_235"],
-  "235F": ["study_235"],
-  "236": ["study_235"],
-  "237": ["study_235"],
-  "237A": ["study_235"],
-  "242": ["study_235"],
-  "242A": ["study_235"],
+  "room_221": ["left_study_area", "top_comp_area"],
+  "room_221D": ["left_study_area", "top_comp_area"],
+  "room_222": ["left_study_area", "top_comp_area"],
+  "room_222A": ["left_study_area", "top_comp_area", "room_223"],
+  "room_223": ["left_study_area", "top_comp_area", "room_222A"],
+  "room_228": ["right_study_area"],
+  "room_229": ["room_228"],
+  "room_230": ["room_228"],
+  "room_232": ["room_228"],
 
   // Special areas
-  "C218": ["study_main_ns"],
-  "233": ["study_233"],
-  "233A": ["study_233"],
-  "233B": ["E239"],
-  "233H": ["study_233"],
+  "main_entrance": ["elevator_001", "elevator_002", "floor_1_stairs"],
+  "top_comp_area": ["right_study_area", "left_study_area", "room_228", "bathroom_002"],
+  "right_comp_area": ["top_comp_area", "right_study_area", "elevator_001", "elevator_002"],
+  "elevator_001": ["right_study_area", "right_comp_area", "top_comp_area", "elevator_002", "main_entrance"],
+  "elevator_002": ["right_study_area", "right_comp_area", "top_comp_area", "elevator_001", "main_entrance"],
+  "bathroom_002": ["left_study_area", "right_study_area", "top_comp_area"],
+  "floor_1_stairs": ["main_entrance"],
 
   // Study area connections (replacing hallways/junctions)
-  "study_main_ns": ["C235", "E240", "E239", "221A", "221B", "221C", "221D", "222", "222A", "223", "223A", 
-                   "226", "227", "228", "229", "230", "232", "C201", "C202", "C218", "221", "study_main_ew"],
-  "study_main_ew": ["224A", "study_main_ns", "study_233"],
-  "study_235": ["C235", "234", "235", "235A", "235B", "235C", "235D", "235E", 
-               "235F", "236", "237", "237A", "242", "242A", "study_main_ns"],
-  "study_233": ["233", "233A", "233H", "study_main_ew"]
+  "left_study_area":["room_221", "room_221D", "room_222", "room_222A", "room_223", "top_comp_area", "bathroom_002"],
+  "right_study_area":["room_228", "top_comp_area", "right_comp_area", "elevator_001", "elevator_002"]
 };
 
 // ! BFS algorithm for shortest path (fewest steps)
@@ -213,11 +158,11 @@ function generateInstructions(path: string[]): string[] {
       instruction = `Exit ${currentNode.name} and turn into the hallway`;
     } else if (currentNode.type === 'hallway' && nextNode.type === 'room') {
       instruction = `Enter ${nextNode.name}`;
-    } else if (currentNode.type === 'hallway' && nextNode.type === 'junction') {
+    } else if (currentNode.type === 'hallway' && nextNode.type === 'study_area') {
       instruction = `Continue to ${nextNode.name}`;
-    } else if (currentNode.type === 'junction' && nextNode.type === 'hallway') {
+    } else if (currentNode.type === 'study_area' && nextNode.type === 'hallway') {
       instruction = `Take the hallway toward ${nextNode.name}`;
-    } else if (currentNode.type === 'junction' && nextNode.type === 'junction') {
+    } else if (currentNode.type === 'study_area' && nextNode.type === 'study_area') {
       instruction = `Continue through ${nextNode.name}`;
     } else if (currentNode.type === 'hallway' && nextNode.type === 'hallway') {
       instruction = `Continue down the hallway`;
@@ -261,7 +206,8 @@ app.get("/api/rooms", (req: Request, res: Response) => {
   const locations = nodes.filter(node => 
     node.type === 'room' || 
     node.type === 'entrance' || 
-    node.type === 'junction'
+    node.type === 'computer_area' ||
+    node.type === 'study_area'
   );
   
   // Sort locations by type and name for better organization in dropdown
