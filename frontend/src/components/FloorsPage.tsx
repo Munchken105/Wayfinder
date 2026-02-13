@@ -39,27 +39,6 @@ function LibraryFloorMap({ onBack } : { onBack: () => void }) {
 
   return (
     <div className="floor2-container">
-      <div className="searchbar-container">
-        <SearchBar placeholder="Type to search" />
-                {selectedRoom && (
-            <div className="info-panel show">
-              <button className="close-btn" onClick={() => {setSelectedRoom(null); setWayfindClicked(false)}}>Close</button>
-              <h3>{selectedRoom.name}</h3>
-              <p>{selectedRoom.description}</p>
-
-              {!wayfindClicked && <button onClick={() => setWayfindClicked(true)}>Wayfind</button>}
-
-              {
-                wayfindClicked && 
-                <WayfindPage 
-                room = {selectedRoom.name}
-                />
-              }
-
-            </div>
-          )}
-
-      </div>
       <div className="sidebar">
          <h2 className="sidebar-heading">Library Floors</h2>
 
@@ -102,7 +81,28 @@ function LibraryFloorMap({ onBack } : { onBack: () => void }) {
       </div>
       
       <div className="Map-Content">
-        <h1>{activeFloor ? `${activeFloor} Map` : "Library Directory"}</h1>
+        {/* <h1>{activeFloor ? `${activeFloor} Map` : "Library Directory"}</h1> */}
+        <div className="searchbar-container">
+        <SearchBar placeholder="Type to search" />
+                {selectedRoom && (
+            <div className="info-panel show">
+              <button className="close-btn" onClick={() => {setSelectedRoom(null); setWayfindClicked(false)}}>Close</button>
+              <h3>{selectedRoom.name}</h3>
+              <p>{selectedRoom.description}</p>
+
+              {!wayfindClicked && <button onClick={() => setWayfindClicked(true)}>Wayfind</button>}
+
+              {
+                wayfindClicked && 
+                <WayfindPage 
+                room = {selectedRoom.name}
+                />
+              }
+
+            </div>
+          )}
+
+      </div>
         <div className="map_wrapper">
         {ChosenMapImage()}
 
@@ -767,8 +767,6 @@ function LibraryFloorMap({ onBack } : { onBack: () => void }) {
                 onClick={() => setSelectedRoom({ name: "Room 526", description: "Banana 0" })}
               ></div>
 {/*-------------------------------------------------------------------------------------------------------------*/}
-
-
             </>
           )}
           
