@@ -1,14 +1,11 @@
 import "./HomePage.css";
-
-interface HomePageProps {
-  onStart: () => void;
-}
-
+import { useNavigate } from "react-router-dom";
 import libraryImg from "../assets/lockwood-library.jpg";
 const libraryImageUrl = libraryImg;
 
-function HomePage({ onStart }: HomePageProps) {
-  // Placeholder image. Replace with a local asset when available.
+function HomePage() {
+
+  const navigate = useNavigate();
 
   return (
     <div className="home-page">
@@ -20,7 +17,8 @@ function HomePage({ onStart }: HomePageProps) {
             className="lockwood-library-image"
           />
           <h1 className="home-title">Lockwood Library Wayfinder</h1>
-          <button className="start-button" onClick={onStart}>
+
+          <button className="start-button" onClick={() => navigate("/floors")}>
             Start
           </button>
         </div>

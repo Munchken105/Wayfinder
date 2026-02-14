@@ -124,3 +124,25 @@ html, body {
 .close-btn:hover {
   color: red;
 }
+
+.back-button {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 10px 18px;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: #2563eb; 
+  color: #ffffff;          
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.back-button:hover {
+  background-color: #1d4ed8;
+}
+
+.back-button:active {
+  transform: scale(0.97);
+}
