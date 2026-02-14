@@ -3,6 +3,12 @@ import { useState } from "react";
 import "./App.css";
 import HomePage from "./components/HomePage";
 import Floor2Page from "./components/FloorsPage";
+import SearchBar from "./components/SearchBar";
+import MobilePage from "./components/MobilePage";
+
+
+import {Routes, Route} from "react-router-dom";
+
 
 // interface Room {
 //   id: string;
@@ -27,6 +33,7 @@ import Floor2Page from "./components/FloorsPage";
 //   instructions: string[];
 // }
 
+
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
   // const [rooms, setRooms] = useState<Room[]>([]);
@@ -35,6 +42,7 @@ function App() {
   // const [navigationResult, setNavigationResult] = useState<NavigationResult | null>(null);
   // const [loading, setLoading] = useState(false);
   // const [error, setError] = useState("");
+
 
   // Fetch available rooms when component mounts
   // useEffect(() => {
@@ -93,6 +101,7 @@ function App() {
   //   setError("");
   // };
 
+
   return (
     <div className="app">
       {currentPage === "home" && (
@@ -132,6 +141,7 @@ function App() {
                 </select>
               </div>
 
+
               <div style={{ flex: "1", minWidth: "200px" }}>
                 <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
                   End Location:
@@ -151,8 +161,9 @@ function App() {
               </div>
             </div>
 
+
             <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
-              <button 
+              <button
                 onClick={findPath}
                 disabled={loading || !startRoom || !endRoom}
                 style={{
@@ -166,8 +177,8 @@ function App() {
               >
                 {loading ? "Finding Path..." : "Find Path"}
               </button>
-              
-              <button 
+             
+              <button
                 onClick={resetNavigation}
                 style={{
                   padding: "10px 20px",
@@ -182,10 +193,11 @@ function App() {
               </button>
             </div>
 
+
             {error && (
-              <div style={{ 
-                color: "red", 
-                marginTop: "15px", 
+              <div style={{
+                color: "red",
+                marginTop: "15px",
                 padding: "10px",
                 backgroundColor: "#ffe6e6",
                 borderRadius: "4px",
@@ -197,34 +209,35 @@ function App() {
           </div>
 
           {navigationResult && (
-            <div style={{ 
-              backgroundColor: "#e8f5e8", 
-              padding: "20px", 
+            <div style={{
+              backgroundColor: "#e8f5e8",
+              padding: "20px",
               borderRadius: "8px",
               border: "1px solid #4caf50"
             }}>
               <h2 style={{ color: "#2e7d32", marginBottom: "15px" }}>
                 Navigation Result
               </h2>
-              
+             
               <div style={{ marginBottom: "15px" }}>
                 <p><strong>Route:</strong> {navigationResult.start} → {navigationResult.end}</p>
                 <p><strong>Total Steps:</strong> {navigationResult.totalSteps}</p>
                 <p><strong>Floor:</strong> {navigationResult.floor}</p>
               </div>
 
+
               <div style={{ marginBottom: "20px" }}>
                 <h3 style={{ color: "#2e7d32", marginBottom: "10px" }}>Path:</h3>
-                <div style={{ 
-                  display: "flex", 
-                  flexWrap: "wrap", 
+                <div style={{
+                  display: "flex",
+                  flexWrap: "wrap",
                   gap: "5px",
                   marginBottom: "10px"
                 }}>
                   {navigationResult.path.map((node: PathNode, index: number) => (
-                    <span key={index} style={{ 
+                    <span key={index} style={{
                       padding: "5px 10px",
-                      backgroundColor: node.type === 'room' ? "#4caf50" : 
+                      backgroundColor: node.type === 'room' ? "#4caf50" :
                                       node.type === 'entrance' ? "#ff9800" : "#2196f3",
                       color: "white",
                       borderRadius: "15px",
@@ -236,6 +249,7 @@ function App() {
                   ))}
                 </div>
               </div>
+
 
               <div>
                 <h3 style={{ color: "#2e7d32", marginBottom: "10px" }}>Step-by-Step Instructions:</h3>
@@ -257,8 +271,18 @@ function App() {
       {currentPage === "floor2map" && (
         <Floor2Page onBack={() => setCurrentPage("home")} />
       )}
+
+
+    {/* <Routes>
+      <Route path="/mobile" element={
+        <MobilePage/>
+        }/>
+    </Routes> */}
+
+
     </div>
   );
 }
+
 
 export default App;
