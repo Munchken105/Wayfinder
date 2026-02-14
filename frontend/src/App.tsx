@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+// import { useEffect } from "react";
 import "./App.css";
 import HomePage from "./components/HomePage";
 import Floor2Page from "./components/FloorsPage";
@@ -9,113 +10,104 @@ import MobilePage from "./components/MobilePage";
 import {Routes, Route} from "react-router-dom";
 
 
-interface Room {
-  id: string;
-  name: string;
-  type: 'room' | 'hallway' | 'junction' | 'entrance';
-  floor: number;
-}
+// interface Room {
+//   id: string;
+//   name: string;
+//   type: 'room' | 'hallway' | 'junction' | 'entrance';
+//   floor: number;
+// }
 
+// interface PathNode {
+//   id: string;
+//   name: string;
+//   type: 'room' | 'hallway' | 'junction' | 'entrance';
+//   floor: number;
+// }
 
-interface PathNode {
-  id: string;
-  name: string;
-  type: 'room' | 'hallway' | 'junction' | 'entrance';
-  floor: number;
-}
-
-
-interface NavigationResult {
-  start: string;
-  end: string;
-  totalSteps: number;
-  floor: string;
-  path: PathNode[];
-  instructions: string[];
-}
+// interface NavigationResult {
+//   start: string;
+//   end: string;
+//   totalSteps: number;
+//   floor: string;
+//   path: PathNode[];
+//   instructions: string[];
+// }
 
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
-  const [rooms, setRooms] = useState<Room[]>([]);
-  const [startRoom, setStartRoom] = useState("");
-  const [endRoom, setEndRoom] = useState("");
-  const [navigationResult, setNavigationResult] = useState<NavigationResult | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  // const [rooms, setRooms] = useState<Room[]>([]);
+  // const [startRoom, setStartRoom] = useState("");
+  // const [endRoom, setEndRoom] = useState("");
+  // const [navigationResult, setNavigationResult] = useState<NavigationResult | null>(null);
+  // const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState("");
 
 
   // Fetch available rooms when component mounts
-  useEffect(() => {
-    fetchRooms();
-  }, []);
+  // useEffect(() => {
+  //   fetchRooms();
+  // }, []);
 
+  // const fetchRooms = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:5000/api/rooms");
+  //     const data = await response.json();
+  //     setRooms(data.rooms);
+  //   } catch (err) {
+  //     console.error("Failed to fetch rooms:", err);
+  //     setError("Failed to load available rooms");
+  //   }
+  // };
 
-  const fetchRooms = async () => {
-    try {
-      const response = await fetch("http://localhost:5000/api/rooms");
-      const data = await response.json();
-      setRooms(data.rooms);
-    } catch (err) {
-      console.error("Failed to fetch rooms:", err);
-      setError("Failed to load available rooms");
-    }
-  };
+  // const findPath = async () => {
+  //   if (!startRoom || !endRoom) {
+  //     setError("Please select both start and end locations");
+  //     return;
+  //   }
 
+  //   if (startRoom === endRoom) {
+  //     setError("Start and end locations cannot be the same");
+  //     return;
+  //   }
 
-  const findPath = async () => {
-    if (!startRoom || !endRoom) {
-      setError("Please select both start and end locations");
-      return;
-    }
+  //   setLoading(true);
+  //   setError("");
+  //   setNavigationResult(null);
 
+  //   try {
+  //     const response = await fetch(
+  //       `http://localhost:5000/api/navigation/from/${startRoom}/to/${endRoom}`
+  //     );
+  //     const data = await response.json();
 
-    if (startRoom === endRoom) {
-      setError("Start and end locations cannot be the same");
-      return;
-    }
+  //     if (response.ok) {
+  //       setNavigationResult(data);
+  //     } else {
+  //       setError(data.error || "Failed to find path");
+  //     }
+  //   } catch (err) {
+  //     setError("Failed to connect to navigation service");
+  //     console.error("Navigation error:", err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-
-    setLoading(true);
-    setError("");
-    setNavigationResult(null);
-
-
-    try {
-      const response = await fetch(
-        `http://localhost:5000/api/navigation/from/${startRoom}/to/${endRoom}`
-      );
-      const data = await response.json();
-
-
-      if (response.ok) {
-        setNavigationResult(data);
-      } else {
-        setError(data.error || "Failed to find path");
-      }
-    } catch (err) {
-      setError("Failed to connect to navigation service");
-      console.error("Navigation error:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-
-  const resetNavigation = () => {
-    setStartRoom("");
-    setEndRoom("");
-    setNavigationResult(null);
-    setError("");
-  };
+  // const resetNavigation = () => {
+  //   setStartRoom("");
+  //   setEndRoom("");
+  //   setNavigationResult(null);
+  //   setError("");
+  // };
 
 
   return (
     <div className="app">
       {currentPage === "home" && (
-        <HomePage onStart={() => setCurrentPage("navigation")} />
+        <HomePage onStart={() => setCurrentPage("floor2map")} />
       )}
-     
+      {/*
       {currentPage === "navigation" && (
         <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "30px" }}>
@@ -124,11 +116,9 @@ function App() {
             <p>Select your start and end locations to find the shortest path.</p>
           </div>
 
-
-          {/* Location Selection Form */}
-          <div style={{
-            backgroundColor: "#f5f5f5",
-            padding: "20px",
+          <div style={{ 
+            backgroundColor: "#f5f5f5", 
+            padding: "20px", 
             borderRadius: "8px",
             marginBottom: "20px"
           }}>
@@ -218,8 +208,6 @@ function App() {
             )}
           </div>
 
-
-          {/* Navigation Results */}
           {navigationResult && (
             <div style={{
               backgroundColor: "#e8f5e8",
@@ -275,18 +263,13 @@ function App() {
               </div>
             </div>
           )}
-
-
         <div style={{ textAlign: "center", marginTop: "50px" }}>
-          <div className="w-full">
-            <SearchBar placeholder="Type to search" />
-          </div>
           <button className="back-button" onClick={() => setCurrentPage("home")}>Back to Home</button>
         </div>
       </div>
-      )}
+      )} */}
       {currentPage === "floor2map" && (
-      <Floor2Page onBack={() => setCurrentPage("navigation")} />
+        <Floor2Page onBack={() => setCurrentPage("home")} />
       )}
 
 

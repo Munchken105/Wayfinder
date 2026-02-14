@@ -1,3 +1,9 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .floor2-container {
   display: flex;
   flex-direction: row;
@@ -6,7 +12,12 @@
 .sidebar {
   width: 200px;
   background-color: #ffffff; 
-  border-right: 2px solid rgb(0, 98, 184);
+  border: 2px solid rgb(0, 98, 184);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  min-height: 100vh;
+  align-items: stretch;
 }
 .Map-Content {
   flex-grow: 1;
@@ -38,15 +49,13 @@
 }
 
 .sidebar-box:hover {
-  background-color: #005BBB;
+  background-color: #92c7ff;
   color: rgb(255, 255, 255);
 }
 
-.library-image {
-  width: 1000px;   /* <— IMPORTANT: fixed size */
-  max-width: none;
-  margin: 0;
-  display: block;
+.sidebar-box.active {
+  background-color: #005BBB;
+  color: rgb(255, 255, 255);
 }
 
 .map_wrapper {
@@ -54,6 +63,7 @@
   display: inline-block;
   margin: 0;
   padding: 0;
+  margin-top: 20px;
 }
 
 .hotspot-marker {
