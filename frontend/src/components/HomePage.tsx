@@ -18,7 +18,7 @@ function HomePage() {
           />
           <h1 className="home-title">Lockwood Library Wayfinder</h1>
 
-          <button className="start-button" onClick={() => navigate("/floor2")}>
+          <button className="start-button" onClick={() => navigate("/floors")}>
             Start
           </button>
         </div>
