@@ -3,6 +3,11 @@ import "./App.css";
 import HomePage from "./components/HomePage";
 import Floor2Page from "./components/FloorsPage";
 import SearchBar from "./components/SearchBar";
+import MobilePage from "./components/MobilePage";
+
+
+import {Routes, Route} from "react-router-dom";
+
 
 interface Room {
   id: string;
@@ -11,12 +16,14 @@ interface Room {
   floor: number;
 }
 
+
 interface PathNode {
   id: string;
   name: string;
   type: 'room' | 'hallway' | 'junction' | 'entrance';
   floor: number;
 }
+
 
 interface NavigationResult {
   start: string;
@@ -27,6 +34,7 @@ interface NavigationResult {
   instructions: string[];
 }
 
+
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -36,10 +44,12 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+
   // Fetch available rooms when component mounts
   useEffect(() => {
     fetchRooms();
   }, []);
+
 
   const fetchRooms = async () => {
     try {
@@ -52,26 +62,31 @@ function App() {
     }
   };
 
+
   const findPath = async () => {
     if (!startRoom || !endRoom) {
       setError("Please select both start and end locations");
       return;
     }
 
+
     if (startRoom === endRoom) {
       setError("Start and end locations cannot be the same");
       return;
     }
 
+
     setLoading(true);
     setError("");
     setNavigationResult(null);
+
 
     try {
       const response = await fetch(
         `http://localhost:5000/api/navigation/from/${startRoom}/to/${endRoom}`
       );
       const data = await response.json();
+
 
       if (response.ok) {
         setNavigationResult(data);
@@ -86,6 +101,7 @@ function App() {
     }
   };
 
+
   const resetNavigation = () => {
     setStartRoom("");
     setEndRoom("");
@@ -93,12 +109,13 @@ function App() {
     setError("");
   };
 
+
   return (
     <div className="app">
       {currentPage === "home" && (
         <HomePage onStart={() => setCurrentPage("navigation")} />
       )}
-      
+     
       {currentPage === "navigation" && (
         <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: "30px" }}>
@@ -107,10 +124,11 @@ function App() {
             <p>Select your start and end locations to find the shortest path.</p>
           </div>
 
+
           {/* Location Selection Form */}
-          <div style={{ 
-            backgroundColor: "#f5f5f5", 
-            padding: "20px", 
+          <div style={{
+            backgroundColor: "#f5f5f5",
+            padding: "20px",
             borderRadius: "8px",
             marginBottom: "20px"
           }}>
@@ -133,6 +151,7 @@ function App() {
                 </select>
               </div>
 
+
               <div style={{ flex: "1", minWidth: "200px" }}>
                 <label style={{ display: "block", marginBottom: "8px", fontWeight: "bold" }}>
                   End Location:
@@ -152,8 +171,9 @@ function App() {
               </div>
             </div>
 
+
             <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
-              <button 
+              <button
                 onClick={findPath}
                 disabled={loading || !startRoom || !endRoom}
                 style={{
@@ -167,8 +187,8 @@ function App() {
               >
                 {loading ? "Finding Path..." : "Find Path"}
               </button>
-              
-              <button 
+             
+              <button
                 onClick={resetNavigation}
                 style={{
                   padding: "10px 20px",
@@ -183,10 +203,11 @@ function App() {
               </button>
             </div>
 
+
             {error && (
-              <div style={{ 
-                color: "red", 
-                marginTop: "15px", 
+              <div style={{
+                color: "red",
+                marginTop: "15px",
                 padding: "10px",
                 backgroundColor: "#ffe6e6",
                 borderRadius: "4px",
@@ -197,36 +218,38 @@ function App() {
             )}
           </div>
 
+
           {/* Navigation Results */}
           {navigationResult && (
-            <div style={{ 
-              backgroundColor: "#e8f5e8", 
-              padding: "20px", 
+            <div style={{
+              backgroundColor: "#e8f5e8",
+              padding: "20px",
               borderRadius: "8px",
               border: "1px solid #4caf50"
             }}>
               <h2 style={{ color: "#2e7d32", marginBottom: "15px" }}>
                 Navigation Result
               </h2>
-              
+             
               <div style={{ marginBottom: "15px" }}>
                 <p><strong>Route:</strong> {navigationResult.start} → {navigationResult.end}</p>
                 <p><strong>Total Steps:</strong> {navigationResult.totalSteps}</p>
                 <p><strong>Floor:</strong> {navigationResult.floor}</p>
               </div>
 
+
               <div style={{ marginBottom: "20px" }}>
                 <h3 style={{ color: "#2e7d32", marginBottom: "10px" }}>Path:</h3>
-                <div style={{ 
-                  display: "flex", 
-                  flexWrap: "wrap", 
+                <div style={{
+                  display: "flex",
+                  flexWrap: "wrap",
                   gap: "5px",
                   marginBottom: "10px"
                 }}>
                   {navigationResult.path.map((node: PathNode, index: number) => (
-                    <span key={index} style={{ 
+                    <span key={index} style={{
                       padding: "5px 10px",
-                      backgroundColor: node.type === 'room' ? "#4caf50" : 
+                      backgroundColor: node.type === 'room' ? "#4caf50" :
                                       node.type === 'entrance' ? "#ff9800" : "#2196f3",
                       color: "white",
                       borderRadius: "15px",
@@ -238,6 +261,7 @@ function App() {
                   ))}
                 </div>
               </div>
+
 
               <div>
                 <h3 style={{ color: "#2e7d32", marginBottom: "10px" }}>Step-by-Step Instructions:</h3>
@@ -252,6 +276,7 @@ function App() {
             </div>
           )}
 
+
         <div style={{ textAlign: "center", marginTop: "50px" }}>
           <div className="w-full">
             <SearchBar placeholder="Type to search" />
@@ -263,8 +288,18 @@ function App() {
       {currentPage === "floor2map" && (
       <Floor2Page onBack={() => setCurrentPage("navigation")} />
       )}
+
+
+    {/* <Routes>
+      <Route path="/mobile" element={
+        <MobilePage/>
+        }/>
+    </Routes> */}
+
+
     </div>
   );
 }
+
 
 export default App;
