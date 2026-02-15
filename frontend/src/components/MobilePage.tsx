@@ -1,27 +1,54 @@
-import QRCodePage from "./QRCodePage";
-import { useState, useRef, useEffect } from "react";
+// import QRCodePage from "./QRCodePage";
+import "../components/MobilePage.css"
+import { useState, useEffect } from "react";
 import { useNavigation } from "../hooks/navigation"
+import { useSearchParams} from "react-router-dom";
 
-interface NavigationResult {
-  start: string;
-  end: string;
-  totalSteps: number;
-  floor: string;
-  path: PathNode[];
-  instructions: string[];
-}
 
-interface PathNode {
-  id: string;
-  name: string;
-  type: 'room' | 'hallway' | 'junction' | 'entrance';
-  floor: number;
-}
+export default function MobilePage(){
+  const [mobileStep, setMobileStep] = useState(0);
+  const [searchParams] = useSearchParams();
 
-export default function WayfindPage(){
+
+  const {
+    navigationResult,
+    findPath,
+  } = useNavigation();
+
+  useEffect(() => { //calls useNavigation
+    const room = searchParams.get("q") ?? "";
+    console.log(room)
+    if (!room) return
+    findPath("Main Entrance", room);
+  }, []);
+  
     return(
-        <div>
-            boo
+        <div className="mobile-page">
+
+          <div className="title">
+            Navigating from {navigationResult?.start} to {navigationResult?.end}
+          </div>
+
+          <div className="buttons-and-inst">
+
+          <div className="instruction-buttons">
+            <ul>
+              {navigationResult?.instructions.map((step, index) => (
+                <li key={index}>
+                  <button className="steps-mobile" onClick={() => setMobileStep(index)}>
+                    Step {index + 1}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="current-instruction">
+            <div>Step {mobileStep + 1}</div>
+            <div>{navigationResult?.instructions[mobileStep]}</div>
+          </div>
+
+          </div>
         </div>
     )
 }
