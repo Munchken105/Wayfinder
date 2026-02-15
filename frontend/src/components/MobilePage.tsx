@@ -18,7 +18,7 @@ interface PathNode {
   floor: number;
 }
 
-export default function WayfindPage({ room }: { room: string }){
+export default function WayfindPage(){
     return(
         <div>
             boo
