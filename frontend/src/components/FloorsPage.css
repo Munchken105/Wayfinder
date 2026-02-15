@@ -4,7 +4,7 @@ html, body {
   padding: 0;
 }
 
-.floor2-container {
+.floor-container {
   display: flex;
   flex-direction: row;
 }
@@ -89,13 +89,19 @@ html, body {
   border: 1px solid rgba(255, 255, 0, 0.7);
   cursor: pointer;
 }
+
 .hotspot:hover {
   background: rgba(255, 255, 0, 0.6);
 }
 
+.hotspot.active {
+  background: rgba(0, 150, 255, 0.35);
+  border: 2px solid rgba(0, 150, 255, 1);
+  box-shadow: 0 0 10px rgba(0, 150, 255, 0.9);
+}
+
 .info-panel {
   position: absolute;
-  top: 40px;
   left: -250px; 
   width: 100%;
   max-width: 304px;
@@ -121,6 +127,7 @@ html, body {
   font-size: 20px;
   cursor: pointer;
 }
+
 .close-btn:hover {
   color: red;
 }
@@ -145,4 +152,44 @@ html, body {
 
 .back-button:active {
   transform: scale(0.97);
+}
+
+.wayfind-button {
+  display: block;               /* make it block-level for centering */
+  margin: 40px auto;            /* vertical spacing + horizontal centering */
+  padding: 18px 36px;           /* bigger padding for a more substantial button */
+  font-size: 20px;              /* larger text */
+  font-weight: 600;             /* slightly bolder for impact */
+  background-color: #2563eb; 
+  color: #ffffff;          
+  border: none;
+  border-radius: 12px;          /* slightly more rounded */
+  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2); /* subtle 3D effect */
+  transition: 
+    background-color 0.2s ease, 
+    transform 0.1s ease,
+    box-shadow 0.2s ease;
+}
+
+.wayfind-button:hover {
+  background-color: #1d4ed8;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25); /* hover “lift” effect */
+  transform: translateY(-2px);              /* subtle lift on hover */
+}
+
+.wayfind-button:active {
+  transform: scale(0.95);   /* slightly smaller when clicked */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* pressed effect */
+}
+
+.room-name {
+  font-size: 2.0rem;
+  font-weight: bold;
+  margin: 0 0 0.5rem 0;
+}
+
+.room-description {
+  font-size: 1.5rem;
+  line-height: 1.4;
 }
