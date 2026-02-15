@@ -2,6 +2,7 @@ import "./FloorsPage.css";
 import { useState } from "react";
 import SearchBar from "./SearchBar";
 import WayfindPage from "./WayfindPage";
+import { useNavigate } from "react-router-dom";
 
 import BasementImg from "../assets/Basementlayout.jpg";
 import floor1Img from "../assets/Floor1layout.jpg";
@@ -10,7 +11,7 @@ import floor3Img from "../assets/Floor3layout.jpg";
 import floor4Img from "../assets/Floor4layout.jpg";
 import floor5Img from "../assets/Floor5layout.jpg";
 
-function LibraryFloorMap({ onBack } : { onBack: () => void }) {
+function LibraryFloorMap() {
 
   const [lastClick, setLastClick] = useState<{ x: number; y: number } | null>(null); // this is for knowing where to set up boxes
   const [selectedRoom, setSelectedRoom] = useState<{ name: string; description: string;} | null>(null); // this is for making the clicking of the rooms useful
@@ -47,6 +48,8 @@ function LibraryFloorMap({ onBack } : { onBack: () => void }) {
     if (num < 500) return "Floor 4";
     return "Floor 5";
   };
+
+  const navigate = useNavigate();
 
   return (
     <div className="floor2-container">
@@ -86,8 +89,7 @@ function LibraryFloorMap({ onBack } : { onBack: () => void }) {
             onClick={() => setActiveFloor("Basement")}
           >Basement</button>
 
-
-          <button className="back-button" onClick={onBack}>Back to Home</button>
+          <button className="back-button" onClick={() => navigate("/")}>Back to Home</button>
         </div>
       </div>
       
