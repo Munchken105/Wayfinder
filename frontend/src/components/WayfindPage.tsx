@@ -1,35 +1,16 @@
 import QRCodePage from "./QRCodePage";
-import { useState, useRef, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigation } from "../hooks/navigation"
-
-interface NavigationResult {
-  start: string;
-  end: string;
-  totalSteps: number;
-  floor: string;
-  path: PathNode[];
-  instructions: string[];
-}
-
-interface PathNode {
-  id: string;
-  name: string;
-  type: 'room' | 'hallway' | 'junction' | 'entrance';
-  floor: number;
-}
 
 export default function WayfindPage({ room }: { room: string }){
   const {
     navigationResult,
-    loading,
-    error,
     findPath,
   } = useNavigation();
     
   useEffect(() => { //calls useNavigation
     findPath("Main Entrance", room);
   }, [room]);
-
 
     return (
     <div>
@@ -40,7 +21,7 @@ export default function WayfindPage({ room }: { room: string }){
 
           <ul>
             {navigationResult?.instructions.map((step, index) => (
-              <li key={index}>{index}. {step} </li>
+              <li key={index}>{index + 1}. {step} </li>
             ))}
           </ul>
         </div>
