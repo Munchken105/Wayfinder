@@ -1,0 +1,37 @@
+.instruction-buttons ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.instruction-buttons ul li button{
+    padding: 12px;
+    padding-right: 22px;
+    border-radius: 25px;
+    margin-top: 5px;
+}
+
+.current-instruction{
+    background-color: rgb(79, 79, 231);
+    font-size: 20px;
+    color: white;
+    border-radius: 25px;
+    padding: 10px;
+    margin: 5px;
+    flex: 1 1 auto;
+}
+
+.buttons-and-inst{
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}
+
+.title{
+    font-size: 34px;
+}
+
+.mobile-page{
+    padding-left: 10px;
+    padding-right: 10px;
+}
