@@ -12,7 +12,7 @@ interface SearchResult {
 interface SearchBarProps {
   placeholder?: string;
   onResults?: (results: SearchResult[]) => void;
-  onSelectResult: (room: string, description: string) => void;
+  onSelectResult: (room: string) => void;
 }
 
 export default function SearchBar({ placeholder = "Search...", onResults, onSelectResult }: SearchBarProps) {
@@ -78,7 +78,7 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
                 key={r.id}
                 onClick={() => {
                   if (r.room) {
-                    onSelectResult(r.room, `${r.first_name} ${r.last_name}`);
+                    onSelectResult(r.room);
                   }
                   setResults([]);
                   setSearched(false);
