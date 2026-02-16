@@ -35,9 +35,9 @@ interface PathResult {
 const nodes: Node[] = [
   // All available rooms on the second floors
   { id: "room_221", name: "Room 221", type: "room", floor: 2, coord:[438, 90] },
-  { id: "room_221D", name: "Room 221D", type: "room", floor: 2, coord:[530, 90]},
+  { id: "room_221D", name: "Room 221-D", type: "room", floor: 2, coord:[530, 90]},
   { id: "room_222", name: "Room 222", type: "room", floor: 2, coord:[580, 90] },
-  { id: "room_222A", name: "Room 222A", type: "room", floor: 2, coord:[650, 90] },
+  { id: "room_222A", name: "Room 222-A", type: "room", floor: 2, coord:[650, 90] },
   { id: "room_223", name: "Room 223", type: "room", floor: 2, coord:[740, 75] },
   { id: "room_223", name: "Room 223", type: "room", floor: 2, coord:[670, 45]},
   { id: "room_228", name: "Room 228", type: "room", floor: 2, coord:[975, 85] },
@@ -46,28 +46,28 @@ const nodes: Node[] = [
   { id: "room_232", name: "Room 232", type: "room", floor: 2, coord:[1005, 58]},
 
   // Passageways and entrances of the second floor
-  { id: "main_entrance", name: "Main Entrance", type: "entrance", floor: 2, coord:[530, 620]},
-  { id: "top_comp_area", name: "Computer Area 1", type: "computer_area", floor: 2, coord: [825, 197]},
-  { id: "right_comp_area", name: "Computer Area 2", type: "computer_area", floor: 2, coord:[942, 407]},
-  { id: "elevator_001", name: "Elevator 1", type: "elevator", floor: 2, coord:[723, 513]},
-  { id: "elevator_002", name: "Elevator 2", type: "elevator", floor: 2, coord:[744, 492]},
-  { id: "floor_1_stairs", name: "Stairs to Floor 1", type: "stairs", floor: 2, coord:[452, 518]},
-  { id: "bathroom_002", name: "Bathroom (2nd Floor)", type: "bathroom", floor: 2, coord:[870, 85]},
+  { id: "main_entrance", name: "main entrance", type: "entrance", floor: 2, coord:[530, 620]},
+  { id: "top_comp_area", name: "computer area", type: "computer_area", floor: 2, coord: [825, 197]},
+  { id: "right_comp_area", name: "printing & scanning Area", type: "computer_area", floor: 2, coord:[942, 407]},
+  { id: "elevator_001", name: "the elevator", type: "elevator", floor: 2, coord:[723, 513]},
+  { id: "elevator_002", name: "the elevator", type: "elevator", floor: 2, coord:[744, 492]},
+  { id: "floor_1_stairs", name: "stairs to 1st Floor", type: "stairs", floor: 2, coord:[452, 518]},
+  { id: "bathroom_002", name: "Bathroom", type: "bathroom", floor: 2, coord:[870, 85]},
 
   // Study areas (replacing hallways/junctions)
-  { id: "left_study_area", name: "Study Area 01", type: "study_area", floor: 2, coord:[560, 208]},
-  { id: "right_study_area", name: "Study Area 02", type: "study_area", floor: 2, coord: [974, 215]},
+  { id: "left_study_area", name: "study area to the left", type: "study_area", floor: 2, coord:[560, 208]},
+  { id: "right_study_area", name: "study area to the right", type: "study_area", floor: 2, coord: [974, 215]},
 ];
 
 // Adjacency list - all connections on the same floor
 const graph: { [key: string]: string[] } = {
   // Main entrance and elevator connections (now connect to study areas)
-  "room_221": ["left_study_area", "top_comp_area"],
-  "room_221D": ["left_study_area", "top_comp_area"],
-  "room_222": ["left_study_area", "top_comp_area"],
-  "room_222A": ["left_study_area", "top_comp_area", "room_223"],
-  "room_223": ["left_study_area", "top_comp_area", "room_222A"],
-  "room_228": ["right_study_area"],
+  "room_221": ["left_study_area", "top_comp_area", "right_study_area"],
+  "room_221D": ["left_study_area", "top_comp_area", "right_study_area"],
+  "room_222": ["left_study_area", "top_comp_area", "right_study_area"],
+  "room_222A": ["left_study_area", "top_comp_area", "right_study_area", "room_223"],
+  "room_223": ["left_study_area", "top_comp_area", "right_study_area", "room_222A"],
+  "room_228": ["left_study_area", "top_comp_area", "right_study_area", "room_229", "room_230", "room_232"],
   "room_229": ["room_228"],
   "room_230": ["room_228"],
   "room_232": ["room_228"],
@@ -75,30 +75,19 @@ const graph: { [key: string]: string[] } = {
   // Special areas
   "main_entrance": ["elevator_001", "elevator_002", "floor_1_stairs"],
   "top_comp_area": ["right_study_area", "left_study_area", "room_228", "bathroom_002"],
-  "right_comp_area": ["top_comp_area", "right_study_area", "elevator_001", "elevator_002"],
+  "right_comp_area": ["top_comp_area", "left_study_area", "right_study_area", "elevator_001", "elevator_002"],
   "elevator_001": ["right_study_area", "right_comp_area", "top_comp_area", "elevator_002", "main_entrance"],
   "elevator_002": ["right_study_area", "right_comp_area", "top_comp_area", "elevator_001", "main_entrance"],
   "bathroom_002": ["left_study_area", "right_study_area", "top_comp_area"],
-  "floor_1_stairs": ["main_entrance"],
+  "floor_1_stairs": ["main_entrance", "elevator_001", "elevator_002"],
 
   // Study area connections (replacing hallways/junctions)
-  "left_study_area":["room_221", "room_221D", "room_222", "room_222A", "room_223", "top_comp_area", "bathroom_002"],
-  "right_study_area":["room_228", "top_comp_area", "right_comp_area", "elevator_001", "elevator_002"]
+  "left_study_area":["room_221", "room_221D", "room_222", "room_222A", "room_223", "top_comp_area", "right_study_area", "bathroom_002"],
+  "right_study_area":["room_228", "top_comp_area", "right_comp_area", "left_study_area", "elevator_001", "elevator_002"]
 };
 
-// ! A* algorithm for shortest path with heuristic
-function heuristic(nodeId: string, targetId: string): number {
-  const current = nodes.find(n => n.id === nodeId);
-  const target = nodes.find(n => n.id === targetId);
-  
-  if (!current?.coord || !target?.coord) return 0;
-  
-  const dx = current.coord[0] - target.coord[0];
-  const dy = current.coord[1] - target.coord[1];
-  return Math.sqrt(dx * dx + dy * dy);
-}
-
-function findShortestPathAStar(startNodeId: string, endNodeId: string): PathResult | null {
+// ! Dijkstra algorithm for shortest path (weighted by Euclidean distance between node coordinates)
+function findShortestPathDijkstra(startNodeId: string, endNodeId: string): PathResult | null {
   if (startNodeId === endNodeId) {
     const node = nodes.find(n => n.id === startNodeId);
     return {
@@ -108,61 +97,79 @@ function findShortestPathAStar(startNodeId: string, endNodeId: string): PathResu
     };
   }
 
-  const openSet = new Map<string, number>();
-  const cameFrom = new Map<string, string>();
-  const gScore = new Map<string, number>();
-  const fScore = new Map<string, number>();
+  const dist = new Map<string, number>();
+  const prev = new Map<string, string | null>();
+  const visited = new Set<string>();
 
-  openSet.set(startNodeId, 0);
-  gScore.set(startNodeId, 0);
-  fScore.set(startNodeId, heuristic(startNodeId, endNodeId));
+  // Helper to compute Euclidean distance between two nodes (fallback to 1 if coords missing)
+  const coordOf = (id: string): [number, number] | null => {
+    const n = nodes.find(x => x.id === id);
+    return n && n.coord && n.coord.length === 2 ? n.coord : null;
+  };
 
-  while (openSet.size > 0) {
-    // Find node with lowest f-score
-    let current = "";
-    let lowestF = Infinity;
-    for (const [nodeId, fValue] of fScore.entries()) {
-      if (openSet.has(nodeId) && fValue < lowestF) {
-        lowestF = fValue;
-        current = nodeId;
+  const euclidean = (aId: string, bId: string) => {
+    const a = coordOf(aId);
+    const b = coordOf(bId);
+    if (!a || !b) return 1; // fallback weight
+    const dx = a[0] - b[0];
+    const dy = a[1] - b[1];
+    return Math.sqrt(dx * dx + dy * dy);
+  };
+
+  // Initialize distances
+  for (const n of nodes) {
+    dist.set(n.id, Infinity);
+    prev.set(n.id, null);
+  }
+  dist.set(startNodeId, 0);
+
+
+  // Simple priority queue using array (small graph so acceptable)
+  const compare = (a: [string, number], b: [string, number]) => a[1] - b[1];
+  const pq: Array<[string, number]> = [[startNodeId, 0]];
+
+  while (pq.length > 0) {
+    // pop smallest
+    pq.sort(compare);
+    const [u] = pq.shift()!;
+    
+    if (visited.has(u)) continue;
+    visited.add(u);
+
+    if (u === endNodeId) break;
+
+    const neighbors = graph[u] || [];
+    for (const v of neighbors) {
+      if (visited.has(v)) continue;
+      const weight = euclidean(u, v);
+      const alt = (dist.get(u) ?? Infinity) + weight;
+      
+      if (alt < (dist.get(v) ?? Infinity)) {
+        dist.set(v, alt);
+        prev.set(v, u);
+        pq.push([v, alt]);
       }
     }
-
-    if (current === endNodeId) {
-      // Reconstruct path
-      const path: string[] = [current];
-      while (cameFrom.has(current)) {
-        current = cameFrom.get(current)!;
-        path.unshift(current);
-      }
-      const instructions = generateInstructions(path);
-      return {
-        path,
-        steps: path.length - 1,
-        instructions
-      };
-    }
-
-    openSet.delete(current);
-    const neighbors = graph[current] || [];
-
-    for (const neighbor of neighbors) {
-      const tentativeGScore = (gScore.get(current) || 0) + 1;
-      const neighborGScore = gScore.get(neighbor) || Infinity;
-
-      if (tentativeGScore < neighborGScore) {
-        cameFrom.set(neighbor, current);
-        gScore.set(neighbor, tentativeGScore);
-        const fValue = tentativeGScore + heuristic(neighbor, endNodeId);
-        fScore.set(neighbor, fValue);
-        if (!openSet.has(neighbor)) {
-          openSet.set(neighbor, fValue);
-        }
-      }
-    }
+    // pq snapshot logging removed
   }
 
-  return null; // No path found
+  if ((dist.get(endNodeId) ?? Infinity) === Infinity) return null;
+
+  // Reconstruct path
+  const path: string[] = [];
+  let cur: string | null = endNodeId;
+  while (cur) {
+    path.unshift(cur);
+    cur = prev.get(cur) || null;
+  }
+
+  const instructions = generateInstructions(path);
+  const totalDistance = dist.get(endNodeId) || 0;
+  return {
+    path,
+    steps: Number(totalDistance.toFixed(2)),
+    instructions
+  };
 }
 
 // Generate human-readable instructions from path
@@ -238,11 +245,11 @@ function generateInstructions(path: string[]): string[] {
     }
     // Entrance transitions
     else if (currentNode.type === 'entrance' && nextNode.type === 'elevator') {
-      instruction = `From entrance, proceed to ${nextNode.name}`;
+      instruction = `From the main entrance, proceed to ${nextNode.name}`;
     } else if (currentNode.type === 'entrance' && nextNode.type === 'stairs') {
-      instruction = `From entrance, head to ${nextNode.name}`;
+      instruction = `From the main entrance, head to ${nextNode.name}`;
     } else if (currentNode.type === 'entrance' && nextNode.type === 'study_area') {
-      instruction = `From entrance, proceed to ${nextNode.name}`;
+      instruction = `From the main entrance, proceed to ${nextNode.name}`;
     }
     // Default fallback
     else {
@@ -262,7 +269,7 @@ function generateInstructions(path: string[]): string[] {
 
 // Routes
 app.get("/", (req: Request, res: Response) => {
-  res.send("Single Floor Navigation Backend (A* Algorithm) - Use /api/navigation/from/:start/to/:end");
+  res.send("Single Floor Navigation Backend (Dijkstra) - Use /api/navigation/from/:start/to/:end");
 });
 
 // Get all nodes
@@ -313,10 +320,12 @@ app.get("/api/rooms", (req: Request, res: Response) => {
   res.json({ rooms: sortedLocations });
 });
 
-// Find shortest path using A* algorithm
+// Find shortest path using Dijkstra algorithm
 app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => {
   const start = req.params.start;
   const end = req.params.end;
+
+  // Detailed request logging removed
 
   // Check if parameters are provided
   if (!start || !end) {
@@ -339,6 +348,7 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
   );
 
   if (!startNode) {
+    console.warn(`Start node not found for provided param: '${start}'`);
     return res.status(404).json({ 
       error: `Start location '${start}' not found`,
       availableRooms: nodes.filter(n => n.type === 'room').map(n => ({ id: n.id, name: n.name, floor: n.floor }))
@@ -346,6 +356,7 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
   }
 
   if (!endNode) {
+    console.warn(`End node not found for provided param: '${end}'`);
     return res.status(404).json({ 
       error: `End location '${end}' not found`,
       availableRooms: nodes.filter(n => n.type === 'room').map(n => ({ id: n.id, name: n.name, floor: n.floor }))
@@ -362,16 +373,55 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
     });
   }
 
-  // Use A* to find the shortest path
-  const pathResult = findShortestPathAStar(startNode.id, endNode.id);
+  // Use Dijkstra to find the shortest path
+  const pathResult = findShortestPathDijkstra(startNode.id, endNode.id);
 
   if (!pathResult) {
+    console.warn(`No path found between '${startNode.name}' and '${endNode.name}'`);
+
+    // Deep debug: print node ids, graph keys, and run a BFS to show reachability
+    try {
+      // reachability debug logging removed
+      const hasStartKey = Object.prototype.hasOwnProperty.call(graph, startNode.id);
+      const hasEndKey = Object.prototype.hasOwnProperty.call(graph, endNode.id);
+
+      // BFS reachability trace
+      const visitedOrder: string[] = [];
+      const q: string[] = [startNode.id];
+      const seen = new Set<string>([startNode.id]);
+      let reachable = false;
+
+      while (q.length > 0) {
+        const cur = q.shift()!;
+        visitedOrder.push(cur);
+        const neigh = graph[cur] || [];
+        for (const nb of neigh) {
+          if (!seen.has(nb)) {
+            seen.add(nb);
+            q.push(nb);
+            if (nb === endNode.id) reachable = true;
+          }
+        }
+      }
+
+      // BFS debug logging removed
+    } catch (derr) {
+      console.error('Error during reachability debug:', derr);
+    }
+
     return res.status(404).json({ 
       error: "No path found between the specified locations",
       start: startNode.name,
       end: endNode.name,
       availableLocations: nodes.filter(n => n.floor === startNode.floor).map(n => ({ id: n.id, name: n.name, type: n.type }))
     });
+  }
+
+  // Log the computed Dijkstra result to the server terminal for debugging
+  try {
+    // result logging removed
+  } catch (err) {
+    console.error('Error logging Dijkstra result:', err);
   }
 
   res.json({
@@ -394,7 +444,7 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
 
 // Specific route for Room 202 to Classroom B20 (same floor)
 app.get("/api/navigation/room202-to-b20", (req: Request, res: Response) => {
-  const pathResult = findShortestPathAStar("223", "classroom_b20");
+  const pathResult = findShortestPathDijkstra("223", "classroom_b20");
   
   if (!pathResult) {
     return res.status(404).json({ error: "No path found from Room 202 to Classroom B20" });
@@ -451,7 +501,7 @@ app.get("/health", (req: Request, res: Response) => {
   res.json({ 
     status: "healthy", 
     timestamp: new Date().toISOString(),
-    algorithm: "A* (A-Star Search)",
+    algorithm: "Dijkstra (Weighted - Euclidean distance)",
     navigationType: "Single Floor Only",
     currentFloor: "2F",
     availableRooms: floor2Rooms.length,
@@ -483,15 +533,5 @@ app.listen(PORT, () => {
   const floor2Rooms = nodes.filter(n => n.type === 'room' && n.floor === 2);
   const floor2All = nodes.filter(n => n.floor === 2);
   
-  console.log(`Single Floor Navigation server running on port ${PORT}`);
-  console.log(`Algorithm: A* (A-Star Search with Euclidean Distance Heuristic)`);
-  console.log(`Navigation Type: Single Floor Only (Floor 2)`);
-  console.log(`Total locations on Floor 2: ${floor2All.length}`);
-  console.log(`  - Rooms: ${floor2All.filter(n => n.type === 'room').length}`);
-  console.log(`  - Bathrooms: ${floor2All.filter(n => n.type === 'bathroom').length}`);
-  console.log(`  - Elevators: ${floor2All.filter(n => n.type === 'elevator').length}`);
-  console.log(`  - Stairs: ${floor2All.filter(n => n.type === 'stairs').length}`);
-  console.log(`  - Computer Areas: ${floor2All.filter(n => n.type === 'computer_area').length}`);
-  console.log(`  - Study Areas: ${floor2All.filter(n => n.type === 'study_area').length}`);
-  console.log(`Sample routes: GET /api/navigation/from/main_entrance/to/room_221`);
+  // Startup logs removed
 });

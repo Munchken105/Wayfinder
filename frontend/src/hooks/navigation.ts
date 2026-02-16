@@ -30,8 +30,10 @@ export function useNavigation() {
     setNavigationResult(null);
 
     try {
+      const urlFrom = encodeURIComponent(from);
+      const urlTo = encodeURIComponent(to);
       const response = await fetch(
-        `http://localhost:5000/api/navigation/from/${from}/to/${to}`
+        `http://localhost:5000/api/navigation/from/${urlFrom}/to/${urlTo}`
       );
       const data = await response.json();
 
