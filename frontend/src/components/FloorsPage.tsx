@@ -83,8 +83,8 @@ function LibraryFloorMap() {
     { id: "108A", name: "Room 108A", description: "Anna Mayersohn", top: 337, left: 886, width: 80, height: 57 },
     { id: "109", name: "Room 109", description: "", top: 395, left: 819, width: 144, height: 122 },
     { id: "110", name: "Room 110", description: "", top: 518, left: 819, width: 144, height: 88 },
-    { id: "105-1", name: "Room 105", description: "Fred Stoss", top: 112, left: 819, width: 144, height: 74 },
-    { id: "105-2", name: "Room 105", description: "Fred Stoss", top: 187, left: 819, width: 70, height: 116 },
+    { id: "105-1", name: "Room 105", description: "Fred Stoss", top: 187, left: 819, width: 70, height: 116 },
+    { id: "105-2", name: "Room 105", description: "Fred Stoss", top: 112, left: 819, width: 144, height: 74 },
   ];
 
   const secondFloorRooms = [
