@@ -16,6 +16,43 @@ function LibraryFloorMap() {
   const [lastClick, setLastClick] = useState<{ x: number; y: number } | null>(null); // this is for knowing where to set up boxes
   const [selectedRoom, setSelectedRoom] = useState<{ name: string; description: string; id: string} | null>(null); // this is for making the clicking of the rooms useful
   const [wayfindClicked, setWayfindClicked] = useState(false)
+  const [backendRooms, setBackendRooms] = useState<any[]>([]);
+  const [currentPath, setCurrentPath] = useState<any[]>([]); // Store nodes in the current navigation path
+
+  // Fetch backend nodes with coordinates (all location types)
+  useEffect(() => {
+    fetch("http://localhost:5000/api/nodes")
+      .then(res => res.json())
+      .then(data => {
+        if (data.nodes) {
+          // Include all location types: rooms, entrances, bathrooms, elevators, stairs, computer areas, study areas
+          setBackendRooms(data.nodes.filter((n: any) => 
+            n.type === 'room' || 
+            n.type === 'entrance' || 
+            n.type === 'computer_area' ||
+            n.type === 'study_area' ||
+            n.type === 'bathroom' ||
+            n.type === 'elevator' ||
+            n.type === 'stairs'
+          ));
+        }
+      })
+      .catch(err => console.error('Failed to fetch nodes:', err));
+  }, []);
+
+  // Fetch the path when a room is selected for wayfinding
+  const handleWayfind = (roomName: string) => {
+    fetch(`http://localhost:5000/api/navigation/from/main%20entrance/to/${encodeURIComponent(roomName)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.path) {
+          setCurrentPath(data.path);
+          setWayfindClicked(true);
+        }
+      })
+      .catch(err => console.error('Failed to fetch path:', err));
+  };
+
   const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => 
     {
     const x = e.nativeEvent.offsetX;
@@ -271,11 +308,11 @@ function LibraryFloorMap() {
         />
           {selectedRoom && (
             <div className="info-panel show">
-              <button className="close-btn" onClick={() => {setSelectedRoom(null); setWayfindClicked(false)}}>Close</button>
+              <button className="close-btn" onClick={() => {setSelectedRoom(null); setWayfindClicked(false); setCurrentPath([])}}>Close</button>
               <h3 className="room-name">{selectedRoom.name}</h3>
               <p className="room-description">{selectedRoom.description}</p>
 
-              {!wayfindClicked && <button className="wayfind-button" onClick={() => setWayfindClicked(true)}>Wayfind</button>}
+              {!wayfindClicked && <button className="wayfind-button" onClick={() => handleWayfind(selectedRoom.name)}>Wayfind</button>}
 
               {
                 wayfindClicked && 
@@ -315,6 +352,64 @@ function LibraryFloorMap() {
           onClick={() => setSelectedRoom(room)}
         />
       ))}
+        
+        {/* SVG lines connecting path nodes */}
+        {wayfindClicked && currentPath.length > 0 && (
+          <svg
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              pointerEvents: "none",
+              zIndex: 5,
+            }}
+          >
+            {/* Draw lines between consecutive nodes in the path */}
+            {currentPath.map((node, i) => {
+              if (i === currentPath.length - 1) return null; // Skip last node
+              const nextNode = currentPath[i + 1];
+              const coord1 = backendRooms.find(r => r.id === node.id)?.coord;
+              const coord2 = backendRooms.find(r => r.id === nextNode.id)?.coord;
+              if (!coord1 || !coord2) return null;
+              return (
+                <line
+                  key={`line-${i}`}
+                  x1={coord1[0]}
+                  y1={coord1[1]}
+                  x2={coord2[0]}
+                  y2={coord2[1]}
+                  stroke="red"
+                  strokeWidth="3"
+                />
+              );
+            })}
+          </svg>
+        )}
+
+        {/* Render red dots only for nodes in the current path */}
+        {wayfindClicked && currentPath.length > 0 && currentPath.map(node => {
+          const location = backendRooms.find(r => r.id === node.id);
+          if (!location || !location.coord) return null;
+          return (
+            <div
+              key={`dot-${node.id}`}
+              style={{
+                position: "absolute",
+                left: `${location.coord[0]}px`,
+                top: `${location.coord[1]}px`,
+                width: "10px",
+                height: "10px",
+                backgroundColor: "red",
+                borderRadius: "50%",
+                transform: "translate(-50%, -50%)",
+                zIndex: 10,
+              }}
+              title={location.name}
+            />
+          );
+        })}
           
         </div>
       </div>

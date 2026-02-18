@@ -34,12 +34,11 @@ interface PathResult {
 // Single floor building graph - all rooms on the same floor
 const nodes: Node[] = [
   // All available rooms on the second floors
-  { id: "room_221", name: "Room 221", type: "room", floor: 2, coord:[438, 90] },
-  { id: "room_221D", name: "Room 221-D", type: "room", floor: 2, coord:[530, 90]},
-  { id: "room_222", name: "Room 222", type: "room", floor: 2, coord:[580, 90] },
-  { id: "room_222A", name: "Room 222-A", type: "room", floor: 2, coord:[650, 90] },
-  { id: "room_223", name: "Room 223", type: "room", floor: 2, coord:[740, 75] },
-  { id: "room_223", name: "Room 223", type: "room", floor: 2, coord:[670, 45]},
+  { id: "room_221", name: "Room 221", type: "room", floor: 2, coord:[437, 90] },
+  { id: "room_221D", name: "Room 221-D", type: "room", floor: 2, coord:[532, 90]},
+  { id: "room_222", name: "Room 222", type: "room", floor: 2, coord:[581, 90] },
+  { id: "room_222A", name: "Room 222-A", type: "room", floor: 2, coord:[651, 90] },
+  { id: "room_223", name: "Room 223", type: "room", floor: 2, coord:[740, 75]},
   { id: "room_228", name: "Room 228", type: "room", floor: 2, coord:[975, 85] },
   { id: "room_229", name: "Room 229", type: "room", floor: 2, coord:[941, 58] },
   { id: "room_230", name: "Room 230", type: "room", floor: 2, coord:[941, 30] },
@@ -49,8 +48,8 @@ const nodes: Node[] = [
   { id: "main_entrance", name: "main entrance", type: "entrance", floor: 2, coord:[530, 620]},
   { id: "top_comp_area", name: "computer area", type: "computer_area", floor: 2, coord: [825, 197]},
   { id: "right_comp_area", name: "printing & scanning Area", type: "computer_area", floor: 2, coord:[942, 407]},
-  { id: "elevator_001", name: "the elevator", type: "elevator", floor: 2, coord:[723, 513]},
-  { id: "elevator_002", name: "the elevator", type: "elevator", floor: 2, coord:[744, 492]},
+  { id: "elevator_001", name: "the elevator", type: "elevator", floor: 2, coord:[709, 496]},
+  { id: "elevator_002", name: "the elevator", type: "elevator", floor: 2, coord:[727, 478]},
   { id: "floor_1_stairs", name: "stairs to 1st Floor", type: "stairs", floor: 2, coord:[452, 518]},
   { id: "bathroom_002", name: "Bathroom", type: "bathroom", floor: 2, coord:[870, 85]},
 
