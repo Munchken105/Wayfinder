@@ -1,5 +1,5 @@
 import "./FloorsPage.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, act } from "react";
 import SearchBar from "./SearchBar";
 import WayfindPage from "./WayfindPage";
 import { useNavigate } from "react-router-dom";
@@ -86,6 +86,16 @@ function LibraryFloorMap() {
     if (num < 400) return "Floor 3";
     if (num < 500) return "Floor 4";
     return "Floor 5";
+  };
+
+  const floorNumToString = (floorNumber: number): keyof typeof floors => {
+    if (floorNumber == 0) return "Basement";
+    if (floorNumber == 1) return "Floor 1";
+    if (floorNumber == 2) return "Floor 2";
+    if (floorNumber == 3) return "Floor 3";
+    if (floorNumber == 4) return "Floor 4";
+    if (floorNumber == 5) return "Floor 5";
+    return "Floor 2";
   };
 
   const [pendingRoom, setPendingRoom] = useState<string | null>(null);
@@ -261,34 +271,34 @@ function LibraryFloorMap() {
         <div className="sidebar-boxes">
           <button 
             className={`sidebar-box ${activeFloor === "Floor 5" ? "active" : ""}`}
-            onClick={() => {setSelectedRoom(null); setActiveFloor("Floor 5")}}
+            onClick={() => {setActiveFloor("Floor 5")}}
           >Floor 5</button>
           
           <button 
             className={`sidebar-box ${activeFloor === "Floor 4" ? "active" : ""}`}
-            onClick={() => {setSelectedRoom(null); setActiveFloor("Floor 4")}}
+            onClick={() => {setActiveFloor("Floor 4")}}
           >Floor 4</button>
 
           <button 
             className={`sidebar-box ${activeFloor === "Floor 3" ? "active" : ""}`}
-            onClick={() => {setSelectedRoom(null); setActiveFloor("Floor 3")}}
+            onClick={() => {setActiveFloor("Floor 3")}}
           >Floor 3</button>
 
           
           <button 
             className={`sidebar-box ${activeFloor === "Floor 2" ? "active" : ""}`}
-            onClick={() => {setSelectedRoom(null); setActiveFloor("Floor 2")}}
+            onClick={() => {setActiveFloor("Floor 2")}}
           >Floor 2</button>
 
           
           <button 
             className={`sidebar-box ${activeFloor === "Floor 1" ? "active" : ""}`}
-            onClick={() => {setSelectedRoom(null); setActiveFloor("Floor 1")}}
+            onClick={() => {setActiveFloor("Floor 1")}}
           >Floor 1</button>
 
           <button 
             className={`sidebar-box ${activeFloor === "Basement" ? "active" : ""}`}
-            onClick={() => {setSelectedRoom(null); setActiveFloor("Basement")}}
+            onClick={() => {setActiveFloor("Basement")}}
           >Basement</button>
 
           <button className="back-button" onClick={() => navigate("/")}>Back to Home</button>
@@ -349,8 +359,7 @@ function LibraryFloorMap() {
             height: `${room.height}px`,
             position: "absolute",
           }}
-          onClick={() => setSelectedRoom(room)}
-        />
+          onClick={() => {setSelectedRoom(room); setWayfindClicked(false)}}/>
       ))}
         
         {/* SVG lines connecting path nodes */}
@@ -373,6 +382,7 @@ function LibraryFloorMap() {
               const coord1 = backendRooms.find(r => r.id === node.id)?.coord;
               const coord2 = backendRooms.find(r => r.id === nextNode.id)?.coord;
               if (!coord1 || !coord2) return null;
+              if (floorNumToString(coord1) !== activeFloor || floorNumToString(coord2) !== activeFloor) return null;
               return (
                 <line
                   key={`line-${i}`}
@@ -392,6 +402,7 @@ function LibraryFloorMap() {
         {wayfindClicked && currentPath.length > 0 && currentPath.map(node => {
           const location = backendRooms.find(r => r.id === node.id);
           if (!location || !location.coord) return null;
+          if (floorNumToString(location.floor) !== activeFloor) return null;
           return (
             <div
               key={`dot-${node.id}`}
