@@ -1,5 +1,5 @@
 import "./FloorsPage.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, act } from "react";
 import SearchBar from "./SearchBar";
 import WayfindPage from "./WayfindPage";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +16,43 @@ function LibraryFloorMap() {
   const [lastClick, setLastClick] = useState<{ x: number; y: number } | null>(null); // this is for knowing where to set up boxes
   const [selectedRoom, setSelectedRoom] = useState<{ name: string; description: string; id: string} | null>(null); // this is for making the clicking of the rooms useful
   const [wayfindClicked, setWayfindClicked] = useState(false)
+  const [backendRooms, setBackendRooms] = useState<any[]>([]);
+  const [currentPath, setCurrentPath] = useState<any[]>([]); // Store nodes in the current navigation path
+
+  // Fetch backend nodes with coordinates (all location types)
+  useEffect(() => {
+    fetch("http://localhost:5000/api/nodes")
+      .then(res => res.json())
+      .then(data => {
+        if (data.nodes) {
+          // Include all location types: rooms, entrances, bathrooms, elevators, stairs, computer areas, study areas
+          setBackendRooms(data.nodes.filter((n: any) => 
+            n.type === 'room' || 
+            n.type === 'entrance' || 
+            n.type === 'computer_area' ||
+            n.type === 'study_area' ||
+            n.type === 'bathroom' ||
+            n.type === 'elevator' ||
+            n.type === 'stairs'
+          ));
+        }
+      })
+      .catch(err => console.error('Failed to fetch nodes:', err));
+  }, []);
+
+  // Fetch the path when a room is selected for wayfinding
+  const handleWayfind = (roomName: string) => {
+    fetch(`http://localhost:5000/api/navigation/from/main%20entrance/to/${encodeURIComponent(roomName)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.path) {
+          setCurrentPath(data.path);
+          setWayfindClicked(true);
+        }
+      })
+      .catch(err => console.error('Failed to fetch path:', err));
+  };
+
   const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => 
     {
     const x = e.nativeEvent.offsetX;
@@ -49,6 +86,16 @@ function LibraryFloorMap() {
     if (num < 400) return "Floor 3";
     if (num < 500) return "Floor 4";
     return "Floor 5";
+  };
+
+  const floorNumToString = (floorNumber: number): keyof typeof floors => {
+    if (floorNumber == 0) return "Basement";
+    if (floorNumber == 1) return "Floor 1";
+    if (floorNumber == 2) return "Floor 2";
+    if (floorNumber == 3) return "Floor 3";
+    if (floorNumber == 4) return "Floor 4";
+    if (floorNumber == 5) return "Floor 5";
+    return "Floor 2";
   };
 
   const [pendingRoom, setPendingRoom] = useState<string | null>(null);
@@ -224,34 +271,34 @@ function LibraryFloorMap() {
         <div className="sidebar-boxes">
           <button 
             className={`sidebar-box ${activeFloor === "Floor 5" ? "active" : ""}`}
-            onClick={() => {setSelectedRoom(null); setActiveFloor("Floor 5")}}
+            onClick={() => {setActiveFloor("Floor 5")}}
           >Floor 5</button>
           
           <button 
             className={`sidebar-box ${activeFloor === "Floor 4" ? "active" : ""}`}
-            onClick={() => {setSelectedRoom(null); setActiveFloor("Floor 4")}}
+            onClick={() => {setActiveFloor("Floor 4")}}
           >Floor 4</button>
 
           <button 
             className={`sidebar-box ${activeFloor === "Floor 3" ? "active" : ""}`}
-            onClick={() => {setSelectedRoom(null); setActiveFloor("Floor 3")}}
+            onClick={() => {setActiveFloor("Floor 3")}}
           >Floor 3</button>
 
           
           <button 
             className={`sidebar-box ${activeFloor === "Floor 2" ? "active" : ""}`}
-            onClick={() => {setSelectedRoom(null); setActiveFloor("Floor 2")}}
+            onClick={() => {setActiveFloor("Floor 2")}}
           >Floor 2</button>
 
           
           <button 
             className={`sidebar-box ${activeFloor === "Floor 1" ? "active" : ""}`}
-            onClick={() => {setSelectedRoom(null); setActiveFloor("Floor 1")}}
+            onClick={() => {setActiveFloor("Floor 1")}}
           >Floor 1</button>
 
           <button 
             className={`sidebar-box ${activeFloor === "Basement" ? "active" : ""}`}
-            onClick={() => {setSelectedRoom(null); setActiveFloor("Basement")}}
+            onClick={() => {setActiveFloor("Basement")}}
           >Basement</button>
 
           <button className="back-button" onClick={() => navigate("/")}>Back to Home</button>
@@ -271,11 +318,11 @@ function LibraryFloorMap() {
         />
           {selectedRoom && (
             <div className="info-panel show">
-              <button className="close-btn" onClick={() => {setSelectedRoom(null); setWayfindClicked(false)}}>Close</button>
+              <button className="close-btn" onClick={() => {setSelectedRoom(null); setWayfindClicked(false); setCurrentPath([])}}>Close</button>
               <h3 className="room-name">{selectedRoom.name}</h3>
               <p className="room-description">{selectedRoom.description}</p>
 
-              {!wayfindClicked && <button className="wayfind-button" onClick={() => setWayfindClicked(true)}>Wayfind</button>}
+              {!wayfindClicked && <button className="wayfind-button" onClick={() => handleWayfind(selectedRoom.name)}>Wayfind</button>}
 
               {
                 wayfindClicked && 
@@ -312,9 +359,68 @@ function LibraryFloorMap() {
             height: `${room.height}px`,
             position: "absolute",
           }}
-          onClick={() => setSelectedRoom(room)}
-        />
+          onClick={() => {setSelectedRoom(room); setWayfindClicked(false)}}/>
       ))}
+        
+        {/* SVG lines connecting path nodes */}
+        {wayfindClicked && currentPath.length > 0 && (
+          <svg
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              pointerEvents: "none",
+              zIndex: 5,
+            }}
+          >
+            {/* Draw lines between consecutive nodes in the path */}
+            {currentPath.map((node, i) => {
+              if (i === currentPath.length - 1) return null; // Skip last node
+              const nextNode = currentPath[i + 1];
+              const coord1 = backendRooms.find(r => r.id === node.id)?.coord;
+              const coord2 = backendRooms.find(r => r.id === nextNode.id)?.coord;
+              if (!coord1 || !coord2) return null;
+              if (floorNumToString(coord1) !== activeFloor || floorNumToString(coord2) !== activeFloor) return null;
+              return (
+                <line
+                  key={`line-${i}`}
+                  x1={coord1[0]}
+                  y1={coord1[1]}
+                  x2={coord2[0]}
+                  y2={coord2[1]}
+                  stroke="red"
+                  strokeWidth="3"
+                />
+              );
+            })}
+          </svg>
+        )}
+
+        {/* Render red dots only for nodes in the current path */}
+        {wayfindClicked && currentPath.length > 0 && currentPath.map(node => {
+          const location = backendRooms.find(r => r.id === node.id);
+          if (!location || !location.coord) return null;
+          if (floorNumToString(location.floor) !== activeFloor) return null;
+          return (
+            <div
+              key={`dot-${node.id}`}
+              style={{
+                position: "absolute",
+                left: `${location.coord[0]}px`,
+                top: `${location.coord[1]}px`,
+                width: "10px",
+                height: "10px",
+                backgroundColor: "red",
+                borderRadius: "50%",
+                transform: "translate(-50%, -50%)",
+                zIndex: 10,
+              }}
+              title={location.name}
+            />
+          );
+        })}
           
         </div>
       </div>
