@@ -1,5 +1,5 @@
 import "./FloorsPage.css";
-import { useState } from "react";
+import { useState, useEffect, act } from "react";
 import SearchBar from "./SearchBar";
 import WayfindPage from "./WayfindPage";
 import { useNavigate } from "react-router-dom";
@@ -14,8 +14,45 @@ import floor5Img from "../assets/Floor5layout.jpg";
 function LibraryFloorMap() {
 
   const [lastClick, setLastClick] = useState<{ x: number; y: number } | null>(null); // this is for knowing where to set up boxes
-  const [selectedRoom, setSelectedRoom] = useState<{ name: string; description: string;} | null>(null); // this is for making the clicking of the rooms useful
+  const [selectedRoom, setSelectedRoom] = useState<{ name: string; description: string; id: string} | null>(null); // this is for making the clicking of the rooms useful
   const [wayfindClicked, setWayfindClicked] = useState(false)
+  const [backendRooms, setBackendRooms] = useState<any[]>([]);
+  const [currentPath, setCurrentPath] = useState<any[]>([]); // Store nodes in the current navigation path
+
+  // Fetch backend nodes with coordinates (all location types)
+  useEffect(() => {
+    fetch("http://localhost:5000/api/nodes")
+      .then(res => res.json())
+      .then(data => {
+        if (data.nodes) {
+          // Include all location types: rooms, entrances, bathrooms, elevators, stairs, computer areas, study areas
+          setBackendRooms(data.nodes.filter((n: any) => 
+            n.type === 'room' || 
+            n.type === 'entrance' || 
+            n.type === 'computer_area' ||
+            n.type === 'study_area' ||
+            n.type === 'bathroom' ||
+            n.type === 'elevator' ||
+            n.type === 'stairs'
+          ));
+        }
+      })
+      .catch(err => console.error('Failed to fetch nodes:', err));
+  }, []);
+
+  // Fetch the path when a room is selected for wayfinding
+  const handleWayfind = (roomName: string) => {
+    fetch(`http://localhost:5000/api/navigation/from/main%20entrance/to/${encodeURIComponent(roomName)}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.path) {
+          setCurrentPath(data.path);
+          setWayfindClicked(true);
+        }
+      })
+      .catch(err => console.error('Failed to fetch path:', err));
+  };
+
   const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => 
     {
     const x = e.nativeEvent.offsetX;
@@ -25,7 +62,9 @@ function LibraryFloorMap() {
     };
 
   //------------------------------------------Initializing the Map-----------------------------------------------------
-  const [activeFloor, setActiveFloor] = useState<string | null> ("Floor 2");
+
+  type FloorKey = keyof typeof floors;
+  const [activeFloor, setActiveFloor] = useState<FloorKey>("Floor 2");
   const ChosenMapImage = () => {
     if (activeFloor == "Basement") return <img src={BasementImg} className="libary-image" onClick={handleImageClick}/>;
     if (activeFloor == "Floor 1") return <img src={floor1Img} className="libary-image" onClick={handleImageClick}/>;
@@ -37,7 +76,7 @@ function LibraryFloorMap() {
     return <div className="Selection">Select a Floor</div>
   };
 
-  const floorFromRoom = (room: string): string => {
+  const floorFromRoom = (room: string): keyof typeof floors => {
     const num = parseInt(room.replace(/\D/g, ""), 10);
 
     if (isNaN(num)) return "Floor 2";
@@ -49,44 +88,217 @@ function LibraryFloorMap() {
     return "Floor 5";
   };
 
+  const floorNumToString = (floorNumber: number): keyof typeof floors => {
+    if (floorNumber == 0) return "Basement";
+    if (floorNumber == 1) return "Floor 1";
+    if (floorNumber == 2) return "Floor 2";
+    if (floorNumber == 3) return "Floor 3";
+    if (floorNumber == 4) return "Floor 4";
+    if (floorNumber == 5) return "Floor 5";
+    return "Floor 2";
+  };
+
+  const [pendingRoom, setPendingRoom] = useState<string | null>(null);
+
+  useEffect(() => {
+    
+    if (activeFloor && pendingRoom) {
+      console.log(pendingRoom);
+      const roomObj = floors[activeFloor].find(r => r.name === pendingRoom);
+      if (roomObj) {
+        setSelectedRoom(roomObj);
+      }
+      setPendingRoom(null); // clear pending
+    }
+    
+  }, [pendingRoom]);
+
   const navigate = useNavigate();
 
+  const basementRooms = [
+    { id: "B48", name: "B48", description: "", top: 488, left: 120, width: 136, height: 84 },
+    { id: "B41", name: "B41", description: "", top: 573, left: 255, width: 62, height: 64 },
+    { id: "B40", name: "B40", description: "", top: 573, left: 367, width: 74, height: 122 },
+    { id: "B30", name: "B30", description: "", top: 3, left: 643, width: 74, height: 72 },
+  ];
+
+  const firstFloorRooms = [
+    { id: "116", name: "Room 116", description: "Ally Wood", top: 177, left: 184, width: 68, height: 88 },
+    { id: "117", name: "Room 117", description: "Jill Hackenberg", top: 177, left: 254, width: 46, height: 88 },
+    { id: "118", name: "Room 118", description: "Sam Kim", top: 177, left: 300, width: 60, height: 88 },
+    { id: "119", name: "Room 119", description: "Erin Rowley", top: 177, left: 360, width: 92, height: 88 },
+    { id: "108A", name: "Room 108A", description: "Anna Mayersohn", top: 337, left: 886, width: 80, height: 57 },
+    { id: "109", name: "Room 109", description: "", top: 395, left: 819, width: 144, height: 122 },
+    { id: "110", name: "Room 110", description: "", top: 518, left: 819, width: 144, height: 88 },
+    { id: "105-1", name: "Room 105", description: "Fred Stoss", top: 112, left: 819, width: 144, height: 74 },
+    { id: "105-2", name: "Room 105", description: "Fred Stoss", top: 187, left: 819, width: 70, height: 116 },
+  ];
+
+  const secondFloorRooms = [
+    { id: "221", name: "Room 221", description: "", top: 6, left: 390, width: 110, height: 78 },
+    { id: "221-D", name: "Room 221-D", description: "", top: 6, left: 506, width: 52, height: 78 },
+    { id: "222", name: "Room 222", description: "", top: 6, left: 560, width: 62, height: 78 },
+    { id: "222-A", name: "Room 222-A", description: "", top: 6, left: 624, width: 48, height: 78 },
+    { id: "223", name: "Room 223", description: "", top: 6, left: 674, width: 72, height: 80 },
+    { id: "230", name: "Room 230", description: "", top: 6, left: 909, width: 30, height: 35 },
+    { id: "229", name: "Room 229", description: "", top: 43, left: 909, width: 30, height: 40 },
+    { id: "228", name: "Room 228", description: "", top: 6, left: 942, width: 62, height: 79 },
+    { id: "232", name: "Room 232", description: "", top: 6, left: 1006, width: 28, height: 79 },
+  ];
+
+  const thirdFloorRooms = [
+    // Rooms 324–320
+    { id: "324", name: "Room 324", description: "", top: 595, left: 616, width: 36, height: 62 },
+    { id: "323", name: "Room 323", description: "", top: 595, left: 652, width: 36, height: 62 },
+    { id: "322", name: "Room 322", description: "Natalia Estrada", top: 595, left: 688, width: 28, height: 62 },
+    { id: "321", name: "Room 321", description: "", top: 595, left: 717, width: 45, height: 62 },
+    { id: "320", name: "Room 320", description: "", top: 595, left: 826, width: 100, height: 62 },
+
+    // Room 319
+    { id: "319-1", name: "Room 319", description: "", top: 401, left: 689, width: 48, height: 10 },
+    { id: "319-2", name: "Room 319", description: "", top: 411, left: 700, width: 37, height: 10 },
+    { id: "319-3", name: "Room 319", description: "", top: 421, left: 708, width: 28, height: 10 },
+    { id: "319-4", name: "Room 319", description: "", top: 431, left: 718, width: 18, height: 10 },
+    { id: "319-5", name: "Room 319", description: "", top: 441, left: 726, width: 10, height: 10 },
+
+    // Room 325
+    { id: "325-1", name: "Room 325", description: "", top: 481, left: 609, width: 18, height: 10 },
+    { id: "325-2", name: "Room 325", description: "", top: 491, left: 609, width: 28, height: 10 },
+    { id: "325-3", name: "Room 325", description: "", top: 501, left: 609, width: 42, height: 10 },
+    { id: "325-4", name: "Room 325", description: "", top: 511, left: 609, width: 50, height: 10 },
+    { id: "325-5", name: "Room 325", description: "", top: 521, left: 609, width: 56, height: 10 },
+
+    // Room 326
+    { id: "326-1", name: "Room 326", description: "", top: 421, left: 694, width: 14, height: 10 },
+    { id: "326-2", name: "Room 326", description: "", top: 431, left: 688, width: 28, height: 10 },
+    { id: "326-3", name: "Room 326", description: "", top: 441, left: 694, width: 30, height: 10 },
+    { id: "326-4", name: "Room 326", description: "", top: 451, left: 704, width: 32, height: 10 },
+    { id: "326-5", name: "Room 326", description: "", top: 461, left: 712, width: 24, height: 10 },
+    { id: "326-6", name: "Room 326", description: "", top: 471, left: 708, width: 28, height: 10 },
+    { id: "326-7", name: "Room 326", description: "", top: 481, left: 698, width: 38, height: 10 },
+    { id: "326-8", name: "Room 326", description: "", top: 491, left: 690, width: 46, height: 10 },
+    { id: "326-9", name: "Room 326", description: "", top: 501, left: 680, width: 56, height: 10 },
+    { id: "326-10", name: "Room 326", description: "", top: 511, left: 672, width: 64, height: 10 },
+    { id: "326-11", name: "Room 326", description: "", top: 521, left: 665, width: 71, height: 10 },
+  ];
+
+  const fourthFloorRooms = [
+    // Rooms 424-420
+    { id: "424", name: "Room 424", description: "Michael Kicey", top: 483, left: 501, width: 26, height: 52 },
+    { id: "423", name: "Room 423", description: "Molly Poremski", top: 483, left: 526, width: 26, height: 52 },
+    { id: "422", name: "Room 422", description: "Carolyn Klotzbach-Russell", top: 483, left: 551, width: 24, height: 52 },
+    { id: "421", name: "Room 421", description: "Laura Taddeo", top: 483, left: 576, width: 24, height: 52 },
+    { id: "420C", name: "Room 420C", description: "", top: 483, left: 601, width: 24, height: 52 },
+    { id: "420B", name: "Room 420B", description: "", top: 483, left: 626, width: 24, height: 52 },
+    { id: "420A", name: "Room 420A", description: "", top: 483, left: 651, width: 24, height: 52 },
+    { id: "420", name: "Room 420", description: "", top: 483, left: 684, width: 70, height: 52 },
+
+    // Room 419
+    { id: "419-1", name: "Room 419", description: "", top: 326, left: 562, width: 38, height: 10 },
+    { id: "419-2", name: "Room 419", description: "", top: 336, left: 567, width: 33, height: 10 },
+    { id: "419-3", name: "Room 419", description: "", top: 346, left: 578, width: 22, height: 10 },
+    { id: "419-4", name: "Room 419", description: "", top: 356, left: 586, width: 14, height: 10 },
+    { id: "419-5", name: "Room 419", description: "", top: 390, left: 497, width: 14, height: 10 },
+    { id: "419-6", name: "Room 419", description: "", top: 400, left: 497, width: 22, height: 10 },
+    { id: "419-7", name: "Room 419", description: "", top: 410, left: 497, width: 30, height: 10 },
+    { id: "419-8", name: "Room 419", description: "", top: 420, left: 497, width: 40, height: 10 },
+
+    // Room 426
+    { id: "426-1", name: "Room 426", description: "", top: 346, left: 560, width: 22, height: 10 },
+    { id: "426-2", name: "Room 426", description: "", top: 356, left: 560, width: 26, height: 10 },
+    { id: "426-3", name: "Room 426", description: "", top: 366, left: 570, width: 30, height: 10 },
+    { id: "426-4", name: "Room 426", description: "", top: 376, left: 580, width: 20, height: 10 },
+    { id: "426-5", name: "Room 426", description: "", top: 386, left: 575, width: 25, height: 10 },
+    { id: "426-6", name: "Room 426", description: "", top: 396, left: 565, width: 35, height: 10 },
+    { id: "426-7", name: "Room 426", description: "", top: 406, left: 550, width: 50, height: 10 },
+    { id: "426-8", name: "Room 426", description: "", top: 416, left: 540, width: 60, height: 10 },
+    { id: "426-9", name: "Room 426", description: "", top: 426, left: 540, width: 60, height: 5 },
+  ];
+
+  const fifthFloorRooms = [
+    // Rooms 524-520
+    { id: "524", name: "Room 524", description: "", top: 533, left: 553, width: 28, height: 60 },
+    { id: "523", name: "Room 523", description: "Bryan Sajecki", top: 533, left: 581, width: 28, height: 60 },
+    { id: "522", name: "Room 522", description: "", top: 533, left: 609, width: 28, height: 60 },
+    { id: "521", name: "Room 521", description: "", top: 533, left: 637, width: 26, height: 60 },
+    { id: "520C", name: "Room 520C", description: "Mary Kamela", top: 533, left: 663, width: 26, height: 60 },
+    { id: "520B", name: "Room 520B", description: "", top: 533, left: 689, width: 26, height: 60 },
+    { id: "520A", name: "Room 520A", description: "", top: 533, left: 715, width: 30, height: 60 },
+    { id: "520", name: "Room 520", description: "", top: 533, left: 754, width: 75, height: 60 },
+    { id: "517", name: "Room 517", description: "Deborah Chiarella", top: 3, left: 730, width: 100, height: 52 },
+
+    // Room 525
+    { id: "525-1", name: "Room 525", description: "", top: 426, left: 545, width: 15, height: 10 },
+    { id: "525-2", name: "Room 525", description: "", top: 436, left: 545, width: 25, height: 10 },
+    { id: "525-3", name: "Room 525", description: "", top: 446, left: 545, width: 35, height: 10 },
+    { id: "525-4", name: "Room 525", description: "", top: 456, left: 545, width: 42, height: 10 },
+    { id: "525-5", name: "Room 525", description: "", top: 466, left: 545, width: 50, height: 10 },
+
+    // Room 519
+    { id: "519-1", name: "Room 519", description: "", top: 358, left: 612, width: 50, height: 10 },
+    { id: "519-2", name: "Room 519", description: "", top: 368, left: 622, width: 40, height: 10 },
+    { id: "519-3", name: "Room 519", description: "", top: 378, left: 632, width: 30, height: 10 },
+    { id: "519-4", name: "Room 519", description: "", top: 388, left: 642, width: 20, height: 10 },
+    { id: "519-5", name: "Room 519", description: "", top: 398, left: 652, width: 10, height: 10 },
+
+    // Room 526
+    { id: "526-1", name: "Room 526", description: "", top: 378, left: 620, width: 12, height: 10 },
+    { id: "526-2", name: "Room 526", description: "", top: 388, left: 610, width: 34, height: 10 },
+    { id: "526-3", name: "Room 526", description: "", top: 398, left: 620, width: 34, height: 10 },
+    { id: "526-4", name: "Room 526", description: "", top: 408, left: 630, width: 30, height: 10 },
+    { id: "526-5", name: "Room 526", description: "", top: 418, left: 640, width: 20, height: 10 },
+    { id: "526-6", name: "Room 526", description: "", top: 428, left: 630, width: 30, height: 10 },
+    { id: "526-7", name: "Room 526", description: "", top: 438, left: 620, width: 40, height: 10 },
+    { id: "526-8", name: "Room 526", description: "", top: 448, left: 610, width: 50, height: 10 },
+    { id: "526-9", name: "Room 526", description: "", top: 458, left: 600, width: 60, height: 10 },
+    { id: "526-10", name: "Room 526", description: "", top: 468, left: 595, width: 65, height: 10 },
+  ];
+
+  const floors = {
+    "Basement": basementRooms,
+    "Floor 1": firstFloorRooms,
+    "Floor 2": secondFloorRooms, 
+    "Floor 3": thirdFloorRooms,
+    "Floor 4": fourthFloorRooms,
+    "Floor 5": fifthFloorRooms
+  };
+
   return (
-    <div className="floor2-container">
+    <div className="floor-container">
       <div className="sidebar">
          <h2 className="sidebar-heading">Library Floors</h2>
 
         <div className="sidebar-boxes">
           <button 
             className={`sidebar-box ${activeFloor === "Floor 5" ? "active" : ""}`}
-            onClick={() => setActiveFloor("Floor 5")}
+            onClick={() => {setActiveFloor("Floor 5")}}
           >Floor 5</button>
           
           <button 
             className={`sidebar-box ${activeFloor === "Floor 4" ? "active" : ""}`}
-            onClick={() => setActiveFloor("Floor 4")}
+            onClick={() => {setActiveFloor("Floor 4")}}
           >Floor 4</button>
 
           <button 
             className={`sidebar-box ${activeFloor === "Floor 3" ? "active" : ""}`}
-            onClick={() => setActiveFloor("Floor 3")}
+            onClick={() => {setActiveFloor("Floor 3")}}
           >Floor 3</button>
 
           
           <button 
             className={`sidebar-box ${activeFloor === "Floor 2" ? "active" : ""}`}
-            onClick={() => setActiveFloor("Floor 2")}
+            onClick={() => {setActiveFloor("Floor 2")}}
           >Floor 2</button>
 
           
           <button 
             className={`sidebar-box ${activeFloor === "Floor 1" ? "active" : ""}`}
-            onClick={() => setActiveFloor("Floor 1")}
+            onClick={() => {setActiveFloor("Floor 1")}}
           >Floor 1</button>
 
           <button 
             className={`sidebar-box ${activeFloor === "Basement" ? "active" : ""}`}
-            onClick={() => setActiveFloor("Basement")}
+            onClick={() => {setActiveFloor("Basement")}}
           >Basement</button>
 
           <button className="back-button" onClick={() => navigate("/")}>Back to Home</button>
@@ -94,24 +306,23 @@ function LibraryFloorMap() {
       </div>
       
       <div className="Map-Content">
-        {/* <h1>{activeFloor ? `${activeFloor} Map` : "Library Directory"}</h1> */}
         <div className="searchbar-container">
-        <SearchBar placeholder="Type to search" onSelectResult={(room, description) => {
-          const floor = floorFromRoom(room);
-          setActiveFloor(floor);
-          const roomNumber = room.split(" ")[0];
-          setSelectedRoom({
-            name: "Room " + roomNumber,
-            description: description,
-          });
-        }}/>
-                {selectedRoom && (
+        <SearchBar
+          placeholder="Type to search"
+          onSelectResult={room => {
+            const floor = floorFromRoom(room) as keyof typeof floors;
+            setActiveFloor(floor);
+            const roomNumber = room.split(" ")[0];
+            setPendingRoom("Room " + roomNumber); // will trigger useEffect
+          }}
+        />
+          {selectedRoom && (
             <div className="info-panel show">
-              <button className="close-btn" onClick={() => {setSelectedRoom(null); setWayfindClicked(false)}}>Close</button>
-              <h3>{selectedRoom.name}</h3>
-              <p>{selectedRoom.description}</p>
+              <button className="close-btn" onClick={() => {setSelectedRoom(null); setWayfindClicked(false); setCurrentPath([])}}>Close</button>
+              <h3 className="room-name">{selectedRoom.name}</h3>
+              <p className="room-description">{selectedRoom.description}</p>
 
-              {!wayfindClicked && <button onClick={() => setWayfindClicked(true)}>Wayfind</button>}
+              {!wayfindClicked && <button className="wayfind-button" onClick={() => handleWayfind(selectedRoom.name)}>Wayfind</button>}
 
               {
                 wayfindClicked && 
@@ -137,670 +348,82 @@ function LibraryFloorMap() {
           }
         {/*----------------------------------------------------------------------------------------------------------*/} 
         
-
-        {activeFloor === "Basement" && (
-            <>
-              <div
-                className="hotspot"
-                style={{ top: "488px", left: "120px", width: "136px", height: "84px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "B48", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "573px", left: "255px", width: "62px", height: "64px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "B41", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "573px", left: "367px", width: "74px", height: "122px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "B40", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "3px", left: "643px", width: "74px", height: "72px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "B30", description: "Banana 0" })}
-              ></div>
-            </>
-          )}
-
-        {activeFloor === "Floor 1" && (
-            <>
-              <div
-                className="hotspot"
-                style={{ top: "177px", left: "184px", width: "68px", height: "88px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 116", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "177px", left: "254px", width: "46px", height: "88px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 117", description: "Banana 1" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "177px", left: "300px", width: "60px", height: "88px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 118", description: "Banana 2" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "177px", left: "360px", width: "92px", height: "88px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 119", description: "Banana 3" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "337px", left: "886px", width: "80px", height: "57px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 108", description: "Banana 4" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "395px", left: "819px", width: "144px", height: "122px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 109", description: "Banana 5" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "518px", left: "819px", width: "144px", height: "88px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 110", description: "Banana 6" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "112px", left: "819px", width: "144px", height: "74px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 105A", description: "Banana 7A" })}
-              ></div>
-
-               <div
-                className="hotspot"
-                style={{ top: "187px", left: "819px", width: "70px", height: "116px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 105B", description: "Banana 7B" })}
-              ></div>
-
-
-            </>
-          )}
-
-        {activeFloor === "Floor 2" && (
-            <>
-              <div
-                className="hotspot"
-                style={{ top: "6px", left: "390px", width: "110px", height: "78px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 221", description: "Banana 1" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "6px", left: "506px", width: "52px", height: "78px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 221-D", description: "Banana 2" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "6px", left: "560px", width: "62px", height: "78px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 222", description: "Banana 3" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "6px", left: "624px", width: "48px", height: "78px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 222-A", description: "Banana 4" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "6px", left: "674px", width: "72px", height: "80px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 223", description: "Banana 5" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "6px", left: "909px", width: "30px", height: "35px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 230", description: "Banana 6" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "43px", left: "909px", width: "30px", height: "40px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 229", description: "Banana 7" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "6px", left: "942px", width: "62px", height: "79px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 228", description: "Banana 8" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "6px", left: "1006px", width: "28px", height: "79px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 232", description: "Banana 9" })}
-              ></div>
-            </>
-          )}
-
-          {activeFloor === "Floor 3" && (
-            <>
-              <div
-                className="hotspot"
-                style={{ top: "595px", left: "616px", width: "36px", height: "62px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 324", description: "Banana 1" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "595px", left: "652px", width: "36px", height: "62px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 323", description: "Banana 2" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "595px", left: "688px", width: "28px", height: "62px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 322", description: "Banana 3" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "595px", left: "717px", width: "45px", height: "62px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 321", description: "Banana 4" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "595px", left: "826px", width: "100px", height: "62px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 320", description: "Banana 5" })}
-              ></div>
-
-{/*-------------------------------------------------------Room 319-------------------------------------------------*/} 
-              <div
-                className="hotspot"
-                style={{ top: "401px", left: "689px", width: "48px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 319", description: "Banana 6" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "411px", left: "700px", width: "37px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 319", description: "Banana 6" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "421px", left: "708px", width: "28px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 319", description: "Banana 6" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "431px", left: "718px", width: "18px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 319", description: "Banana 6" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "441px", left: "726px", width: "10px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 319", description: "Banana 6" })}
-              ></div>
-{/*----------------------------------------------------------------------------------------------------------*/}
-
-{/*-------------------------------------------------Room 325-------------------------------------------------------*/}
-              <div
-                className="hotspot"
-                style={{ top: "481px", left: "609px", width: "18px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 325", description: "Banana 6" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "491px", left: "609px", width: "28px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 325", description: "Banana 6" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "501px", left: "609px", width: "42px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 325", description: "Banana 6" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "511px", left: "609px", width: "50px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 325", description: "Banana 6" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "521px", left: "609px", width: "56px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 325", description: "Banana 6" })}
-              ></div>
-{/*----------------------------------------------------------------------------------------------------------*/}
-
-{/*------------------------------------------------Room 326----------------------------------------------------------*/}
-              <div
-                className="hotspot"
-                style={{ top: "421px", left: "694px", width: "14px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 326", description: "Banana 7" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "431px", left: "688px", width: "28px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 326", description: "Banana 7" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "441px", left: "694px", width: "30px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 326", description: "Banana 7" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "451px", left: "704px", width: "32px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 326", description: "Banana 7" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "461px", left: "712px", width: "24px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 326", description: "Banana 7" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "471px", left: "708px", width: "28px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 326", description: "Banana 7" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "481px", left: "698px", width: "38px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 326", description: "Banana 7" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "491px", left: "690px", width: "46px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 326", description: "Banana 7" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "501px", left: "680px", width: "56px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 326", description: "Banana 7" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "511px", left: "672px", width: "64px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 326", description: "Banana 7" })}
-              ></div>
-              <div
-                className="hotspot"
-                style={{ top: "521px", left: "665px", width: "71px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 326", description: "Banana 7" })}
-              ></div>
-            </>
-          )}
-
-          {activeFloor === "Floor 4" && (
-            <>
-              <div
-                className="hotspot"
-                style={{ top: "483px", left: "501px", width: "26px", height: "52px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 424", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "483px", left: "526px", width: "26px", height: "52px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 423", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "483px", left: "551px", width: "24px", height: "52px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 422", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "483px", left: "576px", width: "24px", height: "52px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 421", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "483px", left: "601px", width: "24px", height: "52px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 420C", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "483px", left: "626px", width: "24px", height: "52px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 420B", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "483px", left: "651px", width: "24px", height: "52px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 420A", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "483px", left: "684px", width: "70px", height: "52px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 420", description: "Banana 0" })}
-              ></div>
-
-{/*------------------------------------------------Room 419----------------------------------------------------------*/}
-              <div
-                className="hotspot"
-                style={{ top: "326px", left: "562px", width: "38px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 419", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "336px", left: "567px", width: "33px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 419", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "346px", left: "578px", width: "22px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 419", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "356px", left: "586px", width: "14px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 419", description: "Banana 0" })}
-              ></div>
-
-{/*-----------------------------------------------Room 419------------------------------------------------------------*/}
-
-              <div
-                className="hotspot"
-                style={{ top: "390px", left: "497px", width: "14px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 419", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "400px", left: "497px", width: "22px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 419", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "410px", left: "497px", width: "30px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 419", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "420px", left: "497px", width: "40px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 419", description: "Banana 0" })}
-              ></div>
-{/*------------------------------------------------------------------------------------------------------------*/}
-
-{/*-----------------------------------------------Room 426----------------------------------------------------------*/}
-              <div
-                className="hotspot"
-                style={{ top: "346px", left: "560px", width: "22px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 426", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "356px", left: "560px", width: "26px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 426", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "366px", left: "570px", width: "30px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 426", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "376px", left: "580px", width: "20px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 426", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "386px", left: "575px", width: "25px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 426", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "396px", left: "565px", width: "35px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 426", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "406px", left: "550px", width: "50px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 426", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "416px", left: "540px", width: "60px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 426", description: "Banana 0" })}
-              ></div>
-              <div
-                className="hotspot"
-                style={{ top: "426px", left: "540px", width: "60px", height: "5px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 426", description: "Banana 0" })}
-              ></div>
-{/*------------------------------------------------------------------------------------------------------------*/}
-            </>
-          )}
-
-          {activeFloor === "Floor 5" && (
-            <>
-              <div
-                className="hotspot"
-                style={{ top: "533px", left: "553px", width: "28px", height: "60px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 524", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "533px", left: "581px", width: "28px", height: "60px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 523", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "533px", left: "609px", width: "28px", height: "60px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 522", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "533px", left: "637px", width: "26px", height: "60px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 521", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "533px", left: "663px", width: "26px", height: "60px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 520C", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "533px", left: "689px", width: "26px", height: "60px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 520B", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "533px", left: "715px", width: "30px", height: "60px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 520A", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "533px", left: "754px", width: "75px", height: "60px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 520", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "3px", left: "730px", width: "100px", height: "52px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 517", description: "Banana 0" })}
-              ></div>
-{/*---------------------------------------------------------Room 525_------------------------------------------------*/}
-              <div
-                className="hotspot"
-                style={{ top: "426px", left: "545px", width: "15px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 525", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "436px", left: "545px", width: "25px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 525", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "446px", left: "545px", width: "35px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 525", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "456px", left: "545px", width: "42px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 525", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "466px", left: "545px", width: "50px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 525", description: "Banana 0" })}
-              ></div>
-{/*---------------------------------------------------------------------------------------------------------*/}
-
-{/*---------------------------------------------------------Room 519------------------------------------------------*/}
-              <div
-                className="hotspot"
-                style={{ top: "358px", left: "612px", width: "50px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 519", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "368px", left: "622px", width: "40px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 519", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "378px", left: "632px", width: "30px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 519", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "388px", left: "642px", width: "20px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 519", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "398px", left: "652px", width: "10px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 519", description: "Banana 0" })}
-              ></div>
-{/*-------------------------------------------------------------------------------------------------------------*/}
-
-
-{/*----------------------------------------------------Room 526-------------------------------------------------------*/}
-              <div
-                className="hotspot"
-                style={{ top: "378px", left: "620px", width: "12px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 526", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "388px", left: "610px", width: "34px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 526", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "398px", left: "620px", width: "34px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 526", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "408px", left: "630px", width: "30px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 526", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "418px", left: "640px", width: "20px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 526", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "428px", left: "630px", width: "30px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 526", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "438px", left: "620px", width: "40px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 526", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "448px", left: "610px", width: "50px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 526", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "458px", left: "600px", width: "60px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 526", description: "Banana 0" })}
-              ></div>
-
-              <div
-                className="hotspot"
-                style={{ top: "468px", left: "595px", width: "65px", height: "10px", position: "absolute" }}
-                onClick={() => setSelectedRoom({ name: "Room 526", description: "Banana 0" })}
-              ></div>
-{/*-------------------------------------------------------------------------------------------------------------*/}
-            </>
-          )}
+        {activeFloor && floors[activeFloor].map(room => (
+        <div
+          key={room.id}
+          className={`hotspot ${selectedRoom?.id === room.id ? "active" : ""}`}
+          style={{
+            top: `${room.top}px`,
+            left: `${room.left}px`,
+            width: `${room.width}px`,
+            height: `${room.height}px`,
+            position: "absolute",
+          }}
+          onClick={() => {setSelectedRoom(room); setWayfindClicked(false)}}/>
+      ))}
+        
+        {/* SVG lines connecting path nodes */}
+        {wayfindClicked && currentPath.length > 0 && (
+          <svg
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              pointerEvents: "none",
+              zIndex: 5,
+            }}
+          >
+            {/* Draw lines between consecutive nodes in the path */}
+            {currentPath.map((node, i) => {
+              if (i === currentPath.length - 1) return null; // Skip last node
+              const nextNode = currentPath[i + 1];
+              const coord1 = backendRooms.find(r => r.id === node.id)?.coord;
+              const coord2 = backendRooms.find(r => r.id === nextNode.id)?.coord;
+              if (!coord1 || !coord2) return null;
+              if (floorNumToString(coord1) !== activeFloor || floorNumToString(coord2) !== activeFloor) return null;
+              return (
+                <line
+                  key={`line-${i}`}
+                  x1={coord1[0]}
+                  y1={coord1[1]}
+                  x2={coord2[0]}
+                  y2={coord2[1]}
+                  stroke="red"
+                  strokeWidth="3"
+                />
+              );
+            })}
+          </svg>
+        )}
+
+        {/* Render red dots only for nodes in the current path */}
+        {wayfindClicked && currentPath.length > 0 && currentPath.map(node => {
+          const location = backendRooms.find(r => r.id === node.id);
+          if (!location || !location.coord) return null;
+          if (floorNumToString(location.floor) !== activeFloor) return null;
+          return (
+            <div
+              key={`dot-${node.id}`}
+              style={{
+                position: "absolute",
+                left: `${location.coord[0]}px`,
+                top: `${location.coord[1]}px`,
+                width: "10px",
+                height: "10px",
+                backgroundColor: "red",
+                borderRadius: "50%",
+                transform: "translate(-50%, -50%)",
+                zIndex: 10,
+              }}
+              title={location.name}
+            />
+          );
+        })}
           
         </div>
       </div>
-          {/* -----------------------------------------Shows the information page on the left-------------------------------------------
-          {selectedRoom && (
-            <div className="info-panel show">
-              <button className="close-btn" onClick={() => setSelectedRoom(null)}>Close</button>
-              <h3>{selectedRoom.name}</h3>
-              <p>{selectedRoom.description}</p>
-            </div>
-          )} */}
     </div>
   );
 }
