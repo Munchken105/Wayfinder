@@ -18,7 +18,8 @@ const PORT = process.env.PORT || 5000;
 interface Node {
   id: string;
   name: string;
-  type: 'room' | 'hallway' | 'computer_area' | 'study_area' | 'entrance' | 'bathroom' | 'elevator' | 'stairs';
+  type: 'room' | 'hallway' | 'computer_area' | 'study_area' | 'entrance' | 'bathroom' | 'elevator' | 'stairs' | 'waypoint' | 'tablet';
+  //type: "entrance | room | Stair/Fire_Exit | Tablet | Waypoint | Elevator"
   floor: number;
   x?: number;
   y?: number;
@@ -43,19 +44,29 @@ const nodes: Node[] = [
   { id: "room_229", name: "Room 229", type: "room", floor: 2, coord:[941, 58] },
   { id: "room_230", name: "Room 230", type: "room", floor: 2, coord:[941, 30] },
   { id: "room_232", name: "Room 232", type: "room", floor: 2, coord:[1005, 58]},
-
-  // Passageways and entrances of the second floor
-  { id: "main_entrance", name: "main entrance", type: "entrance", floor: 2, coord:[530, 620]},
-  { id: "top_comp_area", name: "computer area", type: "computer_area", floor: 2, coord: [825, 197]},
-  { id: "right_comp_area", name: "printing & scanning Area", type: "computer_area", floor: 2, coord:[942, 407]},
-  { id: "elevator_001", name: "the elevator", type: "elevator", floor: 2, coord:[709, 496]},
-  { id: "elevator_002", name: "the elevator", type: "elevator", floor: 2, coord:[727, 478]},
-  { id: "floor_1_stairs", name: "stairs to 1st Floor", type: "stairs", floor: 2, coord:[452, 518]},
   { id: "bathroom_002", name: "Bathroom", type: "bathroom", floor: 2, coord:[870, 85]},
 
-  // Study areas (replacing hallways/junctions)
-  { id: "left_study_area", name: "study area to the left", type: "study_area", floor: 2, coord:[560, 208]},
-  { id: "right_study_area", name: "study area to the right", type: "study_area", floor: 2, coord: [974, 215]},
+  // Entrances of the Second Floor
+  { id: "main_entrance", name: "main entrance", type: "entrance", floor: 2, coord:[532, 612]},
+
+  // Elevators
+  { id: "elevator_001", name: "the elevator", type: "elevator", floor: 2, coord:[708, 474]},
+
+  // Tablet Location
+  { id: "main_entrance", name: "Wayfinder tablet", type: "tablet", floor: 2, coord:[624, 593]},
+
+  // Stairs / Fire Exit
+  { id: "floor_1_stairs", name: "stairs to 1st Floor", type: "stairs", floor: 2, coord:[480, 525]},
+  { id: "floor_1_stairs", name: "Fire Exit 1", type: "stairs", floor: 2, coord:[681, 503]},
+  { id: "floor_1_stairs", name: "Fire Exit 2", type: "stairs", floor: 2, coord:[761, 80]},
+
+  // Waypoint (nodes that are used as means to get to the the actual destination)
+  { id: "top_comp_area", name: "lower layer 1 computer area", type: "waypoint", floor: 2, coord: [764, 390]},
+  { id: "right_comp_area", name: "lower layer 2 computer area", type: "waypoint", floor: 2, coord:[880, 307]},
+  { id: "top_comp_area", name: "middle layer 3 computer area", type: "waypoint", floor: 2, coord: [772, 256]},
+  { id: "right_comp_area", name: "middle layer 4 computer area", type: "waypoint", floor: 2, coord:[761, 192]},
+  { id: "top_comp_area", name: "middle layer 5 computer area", type: "waypoint", floor: 2, coord: [876, 192]},
+  
 ];
 
 // Adjacency list - all connections on the same floor
