@@ -15,7 +15,8 @@ function LibraryFloorMap() {
 
   const [lastClick, setLastClick] = useState<{ x: number; y: number } | null>(null); // this is for knowing where to set up boxes
   const [selectedRoom, setSelectedRoom] = useState<{ name: string; description: string; id: string} | null>(null); // this is for making the clicking of the rooms useful
-  const [wayfindClicked, setWayfindClicked] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [wayfindClicked, setWayfindClicked] = useState(false);
   const [backendRooms, setBackendRooms] = useState<any[]>([]);
   const [currentPath, setCurrentPath] = useState<any[]>([]); // Store nodes in the current navigation path
 
@@ -266,7 +267,7 @@ function LibraryFloorMap() {
   return (
     <div className="floor-container">
       <div className="sidebar">
-         <h2 className="sidebar-heading">Library Floors</h2>
+        <h2 className="sidebar-heading">Library Floors</h2>
 
         <div className="sidebar-boxes">
           <button 
@@ -308,29 +309,45 @@ function LibraryFloorMap() {
       <div className="Map-Content">
         <div className="searchbar-container">
         <SearchBar
-          placeholder="Type to search"
+          placeholder="Search for Librarians"
           onSelectResult={room => {
             const floor = floorFromRoom(room) as keyof typeof floors;
             setActiveFloor(floor);
             const roomNumber = room.split(" ")[0];
             setPendingRoom("Room " + roomNumber); // will trigger useEffect
+            setWayfindClicked(false);
+            setIsCollapsed(false);
           }}
         />
           {selectedRoom && (
-            <div className="info-panel show">
-              <button className="close-btn" onClick={() => {setSelectedRoom(null); setWayfindClicked(false); setCurrentPath([])}}>Close</button>
-              <h3 className="room-name">{selectedRoom.name}</h3>
-              <p className="room-description">{selectedRoom.description}</p>
+            <div className={`info-panel show ${isCollapsed ? "collapsed" : ""}`}>
 
-              {!wayfindClicked && <button className="wayfind-button" onClick={() => handleWayfind(selectedRoom.name)}>Wayfind</button>}
+              {/* Collapse / Expand toggle */}
+              <button
+                className="collapse-toggle"
+                onClick={() => setIsCollapsed(prev => !prev)}
+                aria-expanded={!isCollapsed}
+                aria-label={isCollapsed ? "Expand panel" : "Collapse panel"}
+              >
+                {isCollapsed ? ">" : "<"}
+              </button>
 
-              {
-                wayfindClicked && 
-                <WayfindPage 
-                room = {selectedRoom.name}
-                />
-              }
+              {!isCollapsed && (
+                  <>
+                    <button className="close-btn" onClick={() => {setSelectedRoom(null); setWayfindClicked(false); setCurrentPath([]); setIsCollapsed(false);}}>Close</button>
+                    <h3 className="room-name">{selectedRoom.name}</h3>
+                    <p className="room-description">{selectedRoom.description}</p>
 
+                    {!wayfindClicked && <button className="wayfind-button" onClick={() => handleWayfind(selectedRoom.name)}>Wayfind</button>}
+
+                    {
+                      wayfindClicked && 
+                      <WayfindPage 
+                      room = {selectedRoom.name}
+                      />
+                    }
+                  </>
+              )}
             </div>
           )}
 
@@ -359,7 +376,7 @@ function LibraryFloorMap() {
             height: `${room.height}px`,
             position: "absolute",
           }}
-          onClick={() => {setSelectedRoom(room); setWayfindClicked(false)}}/>
+          onClick={() => {setSelectedRoom(room); setWayfindClicked(false); setIsCollapsed(false);}}/>
       ))}
         
         {/* SVG lines connecting path nodes */}
