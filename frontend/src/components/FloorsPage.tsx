@@ -164,34 +164,16 @@ function LibraryFloorMap() {
     { id: "323", name: "Room 323", description: "", top: 595, left: 652, width: 36, height: 62 },
     { id: "322", name: "Room 322", description: "Natalia Estrada", top: 595, left: 688, width: 28, height: 62 },
     { id: "321", name: "Room 321", description: "", top: 595, left: 717, width: 45, height: 62 },
-    { id: "320", name: "Room 320", description: "", top: 595, left: 826, width: 100, height: 62 },
+    { id: "320", name: "Room 320", description: "", top: 595, left: 826, width: 100, height: 62, clipPath: "polygon(0% 100%, 100% 100%, 100% 0%, 24% 0%, 0% 25%)"  },
 
     // Room 319
-    { id: "319-1", name: "Room 319", description: "", top: 401, left: 689, width: 48, height: 10 },
-    { id: "319-2", name: "Room 319", description: "", top: 411, left: 700, width: 37, height: 10 },
-    { id: "319-3", name: "Room 319", description: "", top: 421, left: 708, width: 28, height: 10 },
-    { id: "319-4", name: "Room 319", description: "", top: 431, left: 718, width: 18, height: 10 },
-    { id: "319-5", name: "Room 319", description: "", top: 441, left: 726, width: 10, height: 10 },
+    { id: "319-1", name: "Room 319", description: "", top: 401, left: 684, width: 54, height: 54, clipPath: "polygon(7% 7%, 9% 0%, 100% 0%, 100% 100%)" },
 
     // Room 325
-    { id: "325-1", name: "Room 325", description: "", top: 481, left: 609, width: 18, height: 10 },
-    { id: "325-2", name: "Room 325", description: "", top: 491, left: 609, width: 28, height: 10 },
-    { id: "325-3", name: "Room 325", description: "", top: 501, left: 609, width: 42, height: 10 },
-    { id: "325-4", name: "Room 325", description: "", top: 511, left: 609, width: 50, height: 10 },
-    { id: "325-5", name: "Room 325", description: "", top: 521, left: 609, width: 56, height: 10 },
+    { id: "325-1", name: "Room 325", description: "", top: 478, left: 610, width: 54, height: 52, clipPath: "polygon(0% 100%, 0% 25%, 22% 4%, 100% 87%, 100% 100%)" },
 
     // Room 326
-    { id: "326-1", name: "Room 326", description: "", top: 421, left: 694, width: 14, height: 10 },
-    { id: "326-2", name: "Room 326", description: "", top: 431, left: 688, width: 28, height: 10 },
-    { id: "326-3", name: "Room 326", description: "", top: 441, left: 694, width: 30, height: 10 },
-    { id: "326-4", name: "Room 326", description: "", top: 451, left: 704, width: 32, height: 10 },
-    { id: "326-5", name: "Room 326", description: "", top: 461, left: 712, width: 24, height: 10 },
-    { id: "326-6", name: "Room 326", description: "", top: 471, left: 708, width: 28, height: 10 },
-    { id: "326-7", name: "Room 326", description: "", top: 481, left: 698, width: 38, height: 10 },
-    { id: "326-8", name: "Room 326", description: "", top: 491, left: 690, width: 46, height: 10 },
-    { id: "326-9", name: "Room 326", description: "", top: 501, left: 680, width: 56, height: 10 },
-    { id: "326-10", name: "Room 326", description: "", top: 511, left: 672, width: 64, height: 10 },
-    { id: "326-11", name: "Room 326", description: "", top: 521, left: 665, width: 71, height: 10 },
+    { id: "326-1", name: "Room 326", description: "", top: 421, left: 665, width: 71, height: 110, clipPath: "polygon(100% 100%, 0% 100%, 0% 90%, 73% 44%, 27% 17%, 50% 0%, 100% 34% )" },
   ];
 
   const fourthFloorRooms: Room[] = [
