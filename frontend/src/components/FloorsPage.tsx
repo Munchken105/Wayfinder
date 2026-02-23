@@ -128,9 +128,9 @@ function LibraryFloorMap() {
   const navigate = useNavigate();
 
   const basementRooms: Room[] = [
-    { id: "B48", name: "B48", description: "", top: 488, left: 120, width: 136, height: 84 },
+    { id: "B48", name: "B48", description: "", top: 488, left: 120, width: 136, height: 84, clipPath: "polygon(0% 0%, 0% 100%, 100% 100%, 100% 15%, 90% 0%)" },
     { id: "B41", name: "B41", description: "", top: 573, left: 255, width: 62, height: 64 },
-    { id: "B40", name: "B40", description: "", top: 573, left: 367, width: 74, height: 122 },
+    { id: "B40", name: "B40", description: "", top: 573, left: 367, width: 74, height: 122, clipPath: "polygon(0% 0%, 0% 100%, 100% 100%, 100% 10%, 80% 0%)" },
     { id: "B30", name: "B30", description: "", top: 3, left: 643, width: 74, height: 72 },
   ];
 
@@ -143,7 +143,6 @@ function LibraryFloorMap() {
     { id: "109", name: "Room 109", description: "", top: 395, left: 819, width: 144, height: 122 },
     { id: "110", name: "Room 110", description: "", top: 518, left: 819, width: 144, height: 88, clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 15% 100%, 0% 75%)" },
     { id: "105-1", name: "Room 105", description: "Fred Stoss", top: 112, left: 822, width: 142, height: 190, clipPath: "polygon(0% 38%, 0% 89%, 15% 100%, 47% 100%, 47% 38%, 100% 38%, 50% 0%)" },
-    // { id: "105-2", name: "Room 105", description: "Fred Stoss", top: 187, left: 819, width: 70, height: 116 },
   ];
 
   const secondFloorRooms: Room[] = [
