@@ -309,7 +309,7 @@ function LibraryFloorMap() {
       <div className="Map-Content">
         <div className="searchbar-container">
         <SearchBar
-          placeholder="Type to search"
+          placeholder="Search for Librarians"
           onSelectResult={room => {
             const floor = floorFromRoom(room) as keyof typeof floors;
             setActiveFloor(floor);
