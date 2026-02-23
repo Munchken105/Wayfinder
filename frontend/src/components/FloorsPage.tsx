@@ -203,28 +203,17 @@ function LibraryFloorMap() {
     { id: "420C", name: "Room 420C", description: "", top: 483, left: 601, width: 24, height: 52 },
     { id: "420B", name: "Room 420B", description: "", top: 483, left: 626, width: 24, height: 52 },
     { id: "420A", name: "Room 420A", description: "", top: 483, left: 651, width: 24, height: 52 },
-    { id: "420", name: "Room 420", description: "", top: 483, left: 684, width: 70, height: 52 },
+    { id: "420", name: "Room 420", description: "", top: 483, left: 684, width: 70, height: 52, clipPath: "polygon(0% 100%, 100% 100%, 100% 0%, 24% 0%, 0% 25%)" },
 
     // Room 419
-    { id: "419-1", name: "Room 419", description: "", top: 326, left: 562, width: 38, height: 10 },
-    { id: "419-2", name: "Room 419", description: "", top: 336, left: 567, width: 33, height: 10 },
-    { id: "419-3", name: "Room 419", description: "", top: 346, left: 578, width: 22, height: 10 },
-    { id: "419-4", name: "Room 419", description: "", top: 356, left: 586, width: 14, height: 10 },
-    { id: "419-5", name: "Room 419", description: "", top: 390, left: 497, width: 14, height: 10 },
-    { id: "419-6", name: "Room 419", description: "", top: 400, left: 497, width: 22, height: 10 },
-    { id: "419-7", name: "Room 419", description: "", top: 410, left: 497, width: 30, height: 10 },
-    { id: "419-8", name: "Room 419", description: "", top: 420, left: 497, width: 40, height: 10 },
+    { id: "419-1", name: "Room 419", description: "", top: 326, left: 559, width: 42, height: 80, clipPath: "polygon(100% 3%, 100% 57%, 1% 3%)" },
+
+    // Room 425
+    { id: "425-1", name: "Room 425", description: "", top: 388, left: 498, width: 42, height: 45, clipPath: "polygon(0% 100%, 0% 25%, 22% 4%, 100% 87%, 100% 100%)" },
+
 
     // Room 426
-    { id: "426-1", name: "Room 426", description: "", top: 346, left: 560, width: 22, height: 95, clipPath: "polygon(100% 100%, 0% 100%, 0% 90%, 73% 44%, 27% 17%, 50% 0%, 100% 34% )"  },
-    // { id: "426-2", name: "Room 426", description: "", top: 356, left: 560, width: 26, height: 10 },
-    // { id: "426-3", name: "Room 426", description: "", top: 366, left: 570, width: 30, height: 10 },
-    // { id: "426-4", name: "Room 426", description: "", top: 376, left: 580, width: 20, height: 10 },
-    // { id: "426-5", name: "Room 426", description: "", top: 386, left: 575, width: 25, height: 10 },
-    // { id: "426-6", name: "Room 426", description: "", top: 396, left: 565, width: 35, height: 10 },
-    // { id: "426-7", name: "Room 426", description: "", top: 406, left: 550, width: 50, height: 10 },
-    // { id: "426-8", name: "Room 426", description: "", top: 416, left: 540, width: 60, height: 10 },
-    // { id: "426-9", name: "Room 426", description: "", top: 426, left: 540, width: 60, height: 5 },
+    { id: "426-1", name: "Room 426", description: "", top: 344, left: 541, width: 59, height: 90, clipPath: "polygon(100% 100%, 0% 100%, 0% 90%, 73% 44%, 27% 17%, 50% 0%, 100% 34% )"  },
   ];
 
   const fifthFloorRooms: Room[] = [
