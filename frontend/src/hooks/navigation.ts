@@ -10,24 +10,11 @@ export interface NavigationResult {
 }
 
 export function useNavigation() {
-  const [startRoom, setStartRoom] = useState("");
-  const [endRoom, setEndRoom] = useState("");
   const [navigationResult, setNavigationResult] = useState<NavigationResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const reset = () => {
-    
-      setStartRoom("");
-      setEndRoom("");
-      setNavigationResult(null);
-      setError("");
-    
-  }
-
   const findPath = async (from: string, to: string) => { //At the moment, from should only be "Main Entrance"
-    setStartRoom(from);
-    setEndRoom(to);
     if (!to || !from) {
       setError("Please select both start and end locations");
       return;
@@ -43,8 +30,10 @@ export function useNavigation() {
     setNavigationResult(null);
 
     try {
+      const urlFrom = encodeURIComponent(from);
+      const urlTo = encodeURIComponent(to);
       const response = await fetch(
-        `http://localhost:5000/api/navigation/from/${from}/to/${to}`
+        `/api/navigation/from/${from}/to/${to}`
       );
       const data = await response.json();
 
@@ -65,6 +54,5 @@ export function useNavigation() {
     loading,
     error,
     findPath,
-    reset
   };
 }

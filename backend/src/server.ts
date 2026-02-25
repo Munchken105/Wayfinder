@@ -18,10 +18,11 @@ const PORT = process.env.PORT || 5000;
 interface Node {
   id: string;
   name: string;
-  type: 'room' | 'hallway' | 'junction' | 'entrance';
+  type: 'room' | 'hallway' | 'computer_area' | 'study_area' | 'entrance' | 'bathroom' | 'elevator' | 'stairs';
   floor: number;
   x?: number;
   y?: number;
+  coord?: [number, number];
 }
 
 interface PathResult {
@@ -32,117 +33,60 @@ interface PathResult {
 
 // Single floor building graph - all rooms on the same floor
 const nodes: Node[] = [
-  // Rooms along the right side
-  { id: "221A", name: "Room 221A", type: "room", floor: 2 },
-  { id: "221B", name: "Room 221B", type: "room", floor: 2 },
-  { id: "221C", name: "Room 221C", type: "room", floor: 2 },
-  { id: "221D", name: "Room 221D", type: "room", floor: 2 },
-  { id: "222", name: "Room 222", type: "room", floor: 2 },
-  { id: "222A", name: "Room 222A", type: "room", floor: 2 },
-  { id: "223", name: "Room 223", type: "room", floor: 2 },
-  { id: "223A", name: "Room 223A", type: "room", floor: 2 },
-  { id: "224A", name: "Library Search Station (224A)", type: "room", floor: 2 },
-  { id: "226", name: "Room 226", type: "room", floor: 2 },
-  { id: "227", name: "Room 227", type: "room", floor: 2 },
-  { id: "228", name: "Room 228", type: "room", floor: 2 },
-  { id: "229", name: "Room 229", type: "room", floor: 2 },
-  { id: "230", name: "Room 230", type: "room", floor: 2 },
-  { id: "232", name: "Room 232", type: "room", floor: 2 },
+  // All available rooms on the second floors
+  { id: "room_221", name: "Room 221", type: "room", floor: 2, coord:[437, 90] },
+  { id: "room_221D", name: "Room 221-D", type: "room", floor: 2, coord:[532, 90]},
+  { id: "room_222", name: "Room 222", type: "room", floor: 2, coord:[581, 90] },
+  { id: "room_222A", name: "Room 222-A", type: "room", floor: 2, coord:[651, 90] },
+  { id: "room_223", name: "Room 223", type: "room", floor: 2, coord:[740, 75]},
+  { id: "room_228", name: "Room 228", type: "room", floor: 2, coord:[975, 85] },
+  { id: "room_229", name: "Room 229", type: "room", floor: 2, coord:[941, 58] },
+  { id: "room_230", name: "Room 230", type: "room", floor: 2, coord:[941, 30] },
+  { id: "room_232", name: "Room 232", type: "room", floor: 2, coord:[1005, 58]},
 
-  // Rooms on the left side
-  { id: "C201", name: "Room C201", type: "room", floor: 2 },
-  { id: "C202", name: "Room C202", type: "room", floor: 2 },
-  { id: "234", name: "Room 234", type: "room", floor: 2 },
-  { id: "235", name: "Room 235", type: "room", floor: 2 },
-  { id: "235A", name: "Reception Desk (235A)", type: "entrance", floor: 2 },
-  { id: "235B", name: "Room 235B", type: "room", floor: 2 },
-  { id: "235C", name: "Room 235C", type: "room", floor: 2 },
-  { id: "235D", name: "Room 235D", type: "room", floor: 2 },
-  { id: "235E", name: "Room 235E", type: "room", floor: 2 },
-  { id: "235F", name: "Room 235F", type: "room", floor: 2 },
-  { id: "236", name: "Room 236", type: "room", floor: 2 },
-  { id: "237", name: "Room 237", type: "room", floor: 2 },
-  { id: "237A", name: "Room 237A", type: "room", floor: 2 },
-  { id: "242", name: "Room 242", type: "room", floor: 2 },
-  { id: "242A", name: "Room 242A", type: "room", floor: 2 },
-
-  // Special areas and entrances
-  { id: "C235", name: "Main Entrance", type: "entrance", floor: 2 },
-  { id: "C218", name: "Rescue Area", type: "room", floor: 2 },
-  { id: "233", name: "Auditorium Area", type: "room", floor: 2 },
-  { id: "233A", name: "Main Auditorium", type: "room", floor: 2 },
-  { id: "233B", name: "Computer Area 233B", type: "room", floor: 2 },
-  { id: "233H", name: "Seating Area 233H", type: "room", floor: 2 },
-  { id: "E240", name: "Elevator E240", type: "entrance", floor: 2 },
-  { id: "E239", name: "Elevator E239", type: "entrance", floor: 2 },
+  // Passageways and entrances of the second floor
+  { id: "main_entrance", name: "main entrance", type: "entrance", floor: 2, coord:[530, 620]},
+  { id: "top_comp_area", name: "computer area", type: "computer_area", floor: 2, coord: [825, 197]},
+  { id: "right_comp_area", name: "printing & scanning Area", type: "computer_area", floor: 2, coord:[942, 407]},
+  { id: "elevator_001", name: "the elevator", type: "elevator", floor: 2, coord:[709, 496]},
+  { id: "elevator_002", name: "the elevator", type: "elevator", floor: 2, coord:[727, 478]},
+  { id: "floor_1_stairs", name: "stairs to 1st Floor", type: "stairs", floor: 2, coord:[452, 518]},
+  { id: "bathroom_002", name: "Bathroom", type: "bathroom", floor: 2, coord:[870, 85]},
 
   // Study areas (replacing hallways/junctions)
-  { id: "221", name: "Study Area 221 (left of 224A)", type: "room", floor: 2 },
-  { id: "study_main_ns", name: "Main Study Area (NS)", type: "room", floor: 2 },
-  { id: "study_main_ew", name: "East-West Study Area", type: "room", floor: 2 },
-  { id: "study_235", name: "Study Area 235", type: "room", floor: 2 },
-  { id: "study_233", name: "Study Area 233", type: "room", floor: 2 },
+  { id: "left_study_area", name: "study area to the left", type: "study_area", floor: 2, coord:[560, 208]},
+  { id: "right_study_area", name: "study area to the right", type: "study_area", floor: 2, coord: [974, 215]},
 ];
 
 // Adjacency list - all connections on the same floor
 const graph: { [key: string]: string[] } = {
   // Main entrance and elevator connections (now connect to study areas)
-  "C235": ["235A", "study_235", "study_main_ns"],
-  "E240": ["study_main_ns", "study_main_ew"],
-  "E239": ["study_main_ns", "233B"],
-  "235A": ["E240", "E239", "study_235"],
-  
-  // Right side room connections (connect to main study areas)
-  "221A": ["study_main_ns"],
-  "221B": ["study_main_ns"],
-  "221C": ["study_main_ns"],
-  "221D": ["study_main_ns"],
-  "222": ["study_main_ns"],
-  "222A": ["study_main_ns"],
-  "223": ["study_main_ns"],
-  "223A": ["study_main_ns"],
-  "224A": ["study_main_ew", "221"],
-  "226": ["study_main_ns"],
-  "227": ["study_main_ns"],
-  "228": ["study_main_ns"],
-  "229": ["study_main_ns"],
-  "230": ["study_main_ns"],
-  "232": ["study_main_ns"],
-
-  // Left side room connections (connect to study area 235)
-  "C201": ["study_main_ns"],
-  "C202": ["study_main_ns"],
-  "234": ["study_235"],
-  "235": ["study_235"],
-  "235B": ["study_235"],
-  "235C": ["study_235"],
-  "235D": ["study_235"],
-  "235E": ["study_235"],
-  "235F": ["study_235"],
-  "236": ["study_235"],
-  "237": ["study_235"],
-  "237A": ["study_235"],
-  "242": ["study_235"],
-  "242A": ["study_235"],
+  "room_221": ["left_study_area", "top_comp_area", "right_study_area"],
+  "room_221D": ["left_study_area", "top_comp_area", "right_study_area"],
+  "room_222": ["left_study_area", "top_comp_area", "right_study_area"],
+  "room_222A": ["left_study_area", "top_comp_area", "right_study_area", "room_223"],
+  "room_223": ["left_study_area", "top_comp_area", "right_study_area", "room_222A"],
+  "room_228": ["left_study_area", "top_comp_area", "right_study_area", "room_229", "room_230", "room_232"],
+  "room_229": ["room_228"],
+  "room_230": ["room_228"],
+  "room_232": ["room_228"],
 
   // Special areas
-  "C218": ["study_main_ns"],
-  "233": ["study_233"],
-  "233A": ["study_233"],
-  "233B": ["E239"],
-  "233H": ["study_233"],
+  "main_entrance": ["elevator_001", "elevator_002", "floor_1_stairs"],
+  "top_comp_area": ["right_study_area", "left_study_area", "room_228", "bathroom_002"],
+  "right_comp_area": ["top_comp_area", "left_study_area", "right_study_area", "elevator_001", "elevator_002"],
+  "elevator_001": ["right_study_area", "right_comp_area", "top_comp_area", "elevator_002", "main_entrance"],
+  "elevator_002": ["right_study_area", "right_comp_area", "top_comp_area", "elevator_001", "main_entrance"],
+  "bathroom_002": ["left_study_area", "right_study_area", "top_comp_area"],
+  "floor_1_stairs": ["main_entrance", "elevator_001", "elevator_002"],
 
   // Study area connections (replacing hallways/junctions)
-  "study_main_ns": ["C235", "E240", "E239", "221A", "221B", "221C", "221D", "222", "222A", "223", "223A", 
-                   "226", "227", "228", "229", "230", "232", "C201", "C202", "C218", "221", "study_main_ew"],
-  "study_main_ew": ["224A", "study_main_ns", "study_233"],
-  "study_235": ["C235", "234", "235", "235A", "235B", "235C", "235D", "235E", 
-               "235F", "236", "237", "237A", "242", "242A", "study_main_ns"],
-  "study_233": ["233", "233A", "233H", "study_main_ew"]
+  "left_study_area":["room_221", "room_221D", "room_222", "room_222A", "room_223", "top_comp_area", "right_study_area", "bathroom_002"],
+  "right_study_area":["room_228", "top_comp_area", "right_comp_area", "left_study_area", "elevator_001", "elevator_002"]
 };
 
-// ! BFS algorithm for shortest path (fewest steps)
-function findShortestPathBFS(startNodeId: string, endNodeId: string): PathResult | null {
+// ! Dijkstra algorithm for shortest path (weighted by Euclidean distance between node coordinates)
+function findShortestPathDijkstra(startNodeId: string, endNodeId: string): PathResult | null {
   if (startNodeId === endNodeId) {
     const node = nodes.find(n => n.id === startNodeId);
     return {
@@ -152,43 +96,79 @@ function findShortestPathBFS(startNodeId: string, endNodeId: string): PathResult
     };
   }
 
+  const dist = new Map<string, number>();
+  const prev = new Map<string, string | null>();
   const visited = new Set<string>();
-  const queue: { node: string; path: string[] }[] = [];
-  
-  // Start BFS
-  queue.push({ node: startNodeId, path: [startNodeId] });
-  visited.add(startNodeId);
 
-  while (queue.length > 0) {
-    const currentItem = queue.shift();
-    if (!currentItem) break;
+  // Helper to compute Euclidean distance between two nodes (fallback to 1 if coords missing)
+  const coordOf = (id: string): [number, number] | null => {
+    const n = nodes.find(x => x.id === id);
+    return n && n.coord && n.coord.length === 2 ? n.coord : null;
+  };
 
-    const { node, path } = currentItem;
+  const euclidean = (aId: string, bId: string) => {
+    const a = coordOf(aId);
+    const b = coordOf(bId);
+    if (!a || !b) return 1; // fallback weight
+    const dx = a[0] - b[0];
+    const dy = a[1] - b[1];
+    return Math.sqrt(dx * dx + dy * dy);
+  };
 
-    // Check all neighbors
-    const neighbors = graph[node] || [];
-    for (const neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        const newPath = [...path, neighbor];
-        
-        // Found destination
-        if (neighbor === endNodeId) {
-          const instructions = generateInstructions(newPath);
-          return {
-            path: newPath,
-            steps: newPath.length - 1,
-            instructions
-          };
-        }
+  // Initialize distances
+  for (const n of nodes) {
+    dist.set(n.id, Infinity);
+    prev.set(n.id, null);
+  }
+  dist.set(startNodeId, 0);
 
-        // Continue BFS
-        visited.add(neighbor);
-        queue.push({ node: neighbor, path: newPath });
+
+  // Simple priority queue using array (small graph so acceptable)
+  const compare = (a: [string, number], b: [string, number]) => a[1] - b[1];
+  const pq: Array<[string, number]> = [[startNodeId, 0]];
+
+  while (pq.length > 0) {
+    // pop smallest
+    pq.sort(compare);
+    const [u] = pq.shift()!;
+    
+    if (visited.has(u)) continue;
+    visited.add(u);
+
+    if (u === endNodeId) break;
+
+    const neighbors = graph[u] || [];
+    for (const v of neighbors) {
+      if (visited.has(v)) continue;
+      const weight = euclidean(u, v);
+      const alt = (dist.get(u) ?? Infinity) + weight;
+      
+      if (alt < (dist.get(v) ?? Infinity)) {
+        dist.set(v, alt);
+        prev.set(v, u);
+        pq.push([v, alt]);
       }
     }
+    // pq snapshot logging removed
   }
 
-  return null; // No path found
+  if ((dist.get(endNodeId) ?? Infinity) === Infinity) return null;
+
+  // Reconstruct path
+  const path: string[] = [];
+  let cur: string | null = endNodeId;
+  while (cur) {
+    path.unshift(cur);
+    cur = prev.get(cur) || null;
+  }
+
+  const instructions = generateInstructions(path);
+  const totalDistance = dist.get(endNodeId) || 0;
+  return {
+    path,
+    steps: Number(totalDistance.toFixed(2)),
+    instructions
+  };
 }
 
 // Generate human-readable instructions from path
@@ -208,23 +188,71 @@ function generateInstructions(path: string[]): string[] {
 
     let instruction = "";
 
-    // All navigation is on the same floor
-    if (currentNode.type === 'room' && nextNode.type === 'hallway') {
-      instruction = `Exit ${currentNode.name} and turn into the hallway`;
-    } else if (currentNode.type === 'hallway' && nextNode.type === 'room') {
+    // Room exits and entries
+    if (currentNode.type === 'room' && nextNode.type === 'study_area') {
+      instruction = `Exit ${currentNode.name} and head to ${nextNode.name}`;
+    } else if (currentNode.type === 'room' && nextNode.type === 'computer_area') {
+      instruction = `Exit ${currentNode.name} and navigate to ${nextNode.name}`;
+    } else if (currentNode.type === 'study_area' && nextNode.type === 'room') {
       instruction = `Enter ${nextNode.name}`;
-    } else if (currentNode.type === 'hallway' && nextNode.type === 'junction') {
-      instruction = `Continue to ${nextNode.name}`;
-    } else if (currentNode.type === 'junction' && nextNode.type === 'hallway') {
-      instruction = `Take the hallway toward ${nextNode.name}`;
-    } else if (currentNode.type === 'junction' && nextNode.type === 'junction') {
-      instruction = `Continue through ${nextNode.name}`;
-    } else if (currentNode.type === 'hallway' && nextNode.type === 'hallway') {
-      instruction = `Continue down the hallway`;
-    } else if (currentNode.type === 'entrance' && nextNode.type === 'hallway') {
-      instruction = `From entrance, proceed to ${nextNode.name}`;
-    } else {
+    } else if (currentNode.type === 'computer_area' && nextNode.type === 'room') {
       instruction = `Go to ${nextNode.name}`;
+    }
+    // Study area transitions
+    else if (currentNode.type === 'study_area' && nextNode.type === 'study_area') {
+      instruction = `Move to ${nextNode.name}`;
+    } else if (currentNode.type === 'study_area' && nextNode.type === 'computer_area') {
+      instruction = `Head toward ${nextNode.name}`;
+    } else if (currentNode.type === 'study_area' && nextNode.type === 'bathroom') {
+      instruction = `Navigate to ${nextNode.name}`;
+    } else if (currentNode.type === 'study_area' && nextNode.type === 'elevator') {
+      instruction = `Move to ${nextNode.name}`;
+    } else if (currentNode.type === 'study_area' && nextNode.type === 'stairs') {
+      instruction = `Head to ${nextNode.name}`;
+    }
+    // Computer area transitions
+    else if (currentNode.type === 'computer_area' && nextNode.type === 'study_area') {
+      instruction = `Move to ${nextNode.name}`;
+    } else if (currentNode.type === 'computer_area' && nextNode.type === 'computer_area') {
+      instruction = `Continue to ${nextNode.name}`;
+    } else if (currentNode.type === 'computer_area' && nextNode.type === 'elevator') {
+      instruction = `Proceed to ${nextNode.name}`;
+    } else if (currentNode.type === 'computer_area' && nextNode.type === 'bathroom') {
+      instruction = `Navigate to ${nextNode.name}`;
+    }
+    // Elevator transitions
+    else if (currentNode.type === 'elevator' && nextNode.type === 'study_area') {
+      instruction = `Exit the elevator and head to ${nextNode.name}`;
+    } else if (currentNode.type === 'elevator' && nextNode.type === 'computer_area') {
+      instruction = `Exit the elevator and go to ${nextNode.name}`;
+    } else if (currentNode.type === 'elevator' && nextNode.type === 'entrance') {
+      instruction = `Exit the elevator toward ${nextNode.name}`;
+    } else if (currentNode.type === 'elevator' && nextNode.type === 'elevator') {
+      instruction = `Move to ${nextNode.name}`;
+    }
+    // Bathroom transitions
+    else if (currentNode.type === 'bathroom' && nextNode.type === 'study_area') {
+      instruction = `Exit bathroom and move to ${nextNode.name}`;
+    } else if (currentNode.type === 'bathroom' && nextNode.type === 'computer_area') {
+      instruction = `Exit bathroom and go to ${nextNode.name}`;
+    }
+    // Stairs transitions
+    else if (currentNode.type === 'stairs' && nextNode.type === 'entrance') {
+      instruction = `From stairs, proceed to ${nextNode.name}`;
+    } else if (currentNode.type === 'stairs' && nextNode.type === 'study_area') {
+      instruction = `From stairs, head to ${nextNode.name}`;
+    }
+    // Entrance transitions
+    else if (currentNode.type === 'entrance' && nextNode.type === 'elevator') {
+      instruction = `From the main entrance, proceed to ${nextNode.name}`;
+    } else if (currentNode.type === 'entrance' && nextNode.type === 'stairs') {
+      instruction = `From the main entrance, head to ${nextNode.name}`;
+    } else if (currentNode.type === 'entrance' && nextNode.type === 'study_area') {
+      instruction = `From the main entrance, proceed to ${nextNode.name}`;
+    }
+    // Default fallback
+    else {
+      instruction = `Continue to ${nextNode.name}`;
     }
 
     if (instruction) {
@@ -240,7 +268,7 @@ function generateInstructions(path: string[]): string[] {
 
 // Routes
 app.get("/", (req: Request, res: Response) => {
-  res.send("Single Floor Navigation Backend (BFS) - Use /api/navigation/from/:start/to/:end");
+  res.send("Single Floor Navigation Backend (Dijkstra) - Use /api/navigation/from/:start/to/:end");
 });
 
 // Get all nodes
@@ -250,25 +278,38 @@ app.get("/api/nodes", (req: Request, res: Response) => {
       id: node.id,
       name: node.name,
       type: node.type,
-      floor: node.floor
+      floor: node.floor,
+      coord: node.coord
     }))
   });
 });
 
 // Get all locations
 app.get("/api/rooms", (req: Request, res: Response) => {
-  // Include all location types: rooms, entrances, elevators, and junctions
+  // Include all location types: rooms, entrances, bathrooms, elevators, stairs, and areas
   const locations = nodes.filter(node => 
     node.type === 'room' || 
     node.type === 'entrance' || 
-    node.type === 'junction'
+    node.type === 'computer_area' ||
+    node.type === 'study_area' ||
+    node.type === 'bathroom' ||
+    node.type === 'elevator' ||
+    node.type === 'stairs'
   );
   
   // Sort locations by type and name for better organization in dropdown
   const sortedLocations = locations.sort((a, b) => {
     // First sort by type
     if (a.type !== b.type) {
-      const typeOrder: { [key: string]: number } = { entrance: 1, room: 2, junction: 3 };
+      const typeOrder: { [key: string]: number } = { 
+        entrance: 1, 
+        room: 2, 
+        bathroom: 3,
+        elevator: 4,
+        stairs: 5,
+        computer_area: 6,
+        study_area: 7
+      };
       return (typeOrder[a.type] || 99) - (typeOrder[b.type] || 99);
     }
     // Then sort by name
@@ -278,10 +319,12 @@ app.get("/api/rooms", (req: Request, res: Response) => {
   res.json({ rooms: sortedLocations });
 });
 
-// Find shortest path using BFS
+// Find shortest path using Dijkstra algorithm
 app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => {
   const start = req.params.start;
   const end = req.params.end;
+
+  // Detailed request logging removed
 
   // Check if parameters are provided
   if (!start || !end) {
@@ -304,6 +347,7 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
   );
 
   if (!startNode) {
+    console.warn(`Start node not found for provided param: '${start}'`);
     return res.status(404).json({ 
       error: `Start location '${start}' not found`,
       availableRooms: nodes.filter(n => n.type === 'room').map(n => ({ id: n.id, name: n.name, floor: n.floor }))
@@ -311,162 +355,72 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
   }
 
   if (!endNode) {
+    console.warn(`End node not found for provided param: '${end}'`);
     return res.status(404).json({ 
       error: `End location '${end}' not found`,
       availableRooms: nodes.filter(n => n.type === 'room').map(n => ({ id: n.id, name: n.name, floor: n.floor }))
     });
   }
 
-  // Check if both rooms are on the same floor
+  // Check if both locations are on the same floor
   if (startNode.floor !== endNode.floor) {
     return res.status(400).json({ 
       error: "Multi-floor navigation not supported",
-      message: "This building only has single-floor navigation. Both rooms must be on the same floor.",
+      message: "This building only has single-floor navigation. Both locations must be on the same floor.",
       startFloor: `${startNode.floor}F`,
       endFloor: `${endNode.floor}F`
     });
   }
 
-  // Special routing rule: if destination is a study area, route must go via the nearest elevator first
-  const isStudyTarget = endNode.id.startsWith("study") || endNode.name.toLowerCase().includes("study") || endNode.id === "221" || endNode.id === "233H";
-
-  // If the user starts at the main entrance, prefer the path Main Entrance -> Reception Desk (235A) -> Elevator -> Study Area
-  if (startNode.id === "C235" && isStudyTarget) {
-    const reception = nodes.find(n => n.id === "235A");
-    if (reception) {
-      const pathToReception = findShortestPathBFS(startNode.id, reception.id);
-      if (pathToReception) {
-        // Find elevator reachable from reception that can reach destination
-        const elevators = nodes.filter(n => n.type === 'entrance' && /^E\d+/.test(n.id));
-        let chosenElev: Node | null = null;
-        let bestScore = Infinity;
-        let pathReceptionToElev: PathResult | null = null;
-        let pathElevToDest: PathResult | null = null;
-
-        for (const el of elevators) {
-          const p1 = findShortestPathBFS(reception.id, el.id);
-          const p2 = findShortestPathBFS(el.id, endNode.id);
-          if (p1 && p2) {
-            const score = p1.steps + p2.steps;
-            if (score < bestScore) {
-              bestScore = score;
-              chosenElev = el;
-              pathReceptionToElev = p1;
-              pathElevToDest = p2;
-            }
-          }
-        }
-
-        if (chosenElev && pathReceptionToElev && pathElevToDest) {
-          const leg1 = pathToReception.path; // start -> reception
-          const leg2 = pathReceptionToElev.path; // reception -> elevator
-          const leg3 = pathElevToDest.path; // elevator -> dest
-
-          // combine without duplicating nodes at joins
-          const combinedPath = [...leg1, ...leg2.slice(1), ...leg3.slice(1)];
-
-          const instr1 = generateInstructions(leg1);
-          const instr2 = generateInstructions(leg2);
-          const instr3 = generateInstructions(leg3);
-
-          const finalInstructions = [
-            ...instr1,
-            `Check in at the Reception Desk (${reception.name})`,
-            ...instr2.slice(1),
-            `Take the elevator at ${chosenElev.name} to continue to ${endNode.name}`,
-            ...instr3.slice(1)
-          ];
-
-          return res.json({
-            start: startNode.name,
-            end: endNode.name,
-            totalSteps: combinedPath.length - 1,
-            floor: `${startNode.floor}F`,
-            path: combinedPath.map(nodeId => {
-              const node = nodes.find(n => n.id === nodeId);
-              return {
-                id: nodeId,
-                name: node?.name || 'Unknown',
-                type: node?.type || 'unknown',
-                floor: node?.floor || 2
-              };
-            }),
-            instructions: finalInstructions
-          });
-        }
-      }
-    }
-    // fall through to generic study routing if receptionist-based route not possible
-  }
-
-  if (isStudyTarget) {
-    // Find elevator nodes available in this floor
-    const elevators = nodes.filter(n => n.type === 'entrance' && /^E\d+/.test(n.id));
-
-    // Pick the elevator with shortest path to the destination
-    let bestElevator: Node | null = null;
-    let bestDist = Infinity;
-    let bestElevatorPath: PathResult | null = null;
-
-    for (const el of elevators) {
-      const p = findShortestPathBFS(el.id, endNode.id);
-      if (p && p.steps < bestDist) {
-        bestDist = p.steps;
-        bestElevator = el;
-        bestElevatorPath = p;
-      }
-    }
-
-    // If we found an elevator that reaches the study area, build composite route start -> elevator -> destination
-    if (bestElevator && bestElevatorPath) {
-      const pathToElevator = findShortestPathBFS(startNode.id, bestElevator.id);
-
-      // If either leg is missing, fall back to direct path
-      if (!pathToElevator) {
-        // fallback to direct
-      } else {
-        const leg1 = pathToElevator.path; // start -> elevator
-        const leg2 = bestElevatorPath.path; // elevator -> dest
-
-        // combine without duplicating elevator
-        const combinedPath = [...leg1, ...leg2.slice(1)];
-
-        // Build instructions: instr1 + explicit elevator instruction + instr2 (without its start line)
-        const instr1 = generateInstructions(leg1);
-        const instr2 = generateInstructions(leg2);
-
-        // Compose final instructions
-        const finalInstructions = [
-          ...instr1,
-          `Take the elevator at ${bestElevator.name} to continue to ${endNode.name}`,
-          ...instr2.slice(1) // remove 'Start at ...' from second leg
-        ];
-
-        return res.json({
-          start: startNode.name,
-          end: endNode.name,
-          totalSteps: combinedPath.length - 1,
-          floor: `${startNode.floor}F`,
-          path: combinedPath.map(nodeId => {
-            const node = nodes.find(n => n.id === nodeId);
-            return {
-              id: nodeId,
-              name: node?.name || 'Unknown',
-              type: node?.type || 'unknown',
-              floor: node?.floor || 2
-            };
-          }),
-          instructions: finalInstructions
-        });
-      }
-    }
-    // else fall through to direct path if no elevator route found
-  }
-
-  const pathResult = findShortestPathBFS(startNode.id, endNode.id);
+  // Use Dijkstra to find the shortest path
+  const pathResult = findShortestPathDijkstra(startNode.id, endNode.id);
 
   if (!pathResult) {
-    return res.status(404).json({ error: "No path found between the specified locations" });
+    console.warn(`No path found between '${startNode.name}' and '${endNode.name}'`);
+
+    // Deep debug: print node ids, graph keys, and run a BFS to show reachability
+    try {
+      // reachability debug logging removed
+      const hasStartKey = Object.prototype.hasOwnProperty.call(graph, startNode.id);
+      const hasEndKey = Object.prototype.hasOwnProperty.call(graph, endNode.id);
+
+      // BFS reachability trace
+      const visitedOrder: string[] = [];
+      const q: string[] = [startNode.id];
+      const seen = new Set<string>([startNode.id]);
+      let reachable = false;
+
+      while (q.length > 0) {
+        const cur = q.shift()!;
+        visitedOrder.push(cur);
+        const neigh = graph[cur] || [];
+        for (const nb of neigh) {
+          if (!seen.has(nb)) {
+            seen.add(nb);
+            q.push(nb);
+            if (nb === endNode.id) reachable = true;
+          }
+        }
+      }
+
+      // BFS debug logging removed
+    } catch (derr) {
+      console.error('Error during reachability debug:', derr);
+    }
+
+    return res.status(404).json({ 
+      error: "No path found between the specified locations",
+      start: startNode.name,
+      end: endNode.name,
+      availableLocations: nodes.filter(n => n.floor === startNode.floor).map(n => ({ id: n.id, name: n.name, type: n.type }))
+    });
+  }
+
+  // Log the computed Dijkstra result to the server terminal for debugging
+  try {
+    // result logging removed
+  } catch (err) {
+    console.error('Error logging Dijkstra result:', err);
   }
 
   res.json({
@@ -489,7 +443,7 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
 
 // Specific route for Room 202 to Classroom B20 (same floor)
 app.get("/api/navigation/room202-to-b20", (req: Request, res: Response) => {
-  const pathResult = findShortestPathBFS("223", "classroom_b20");
+  const pathResult = findShortestPathDijkstra("223", "classroom_b20");
   
   if (!pathResult) {
     return res.status(404).json({ error: "No path found from Room 202 to Classroom B20" });
@@ -541,25 +495,32 @@ app.get("/api/floor/:floorNumber/routes", (req: Request, res: Response) => {
 // Health check
 app.get("/health", (req: Request, res: Response) => {
   const floor2Rooms = nodes.filter(n => n.type === 'room' && n.floor === 2);
+  const floor2All = nodes.filter(n => n.floor === 2);
   
   res.json({ 
     status: "healthy", 
     timestamp: new Date().toISOString(),
-    algorithm: "BFS (Breadth-First Search)",
+    algorithm: "Dijkstra (Weighted - Euclidean distance)",
     navigationType: "Single Floor Only",
     currentFloor: "2F",
     availableRooms: floor2Rooms.length,
+    totalLocations: floor2All.length,
+    locationTypes: {
+      rooms: floor2All.filter(n => n.type === 'room').length,
+      bathrooms: floor2All.filter(n => n.type === 'bathroom').length,
+      elevators: floor2All.filter(n => n.type === 'elevator').length,
+      stairs: floor2All.filter(n => n.type === 'stairs').length,
+      computerAreas: floor2All.filter(n => n.type === 'computer_area').length,
+      studyAreas: floor2All.filter(n => n.type === 'study_area').length,
+      entrances: floor2All.filter(n => n.type === 'entrance').length
+    },
     totalNodes: nodes.length,
     sampleRoutes: [
-      "/api/navigation/room202-to-b20",
-      "/api/navigation/from/room_201/to/classroom_b20",
-      "/api/navigation/from/202/to/b20"
+      "/api/navigation/from/main_entrance/to/room_221",
+      "/api/navigation/from/room_221/to/bathroom_002",
+      "/api/navigation/from/room_228/to/elevator_001"
     ]
   });
-});
-// Health check route
-app.get("/health", (req: Request, res: Response) => {
-  res.status(200).json({ status: "ok", message: "Server is running" });
 });
 
 // Catch-all 404 route
@@ -569,10 +530,7 @@ app.use((req: Request, res: Response) => {
 
 app.listen(PORT, () => {
   const floor2Rooms = nodes.filter(n => n.type === 'room' && n.floor === 2);
+  const floor2All = nodes.filter(n => n.floor === 2);
   
-  console.log(`Single Floor Navigation server running on port ${PORT}`);
-  console.log(`Algorithm: BFS (Breadth-First Search)`);
-  console.log(`Navigation Type: Single Floor Only (Floor 2)`);
-  console.log(`Available rooms on Floor 2: ${floor2Rooms.map(n => n.name).join(', ')}`);
-  console.log(`Sample route: GET /api/navigation/room202-to-b20`);
+  // Startup logs removed
 });
