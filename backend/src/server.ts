@@ -308,11 +308,7 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
     });
   }
 
-  const startNode = nodes.find(n => 
-    n.id === start || 
-    n.name.toLowerCase().includes(start.toLowerCase()) ||
-    n.id.toLowerCase().includes(start.toLowerCase())
-  );
+  const startNode = nodes.find(n => n.id === "C3_tablet");
   
   const endNode = nodes.find(n => 
     n.id === end || 
