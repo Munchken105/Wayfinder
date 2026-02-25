@@ -34,16 +34,16 @@ interface PathResult {
 // Single floor building graph - all rooms on the same floor
 const nodes: Node[] = [
   // All available rooms on the second floors
-  { id: "A1_room221", name: "Room 221", type: "room", floor: 2, coord:[437, 90] },
-  { id: "A1_room221D", name: "Room 221-D", type: "room", floor: 2, coord:[532, 90]},
-  { id: "A1_room222", name: "Room 222", type: "room", floor: 2, coord:[581, 90] },
-  { id: "A1_room222A", name: "Room 222-A", type: "room", floor: 2, coord:[651, 90] },
+  { id: "A1_room221", name: "Room 221", type: "room", floor: 2, coord:[440, 100] },
+  { id: "A1_room221D", name: "Room 221-D", type: "room", floor: 2, coord:[535, 100]},
+  { id: "A1_room222", name: "Room 222", type: "room", floor: 2, coord:[584, 100] },
+  { id: "A1_room222A", name: "Room 222-A", type: "room", floor: 2, coord:[653, 100] },
   { id: "A1_room223", name: "Room 223", type: "room", floor: 2, coord:[740, 75]},
   { id: "B2_room228", name: "Room 228", type: "room", floor: 2, coord:[975, 85] },
   { id: "B2_room229", name: "Room 229", type: "room", floor: 2, coord:[941, 58] },
   { id: "B2_room230", name: "Room 230", type: "room", floor: 2, coord:[941, 30] },
   { id: "B2_room232", name: "Room 232", type: "room", floor: 2, coord:[1005, 58]},
-  { id: "B2_bathroom", name: "Bathroom", type: "room", floor: 2, coord:[870, 85]},
+  { id: "B2_bathroom", name: "Bathroom", type: "room", floor: 2, coord:[867, 100]},
 
   // Entrances of the Second Floor
   { id: "C3_entrance", name: "main entrance", type: "entrance", floor: 2, coord:[532, 612]},
@@ -74,16 +74,29 @@ const nodes: Node[] = [
 const graph: { [key: string]: string[] } = {
   // Floor 2 Room Node Connections 
 
-  "C3_entrance": ["C3_tablet"],
-  "C3_tablet": ["C3_elevator"],
+  "C3_entrance": ["C3_tablet", "C3_floor2stair1"],
+  "C3_tablet": ["C3_floor2stair2"],
 
   "C3_elevator": ["B2_bottomhalf1"],
-  "B2_bottomhalf1": ["B2_tophalf1"],
+
+  "C3_floor2stair2":["C3_elevator"],
+
+  "B2_bottomhalf1": ["B2_tophalf1", "B2_bottomhalf2"],
+
+  "B2_bottomhalf2": ["B2_tophalf3"],
+
   "B2_tophalf1": ["B2_tophalf2"],
-  "B2_tophalf2": ["A1_central"],
-  
-  //This is the main point where all the floor
-  "A1_central": ["A1_room221","A1_room221D","A1_room222","A1_room222A","A1_room223"],
+
+  "B2_tophalf2": ["A1_central", "A1_room223", "B2_floor2stair3"],
+
+  "B2_tophalf3": ["B2_bathroom"],
+
+  "B2_bathroom": ["B2_room228"],
+
+  "B2_room228" : ["B2_room232","B2_room230","B2_room229"],
+
+  //This is the main point for all the left room
+  "A1_central": ["A1_room221","A1_room221D","A1_room222","A1_room222A"],
   
   //This is left as empty because it's a destination
   "A1_room221": []
