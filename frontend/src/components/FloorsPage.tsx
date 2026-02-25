@@ -1,5 +1,5 @@
 import "./FloorsPage.css";
-import { useState, useEffect, act } from "react";
+import { useState, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import WayfindPage from "./WayfindPage";
 import { useNavigate } from "react-router-dom";
@@ -14,7 +14,7 @@ import floor5Img from "../assets/Floor5layout.jpg";
 function LibraryFloorMap() {
 
   const [lastClick, setLastClick] = useState<{ x: number; y: number } | null>(null); // this is for knowing where to set up boxes
-  const [selectedRoom, setSelectedRoom] = useState<{ name: string; description: string; id: string} | null>(null); // this is for making the clicking of the rooms useful
+  const [selectedRoom, setSelectedRoom] = useState<{ name: string; description: string; id: string } | null>(null); // this is for making the clicking of the rooms useful
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [wayfindClicked, setWayfindClicked] = useState(false);
   const [backendRooms, setBackendRooms] = useState<any[]>([]);
@@ -22,15 +22,15 @@ function LibraryFloorMap() {
 
 
   type Room = {
-  id: string
-  name: string
-  description: string
-  top: number
-  left: number
-  width: number
-  height: number
-  clipPath?: string
-}
+    id: string
+    name: string
+    description: string
+    top: number
+    left: number
+    width: number
+    height: number
+    clipPath?: string
+  }
 
   // Fetch backend nodes with coordinates (all location types)
   useEffect(() => {
@@ -39,9 +39,9 @@ function LibraryFloorMap() {
       .then(data => {
         if (data.nodes) {
           // Include all location types: rooms, entrances, bathrooms, elevators, stairs, computer areas, study areas
-          setBackendRooms(data.nodes.filter((n: any) => 
-            n.type === 'room' || 
-            n.type === 'entrance' || 
+          setBackendRooms(data.nodes.filter((n: any) =>
+            n.type === 'room' ||
+            n.type === 'entrance' ||
             n.type === 'computer_area' ||
             n.type === 'study_area' ||
             n.type === 'bathroom' ||
@@ -66,25 +66,24 @@ function LibraryFloorMap() {
       .catch(err => console.error('Failed to fetch path:', err));
   };
 
-  const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => 
-    {
+  const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
     const x = e.nativeEvent.offsetX;
     const y = e.nativeEvent.offsetY;
     console.log(`Clicked at: ${x}, ${y}`);
     setLastClick({ x, y });
-    };
+  };
 
   //------------------------------------------Initializing the Map-----------------------------------------------------
 
   type FloorKey = keyof typeof floors;
   const [activeFloor, setActiveFloor] = useState<FloorKey>("Floor 2");
   const ChosenMapImage = () => {
-    if (activeFloor == "Basement") return <img src={BasementImg} className="libary-image" onClick={handleImageClick}/>;
-    if (activeFloor == "Floor 1") return <img src={floor1Img} className="libary-image" onClick={handleImageClick}/>;
-    if (activeFloor == "Floor 2") return <img src={floor2Img} className="libary-image" onClick={handleImageClick}/>;
-    if (activeFloor == "Floor 3") return <img src={floor3Img} className="libary-image" onClick={handleImageClick}/>;
-    if (activeFloor == "Floor 4") return <img src={floor4Img} className="libary-image" onClick={handleImageClick}/>;
-    if (activeFloor == "Floor 5") return <img src={floor5Img} className="libary-image" onClick={handleImageClick}/>;
+    if (activeFloor == "Basement") return <img src={BasementImg} className="libary-image" onClick={handleImageClick} />;
+    if (activeFloor == "Floor 1") return <img src={floor1Img} className="libary-image" onClick={handleImageClick} />;
+    if (activeFloor == "Floor 2") return <img src={floor2Img} className="libary-image" onClick={handleImageClick} />;
+    if (activeFloor == "Floor 3") return <img src={floor3Img} className="libary-image" onClick={handleImageClick} />;
+    if (activeFloor == "Floor 4") return <img src={floor4Img} className="libary-image" onClick={handleImageClick} />;
+    if (activeFloor == "Floor 5") return <img src={floor5Img} className="libary-image" onClick={handleImageClick} />;
 
     return <div className="Selection">Select a Floor</div>
   };
@@ -114,7 +113,7 @@ function LibraryFloorMap() {
   const [pendingRoom, setPendingRoom] = useState<string | null>(null);
 
   useEffect(() => {
-    
+
     if (activeFloor && pendingRoom) {
       console.log(pendingRoom);
       const roomObj = floors[activeFloor].find(r => r.name === pendingRoom);
@@ -123,7 +122,7 @@ function LibraryFloorMap() {
       }
       setPendingRoom(null); // clear pending
     }
-    
+
   }, [pendingRoom]);
 
   const navigate = useNavigate();
@@ -164,7 +163,7 @@ function LibraryFloorMap() {
     { id: "323", name: "Room 323", description: "", top: 595, left: 652, width: 36, height: 62 },
     { id: "322", name: "Room 322", description: "Natalia Estrada", top: 595, left: 688, width: 28, height: 62 },
     { id: "321", name: "Room 321", description: "", top: 595, left: 717, width: 45, height: 62 },
-    { id: "320", name: "Room 320", description: "", top: 595, left: 826, width: 100, height: 62, clipPath: "polygon(0% 100%, 100% 100%, 100% 0%, 24% 0%, 0% 25%)"  },
+    { id: "320", name: "Room 320", description: "", top: 595, left: 826, width: 100, height: 62, clipPath: "polygon(0% 100%, 100% 100%, 100% 0%, 24% 0%, 0% 25%)" },
 
     // Room 319
     { id: "319-1", name: "Room 319", description: "", top: 401, left: 684, width: 54, height: 54, clipPath: "polygon(7% 7%, 9% 0%, 100% 0%, 100% 100%)" },
@@ -195,7 +194,7 @@ function LibraryFloorMap() {
 
 
     // Room 426
-    { id: "426-1", name: "Room 426", description: "", top: 344, left: 541, width: 59, height: 90, clipPath: "polygon(100% 100%, 0% 100%, 0% 90%, 73% 44%, 27% 17%, 50% 0%, 100% 34% )"  },
+    { id: "426-1", name: "Room 426", description: "", top: 344, left: 541, width: 59, height: 90, clipPath: "polygon(100% 100%, 0% 100%, 0% 90%, 73% 44%, 27% 17%, 50% 0%, 100% 34% )" },
   ];
 
   const fifthFloorRooms: Room[] = [
@@ -223,7 +222,7 @@ function LibraryFloorMap() {
   const floors = {
     "Basement": basementRooms,
     "Floor 1": firstFloorRooms,
-    "Floor 2": secondFloorRooms, 
+    "Floor 2": secondFloorRooms,
     "Floor 3": thirdFloorRooms,
     "Floor 4": fourthFloorRooms,
     "Floor 5": fifthFloorRooms
@@ -235,55 +234,55 @@ function LibraryFloorMap() {
         <h2 className="sidebar-heading">Library Floors</h2>
 
         <div className="sidebar-boxes">
-          <button 
+          <button
             className={`sidebar-box ${activeFloor === "Floor 5" ? "active" : ""}`}
-            onClick={() => {setActiveFloor("Floor 5")}}
+            onClick={() => { setActiveFloor("Floor 5") }}
           >Floor 5</button>
-          
-          <button 
+
+          <button
             className={`sidebar-box ${activeFloor === "Floor 4" ? "active" : ""}`}
-            onClick={() => {setActiveFloor("Floor 4")}}
+            onClick={() => { setActiveFloor("Floor 4") }}
           >Floor 4</button>
 
-          <button 
+          <button
             className={`sidebar-box ${activeFloor === "Floor 3" ? "active" : ""}`}
-            onClick={() => {setActiveFloor("Floor 3")}}
+            onClick={() => { setActiveFloor("Floor 3") }}
           >Floor 3</button>
 
-          
-          <button 
+
+          <button
             className={`sidebar-box ${activeFloor === "Floor 2" ? "active" : ""}`}
-            onClick={() => {setActiveFloor("Floor 2")}}
+            onClick={() => { setActiveFloor("Floor 2") }}
           >Floor 2</button>
 
-          
-          <button 
+
+          <button
             className={`sidebar-box ${activeFloor === "Floor 1" ? "active" : ""}`}
-            onClick={() => {setActiveFloor("Floor 1")}}
+            onClick={() => { setActiveFloor("Floor 1") }}
           >Floor 1</button>
 
-          <button 
+          <button
             className={`sidebar-box ${activeFloor === "Basement" ? "active" : ""}`}
-            onClick={() => {setActiveFloor("Basement")}}
+            onClick={() => { setActiveFloor("Basement") }}
           >Basement</button>
 
           <button className="back-button" onClick={() => navigate("/")}>Back to Home</button>
         </div>
       </div>
-      
+
       <div className="Map-Content">
         <div className="searchbar-container">
-        <SearchBar
-          placeholder="Search for Librarians"
-          onSelectResult={room => {
-            const floor = floorFromRoom(room) as keyof typeof floors;
-            setActiveFloor(floor);
-            const roomNumber = room.split(" ")[0];
-            setPendingRoom("Room " + roomNumber); // will trigger useEffect
-            setWayfindClicked(false);
-            setIsCollapsed(false);
-          }}
-        />
+          <SearchBar
+            placeholder="Search for Librarians"
+            onSelectResult={room => {
+              const floor = floorFromRoom(room) as keyof typeof floors;
+              setActiveFloor(floor);
+              const roomNumber = room.split(" ")[0];
+              setPendingRoom("Room " + roomNumber); // will trigger useEffect
+              setWayfindClicked(false);
+              setIsCollapsed(false);
+            }}
+          />
           {selectedRoom && (
             <div className={`info-panel show ${isCollapsed ? "collapsed" : ""}`}>
 
@@ -298,117 +297,117 @@ function LibraryFloorMap() {
               </button>
 
               {!isCollapsed && (
-                  <>
-                    <button className="close-btn" onClick={() => {setSelectedRoom(null); setWayfindClicked(false); setCurrentPath([]); setIsCollapsed(false);}}>Close</button>
-                    <h3 className="room-name">{selectedRoom.name}</h3>
-                    <p className="room-description">{selectedRoom.description}</p>
+                <>
+                  <button className="close-btn" onClick={() => { setSelectedRoom(null); setWayfindClicked(false); setCurrentPath([]); setIsCollapsed(false); }}>Close</button>
+                  <h3 className="room-name">{selectedRoom.name}</h3>
+                  <p className="room-description">{selectedRoom.description}</p>
 
-                    {!wayfindClicked && <button className="wayfind-button" onClick={() => handleWayfind(selectedRoom.name)}>Wayfind</button>}
+                  {!wayfindClicked && <button className="wayfind-button" onClick={() => handleWayfind(selectedRoom.name)}>Wayfind</button>}
 
-                    {
-                      wayfindClicked && 
-                      <WayfindPage 
-                      room = {selectedRoom.name}
-                      />
-                    }
-                  </>
+                  {
+                    wayfindClicked &&
+                    <WayfindPage
+                      room={selectedRoom.name}
+                    />
+                  }
+                </>
               )}
             </div>
           )}
 
-      </div>
+        </div>
         <div className="map_wrapper">
-        {ChosenMapImage()}
+          {ChosenMapImage()}
 
-        {/*-----------------------------------------USE TO FIND COORDINATE-------------------------------------------*/}
+          {/*-----------------------------------------USE TO FIND COORDINATE-------------------------------------------*/}
 
           {lastClick && (
             <div
-            className="hotspot-marker"
-            style={{top: `${lastClick.y}px`, left: `${lastClick.x}px`}}>  
+              className="hotspot-marker"
+              style={{ top: `${lastClick.y}px`, left: `${lastClick.x}px` }}>
             </div>)
           }
-        {/*----------------------------------------------------------------------------------------------------------*/} 
-        
-        {activeFloor && floors[activeFloor].map(room => (
-        <div
-          key={room.id}
-          className={`hotspot ${selectedRoom?.id === room.id ? "active" : ""}`}
-          style={{
-            top: `${room.top}px`,
-            left: `${room.left}px`,
-            width: `${room.width}px`,
-            height: `${room.height}px`,
-            position: "absolute",
-            clipPath: room.clipPath ? room.clipPath : undefined,
-          }}
-          onClick={() => {setSelectedRoom(room); setWayfindClicked(false); setIsCollapsed(false);}}/>
-      ))}
-        
-        {/* SVG lines connecting path nodes */}
-        {wayfindClicked && currentPath.length > 0 && (
-          <svg
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              pointerEvents: "none",
-              zIndex: 5,
-            }}
-          >
-            {/* Draw lines between consecutive nodes in the path */}
-            {currentPath.map((node, i) => {
-              if (i === currentPath.length - 1) return null; // Skip last node
-              const nextNode = currentPath[i + 1];
-              const coord1 = backendRooms.find(r => r.id === node.id)?.coord;
-              const coord2 = backendRooms.find(r => r.id === nextNode.id)?.coord;
-              if (!coord1 || !coord2) return null;
-              if (floorNumToString(coord1) !== activeFloor || floorNumToString(coord2) !== activeFloor) return null;
-              return (
-                <line
-                  key={`line-${i}`}
-                  x1={coord1[0]}
-                  y1={coord1[1]}
-                  x2={coord2[0]}
-                  y2={coord2[1]}
-                  stroke="red"
-                  strokeWidth="3"
-                />
-              );
-            })}
-          </svg>
-        )}
+          {/*----------------------------------------------------------------------------------------------------------*/}
 
-        {/* Render red dots only for nodes in the current path */}
-        {wayfindClicked && currentPath.length > 0 && currentPath.map(node => {
-          const location = backendRooms.find(r => r.id === node.id);
-          if (!location || !location.coord) return null;
-          if (floorNumToString(location.floor) !== activeFloor) return null;
-          return (
+          {activeFloor && floors[activeFloor].map(room => (
             <div
-              key={`dot-${node.id}`}
+              key={room.id}
+              className={`hotspot ${selectedRoom?.id === room.id ? "active" : ""}`}
+              style={{
+                top: `${room.top}px`,
+                left: `${room.left}px`,
+                width: `${room.width}px`,
+                height: `${room.height}px`,
+                position: "absolute",
+                clipPath: room.clipPath ? room.clipPath : undefined,
+              }}
+              onClick={() => { setSelectedRoom(room); setWayfindClicked(false); setIsCollapsed(false); }} />
+          ))}
+
+          {/* SVG lines connecting path nodes */}
+          {wayfindClicked && currentPath.length > 0 && (
+            <svg
               style={{
                 position: "absolute",
-                left: `${location.coord[0]}px`,
-                top: `${location.coord[1]}px`,
-                width: "10px",
-                height: "10px",
-                backgroundColor: "red",
-                borderRadius: "50%",
-                transform: "translate(-50%, -50%)",
-                zIndex: 10,
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                pointerEvents: "none",
+                zIndex: 5,
               }}
-              title={location.name}
-            />
-          );
-        })}
-          
+            >
+              {/* Draw lines between consecutive nodes in the path */}
+              {currentPath.map((node, i) => {
+                if (i === currentPath.length - 1) return null; // Skip last node
+                const nextNode = currentPath[i + 1];
+                const coord1 = backendRooms.find(r => r.id === node.id)?.coord;
+                const coord2 = backendRooms.find(r => r.id === nextNode.id)?.coord;
+                if (!coord1 || !coord2) return null;
+                if (floorNumToString(coord1) !== activeFloor || floorNumToString(coord2) !== activeFloor) return null;
+                return (
+                  <line
+                    key={`line-${i}`}
+                    x1={coord1[0]}
+                    y1={coord1[1]}
+                    x2={coord2[0]}
+                    y2={coord2[1]}
+                    stroke="red"
+                    strokeWidth="3"
+                  />
+                );
+              })}
+            </svg>
+          )}
+
+          {/* Render red dots only for nodes in the current path */}
+          {wayfindClicked && currentPath.length > 0 && currentPath.map(node => {
+            const location = backendRooms.find(r => r.id === node.id);
+            if (!location || !location.coord) return null;
+            if (floorNumToString(location.floor) !== activeFloor) return null;
+            return (
+              <div
+                key={`dot-${node.id}`}
+                style={{
+                  position: "absolute",
+                  left: `${location.coord[0]}px`,
+                  top: `${location.coord[1]}px`,
+                  width: "10px",
+                  height: "10px",
+                  backgroundColor: "red",
+                  borderRadius: "50%",
+                  transform: "translate(-50%, -50%)",
+                  zIndex: 10,
+                }}
+                title={location.name}
+              />
+            );
+          })}
+
         </div>
       </div>
     </div>
   );
 }
-    
+
 export default LibraryFloorMap;

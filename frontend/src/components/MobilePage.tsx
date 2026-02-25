@@ -2,10 +2,10 @@
 import "../components/MobilePage.css"
 import { useState, useEffect } from "react";
 import { useNavigation } from "../hooks/navigation"
-import { useSearchParams} from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 
-export default function MobilePage(){
+export default function MobilePage() {
   const [mobileStep, setMobileStep] = useState(0);
   const [searchParams] = useSearchParams();
 
@@ -21,34 +21,34 @@ export default function MobilePage(){
     if (!room) return
     findPath("Main Entrance", room);
   }, []);
-  
-    return(
-        <div className="mobile-page">
 
-          <div className="title">
-            Navigating from {navigationResult?.start} to {navigationResult?.end}
-          </div>
+  return (
+    <div className="mobile-page">
 
-          <div className="buttons-and-inst">
+      <div className="title">
+        Navigating from {navigationResult?.start} to {navigationResult?.end}
+      </div>
 
-          <div className="instruction-buttons">
-            <ul>
-              {navigationResult?.instructions.map((step, index) => (
-                <li key={index}>
-                  <button className="steps-mobile" onClick={() => setMobileStep(index)}>
-                    Step {index + 1}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
+      <div className="buttons-and-inst">
 
-          <div className="current-instruction">
-            <div>Step {mobileStep + 1}</div>
-            <div>{navigationResult?.instructions[mobileStep]}</div>
-          </div>
-
-          </div>
+        <div className="instruction-buttons">
+          <ul>
+            {navigationResult?.instructions.map((_, index) => (
+              <li key={index}>
+                <button className="steps-mobile" onClick={() => setMobileStep(index)}>
+                  Step {index + 1}
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
-    )
+
+        <div className="current-instruction">
+          <div>Step {mobileStep + 1}</div>
+          <div>{navigationResult?.instructions[mobileStep]}</div>
+        </div>
+
+      </div>
+    </div>
+  )
 }
