@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 5000;
 interface Node {
   id: string;
   name: string;
-  type: 'room' | 'hallway' | 'computer_area' | 'study_area' | 'entrance' | 'bathroom' | 'elevator' | 'stairs';
+  type: 'room' | 'entrance' | 'elevator' | 'stairs' | 'waypoint' | 'tablet' ;
   floor: number;
   x?: number;
   y?: number;
@@ -34,55 +34,59 @@ interface PathResult {
 // Single floor building graph - all rooms on the same floor
 const nodes: Node[] = [
   // All available rooms on the second floors
-  { id: "room_221", name: "Room 221", type: "room", floor: 2, coord:[437, 90] },
-  { id: "room_221D", name: "Room 221-D", type: "room", floor: 2, coord:[532, 90]},
-  { id: "room_222", name: "Room 222", type: "room", floor: 2, coord:[581, 90] },
-  { id: "room_222A", name: "Room 222-A", type: "room", floor: 2, coord:[651, 90] },
-  { id: "room_223", name: "Room 223", type: "room", floor: 2, coord:[740, 75]},
-  { id: "room_228", name: "Room 228", type: "room", floor: 2, coord:[975, 85] },
-  { id: "room_229", name: "Room 229", type: "room", floor: 2, coord:[941, 58] },
-  { id: "room_230", name: "Room 230", type: "room", floor: 2, coord:[941, 30] },
-  { id: "room_232", name: "Room 232", type: "room", floor: 2, coord:[1005, 58]},
+  { id: "A1_room221", name: "Room 221", type: "room", floor: 2, coord:[437, 90] },
+  { id: "A1_room221D", name: "Room 221-D", type: "room", floor: 2, coord:[532, 90]},
+  { id: "A1_room222", name: "Room 222", type: "room", floor: 2, coord:[581, 90] },
+  { id: "A1_room222A", name: "Room 222-A", type: "room", floor: 2, coord:[651, 90] },
+  { id: "A1_room223", name: "Room 223", type: "room", floor: 2, coord:[740, 75]},
+  { id: "B2_room228", name: "Room 228", type: "room", floor: 2, coord:[975, 85] },
+  { id: "B2_room229", name: "Room 229", type: "room", floor: 2, coord:[941, 58] },
+  { id: "B2_room230", name: "Room 230", type: "room", floor: 2, coord:[941, 30] },
+  { id: "B2_room232", name: "Room 232", type: "room", floor: 2, coord:[1005, 58]},
+  { id: "B2_bathroom", name: "Bathroom", type: "room", floor: 2, coord:[870, 85]},
 
-  // Passageways and entrances of the second floor
-  { id: "main_entrance", name: "main entrance", type: "entrance", floor: 2, coord:[530, 620]},
-  { id: "top_comp_area", name: "computer area", type: "computer_area", floor: 2, coord: [825, 197]},
-  { id: "right_comp_area", name: "printing & scanning Area", type: "computer_area", floor: 2, coord:[942, 407]},
-  { id: "elevator_001", name: "the elevator", type: "elevator", floor: 2, coord:[709, 496]},
-  { id: "elevator_002", name: "the elevator", type: "elevator", floor: 2, coord:[727, 478]},
-  { id: "floor_1_stairs", name: "stairs to 1st Floor", type: "stairs", floor: 2, coord:[452, 518]},
-  { id: "bathroom_002", name: "Bathroom", type: "bathroom", floor: 2, coord:[870, 85]},
+  // Entrances of the Second Floor
+  { id: "C3_entrance", name: "main entrance", type: "entrance", floor: 2, coord:[532, 612]},
 
-  // Study areas (replacing hallways/junctions)
-  { id: "left_study_area", name: "study area to the left", type: "study_area", floor: 2, coord:[560, 208]},
-  { id: "right_study_area", name: "study area to the right", type: "study_area", floor: 2, coord: [974, 215]},
+  // Elevators
+  { id: "C3_elevator", name: "the elevator", type: "elevator", floor: 2, coord:[708, 474]},
+
+  // Tablet Location
+  { id: "C3_tablet", name: "Wayfinder tablet", type: "tablet", floor: 2, coord:[624, 593]},
+
+  // Stairs / Fire Exit
+  { id: "C3_floor2stair1", name: "stairs to 1st Floor", type: "stairs", floor: 2, coord:[480, 525]},
+  { id: "C3_floor2stair2", name: "Fire Exit 1", type: "stairs", floor: 2, coord:[681, 503]},
+  { id: "B2_floor2stair3", name: "Fire Exit 2", type: "stairs", floor: 2, coord:[761, 80]},
+
+  // Waypoint (nodes that are used as means to get to the the actual destination)
+  { id: "B2_bottomhalf1", name: "lower layer 1 computer area", type: "waypoint", floor: 2, coord: [764, 390]},
+  { id: "B2_bottomhalf2", name: "lower layer 2 computer area", type: "waypoint", floor: 2, coord:[880, 307]},
+  { id: "B2_tophalf1", name: "middle layer 3 computer area", type: "waypoint", floor: 2, coord: [772, 256]},
+  { id: "B2_tophalf2", name: "middle layer 4 computer area", type: "waypoint", floor: 2, coord:[761, 192]},
+  { id: "B2_tophalf3", name: "middle layer 5 computer area", type: "waypoint", floor: 2, coord: [876, 192]},
+
+  { id: "A1_central", name: "In front of Room 223", type: "waypoint", floor: 2, coord: [708, 100]},
+  
 ];
 
 // Adjacency list - all connections on the same floor
 const graph: { [key: string]: string[] } = {
-  // Main entrance and elevator connections (now connect to study areas)
-  "room_221": ["left_study_area", "top_comp_area", "right_study_area"],
-  "room_221D": ["left_study_area", "top_comp_area", "right_study_area"],
-  "room_222": ["left_study_area", "top_comp_area", "right_study_area"],
-  "room_222A": ["left_study_area", "top_comp_area", "right_study_area", "room_223"],
-  "room_223": ["left_study_area", "top_comp_area", "right_study_area", "room_222A"],
-  "room_228": ["left_study_area", "top_comp_area", "right_study_area", "room_229", "room_230", "room_232"],
-  "room_229": ["room_228"],
-  "room_230": ["room_228"],
-  "room_232": ["room_228"],
+  // Floor 2 Room Node Connections 
 
-  // Special areas
-  "main_entrance": ["elevator_001", "elevator_002", "floor_1_stairs"],
-  "top_comp_area": ["right_study_area", "left_study_area", "room_228", "bathroom_002"],
-  "right_comp_area": ["top_comp_area", "left_study_area", "right_study_area", "elevator_001", "elevator_002"],
-  "elevator_001": ["right_study_area", "right_comp_area", "top_comp_area", "elevator_002", "main_entrance"],
-  "elevator_002": ["right_study_area", "right_comp_area", "top_comp_area", "elevator_001", "main_entrance"],
-  "bathroom_002": ["left_study_area", "right_study_area", "top_comp_area"],
-  "floor_1_stairs": ["main_entrance", "elevator_001", "elevator_002"],
+  "C3_entrance": ["C3_tablet"],
+  "C3_tablet": ["C3_elevator"],
 
-  // Study area connections (replacing hallways/junctions)
-  "left_study_area":["room_221", "room_221D", "room_222", "room_222A", "room_223", "top_comp_area", "right_study_area", "bathroom_002"],
-  "right_study_area":["room_228", "top_comp_area", "right_comp_area", "left_study_area", "elevator_001", "elevator_002"]
+  "C3_elevator": ["B2_bottomhalf1"],
+  "B2_bottomhalf1": ["B2_tophalf1"],
+  "B2_tophalf1": ["B2_tophalf2"],
+  "B2_tophalf2": ["A1_central"],
+  
+  //This is the main point where all the floor
+  "A1_central": ["A1_room221","A1_room221D","A1_room222","A1_room222A","A1_room223"],
+  
+  //This is left as empty because it's a destination
+  "A1_room221": []
 };
 
 // ! Dijkstra algorithm for shortest path (weighted by Euclidean distance between node coordinates)
@@ -107,11 +111,19 @@ function findShortestPathDijkstra(startNodeId: string, endNodeId: string): PathR
   };
 
   const euclidean = (aId: string, bId: string) => {
-    const a = coordOf(aId);
-    const b = coordOf(bId);
-    if (!a || !b) return 1; // fallback weight
-    const dx = a[0] - b[0];
-    const dy = a[1] - b[1];
+    const nodeA = nodes.find(n => n.id === aId);
+   const nodeB = nodes.find(n => n.id === bId);
+
+  // If coordinates are missing for any reason, give it a high cost 
+  // to tell Dijkstra this is a "difficult" or "broken" path.
+    if (!nodeA?.coord || !nodeB?.coord) return 1000;
+
+    const [x1, y1] = nodeA.coord;
+    const [x2, y2] = nodeB.coord;
+
+    const dx = x1 - x2;
+    const dy = y1 - y2;
+  
     return Math.sqrt(dx * dx + dy * dy);
   };
 
@@ -175,12 +187,15 @@ function findShortestPathDijkstra(startNodeId: string, endNodeId: string): PathR
 function generateInstructions(path: string[]): string[] {
   const instructions: string[] = [];
   
+  // 1. Handle the starting point
   const startNode = nodes.find(n => n.id === path[0]);
   instructions.push(`Start at ${startNode?.name || 'starting point'}`);
 
+  // 2. Loop through the path to create step-by-step directions
   for (let i = 0; i < path.length - 1; i++) {
     const currentId = path[i];
     const nextId = path[i + 1];
+    
     const currentNode = nodes.find(n => n.id === currentId);
     const nextNode = nodes.find(n => n.id === nextId);
 
@@ -188,71 +203,19 @@ function generateInstructions(path: string[]): string[] {
 
     let instruction = "";
 
-    // Room exits and entries
-    if (currentNode.type === 'room' && nextNode.type === 'study_area') {
-      instruction = `Exit ${currentNode.name} and head to ${nextNode.name}`;
-    } else if (currentNode.type === 'room' && nextNode.type === 'computer_area') {
-      instruction = `Exit ${currentNode.name} and navigate to ${nextNode.name}`;
-    } else if (currentNode.type === 'study_area' && nextNode.type === 'room') {
-      instruction = `Enter ${nextNode.name}`;
-    } else if (currentNode.type === 'computer_area' && nextNode.type === 'room') {
-      instruction = `Go to ${nextNode.name}`;
-    }
-    // Study area transitions
-    else if (currentNode.type === 'study_area' && nextNode.type === 'study_area') {
-      instruction = `Move to ${nextNode.name}`;
-    } else if (currentNode.type === 'study_area' && nextNode.type === 'computer_area') {
-      instruction = `Head toward ${nextNode.name}`;
-    } else if (currentNode.type === 'study_area' && nextNode.type === 'bathroom') {
-      instruction = `Navigate to ${nextNode.name}`;
-    } else if (currentNode.type === 'study_area' && nextNode.type === 'elevator') {
-      instruction = `Move to ${nextNode.name}`;
-    } else if (currentNode.type === 'study_area' && nextNode.type === 'stairs') {
-      instruction = `Head to ${nextNode.name}`;
-    }
-    // Computer area transitions
-    else if (currentNode.type === 'computer_area' && nextNode.type === 'study_area') {
-      instruction = `Move to ${nextNode.name}`;
-    } else if (currentNode.type === 'computer_area' && nextNode.type === 'computer_area') {
-      instruction = `Continue to ${nextNode.name}`;
-    } else if (currentNode.type === 'computer_area' && nextNode.type === 'elevator') {
-      instruction = `Proceed to ${nextNode.name}`;
-    } else if (currentNode.type === 'computer_area' && nextNode.type === 'bathroom') {
-      instruction = `Navigate to ${nextNode.name}`;
-    }
-    // Elevator transitions
-    else if (currentNode.type === 'elevator' && nextNode.type === 'study_area') {
-      instruction = `Exit the elevator and head to ${nextNode.name}`;
-    } else if (currentNode.type === 'elevator' && nextNode.type === 'computer_area') {
-      instruction = `Exit the elevator and go to ${nextNode.name}`;
-    } else if (currentNode.type === 'elevator' && nextNode.type === 'entrance') {
-      instruction = `Exit the elevator toward ${nextNode.name}`;
-    } else if (currentNode.type === 'elevator' && nextNode.type === 'elevator') {
-      instruction = `Move to ${nextNode.name}`;
-    }
-    // Bathroom transitions
-    else if (currentNode.type === 'bathroom' && nextNode.type === 'study_area') {
-      instruction = `Exit bathroom and move to ${nextNode.name}`;
-    } else if (currentNode.type === 'bathroom' && nextNode.type === 'computer_area') {
-      instruction = `Exit bathroom and go to ${nextNode.name}`;
-    }
-    // Stairs transitions
-    else if (currentNode.type === 'stairs' && nextNode.type === 'entrance') {
-      instruction = `From stairs, proceed to ${nextNode.name}`;
-    } else if (currentNode.type === 'stairs' && nextNode.type === 'study_area') {
-      instruction = `From stairs, head to ${nextNode.name}`;
-    }
-    // Entrance transitions
-    else if (currentNode.type === 'entrance' && nextNode.type === 'elevator') {
-      instruction = `From the main entrance, proceed to ${nextNode.name}`;
-    } else if (currentNode.type === 'entrance' && nextNode.type === 'stairs') {
-      instruction = `From the main entrance, head to ${nextNode.name}`;
-    } else if (currentNode.type === 'entrance' && nextNode.type === 'study_area') {
-      instruction = `From the main entrance, proceed to ${nextNode.name}`;
-    }
-    // Default fallback
+    // 3. Logic based on node types to make it human-readable
+    if (currentNode.type === 'elevator') {
+      instruction = `Exit the elevator and head toward ${nextNode.name}`;
+    } 
+    else if (nextNode.type === 'waypoint') {
+      instruction = `Walk past the ${nextNode.name}`;
+    } 
+    else if (nextNode.type === 'room') {
+      instruction = `Go to the entrance of ${nextNode.name}`;
+    } 
     else {
-      instruction = `Continue to ${nextNode.name}`;
+      // Default fallback for entrances, tablets, etc.
+      instruction = `Proceed to ${nextNode.name}`;
     }
 
     if (instruction) {
@@ -260,6 +223,7 @@ function generateInstructions(path: string[]): string[] {
     }
   }
 
+  // 4. Handle the arrival point
   const endNode = nodes.find(n => n.id === path[path.length - 1]);
   instructions.push(`Arrive at ${endNode?.name || 'destination'}`);
   
@@ -290,10 +254,9 @@ app.get("/api/rooms", (req: Request, res: Response) => {
   const locations = nodes.filter(node => 
     node.type === 'room' || 
     node.type === 'entrance' || 
-    node.type === 'computer_area' ||
-    node.type === 'study_area' ||
-    node.type === 'bathroom' ||
+    node.type === 'tablet' ||
     node.type === 'elevator' ||
+    node.type === 'waypoint' ||
     node.type === 'stairs'
   );
   
@@ -304,11 +267,9 @@ app.get("/api/rooms", (req: Request, res: Response) => {
       const typeOrder: { [key: string]: number } = { 
         entrance: 1, 
         room: 2, 
-        bathroom: 3,
-        elevator: 4,
-        stairs: 5,
-        computer_area: 6,
-        study_area: 7
+        elevator: 3,
+        stairs: 4,
+        waypoint: 5
       };
       return (typeOrder[a.type] || 99) - (typeOrder[b.type] || 99);
     }
@@ -434,7 +395,10 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
         id: nodeId,
         name: node?.name || 'Unknown',
         type: node?.type || 'unknown',
-        floor: node?.floor || 2
+        floor: node?.floor || 2,
+        coord: node?.coord,
+        x: node?.coord ? node.coord[0] : undefined,
+        y: node?.coord ? node.coord[1] : undefined
       };
     }),
     instructions: pathResult.instructions
@@ -463,7 +427,9 @@ app.get("/api/navigation/room202-to-b20", (req: Request, res: Response) => {
         id: nodeId,
         name: node?.name || 'Unknown',
         type: node?.type || 'unknown',
-        floor: node?.floor || 2
+        floor: node?.floor || 2,
+        coord: node?.coord
+        
       };
     }),
     instructions: pathResult.instructions
@@ -507,12 +473,11 @@ app.get("/health", (req: Request, res: Response) => {
     totalLocations: floor2All.length,
     locationTypes: {
       rooms: floor2All.filter(n => n.type === 'room').length,
-      bathrooms: floor2All.filter(n => n.type === 'bathroom').length,
       elevators: floor2All.filter(n => n.type === 'elevator').length,
       stairs: floor2All.filter(n => n.type === 'stairs').length,
-      computerAreas: floor2All.filter(n => n.type === 'computer_area').length,
-      studyAreas: floor2All.filter(n => n.type === 'study_area').length,
-      entrances: floor2All.filter(n => n.type === 'entrance').length
+      entrances: floor2All.filter(n => n.type === 'entrance').length,
+      tablets: floor2All.filter(n => n.type === 'tablet').length,
+      waypoints: floor2All.filter(n => n.type === 'waypoint').length
     },
     totalNodes: nodes.length,
     sampleRoutes: [
