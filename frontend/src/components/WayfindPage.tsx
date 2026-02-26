@@ -30,7 +30,9 @@ export default function WayfindPage({ room }: { room: string }){
         </ol>
       </div>
 
-      { <QRCodePage room={room} /> }
+      <div className="qr-container">
+        <QRCodePage room={room} />
+      </div>
     </div>
   )
 }
