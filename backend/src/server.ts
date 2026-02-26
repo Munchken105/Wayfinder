@@ -111,7 +111,8 @@ const graph: { [key: string]: string[] } = {
   // Floor 2 Room Node Connections 
 
   "C3_entrance": ["C3_tablet", "C3_floor2stair1"],
-  "C3_tablet": ["C3_floor2stair2"],
+
+  "C3_tablet": ["C3_floor2stair2", "C3_floor2stair1"], // Our starting node
 
   "C3_elevator": ["B2_bottomhalf1"],
 
@@ -138,6 +139,10 @@ const graph: { [key: string]: string[] } = {
   "A1_room221": [],
 
   // -------------------------------------------------------------------------------------------------------------------
+
+  // Connecting nodes from floor 2 to floor 1
+
+  "C3_floor2stair1": ["start_floor1_stairs"],
 
   // Floor 1 Node Connections
 
@@ -383,16 +388,6 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
     return res.status(404).json({ 
       error: `End location '${end}' not found`,
       availableRooms: nodes.filter(n => n.type === 'room').map(n => ({ id: n.id, name: n.name, floor: n.floor }))
-    });
-  }
-
-  // Check if both locations are on the same floor
-  if (startNode.floor !== endNode.floor) {
-    return res.status(400).json({ 
-      error: "Multi-floor navigation not supported",
-      message: "This building only has single-floor navigation. Both locations must be on the same floor.",
-      startFloor: `${startNode.floor}F`,
-      endFloor: `${endNode.floor}F`
     });
   }
 
