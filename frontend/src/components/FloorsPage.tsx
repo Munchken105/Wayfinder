@@ -101,6 +101,7 @@ function LibraryFloorMap() {
   };
 
   const floorNumToString = (floorNumber: number): keyof typeof floors => {
+  
     if (floorNumber == 0) return "Basement";
     if (floorNumber == 1) return "Floor 1";
     if (floorNumber == 2) return "Floor 2";
@@ -361,10 +362,19 @@ function LibraryFloorMap() {
             {currentPath.map((node, i) => {
               if (i === currentPath.length - 1) return null; // Skip last node
               const nextNode = currentPath[i + 1];
-              const coord1 = backendRooms.find(r => r.id === node.id)?.coord;
-              const coord2 = backendRooms.find(r => r.id === nextNode.id)?.coord;
+
+              const point1 = backendRooms.find(r => r.id === node.id);
+
+              const coord1 = point1?.coord;
+              const coord1Floor = point1?.floor;
+              
+              const point2 = backendRooms.find(r => r.id === nextNode.id);
+
+              const coord2 = point2?.coord;
+              const coord2Floor = point2?.floor;
+
               if (!coord1 || !coord2) return null;
-              if (floorNumToString(coord1) !== activeFloor || floorNumToString(coord2) !== activeFloor) return null;
+              if (floorNumToString(coord1Floor) !== activeFloor || floorNumToString(coord2Floor) !== activeFloor) return null;
               return (
                 <line
                   key={`line-${i}`}
