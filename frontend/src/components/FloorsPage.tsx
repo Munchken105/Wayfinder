@@ -42,9 +42,8 @@ function LibraryFloorMap() {
           setBackendRooms(data.nodes.filter((n: any) => 
             n.type === 'room' || 
             n.type === 'entrance' || 
-            n.type === 'computer_area' ||
-            n.type === 'study_area' ||
-            n.type === 'bathroom' ||
+            n.type === 'waypoint' ||
+            n.type === 'tablet' ||
             n.type === 'elevator' ||
             n.type === 'stairs'
           ));
