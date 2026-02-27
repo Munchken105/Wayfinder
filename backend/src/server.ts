@@ -194,9 +194,10 @@ const graph: { [key: string]: string[] } = {
   "floor1_bottom": ["floor1_bathroom"],
   "floor1_bathroom": ["floor1_fire_exit_2_node"],
   "floor1_fire_exit_2_node": ["floor1_fire_exit_2"],
+
   // Floor 4 Room Node Connections
   // Entry points to floor 4
-  "floor4_elevator": ["A1_middleright", "A1_nexttoroom419", "C3_elevator"],
+  "floor4_elevator": ["A1_middleright", "A1_nexttoroom419"],
 
   // Central waypoint connects to main areas
   "A1_middleright": ["A1_nexttoroom419", "A1_nexttoroom425", "A1_bottomhalf", "A4_straightahead_fireexit"],
@@ -209,7 +210,7 @@ const graph: { [key: string]: string[] } = {
   "A1_bottomhalf": ["A1_floor4stair1", "A2_nearfireexit"],
 
   // Fire exit 1 connections
-  "A1_floor4stair1": ["A1_bottomhalf"],
+  "A1_floor4stair1": ["A1_bottomhalf", "floor4_elevator"],
 
   // Left side vertical corridor
   "A2_nearfireexit": ["A2_floor4stair2", "A2_straightahead_leftside"],
@@ -229,20 +230,6 @@ const graph: { [key: string]: string[] } = {
 
   // Fire exit 4 connections
   "A4_floor4stair4": ["A4_straightahead_fireexit"],
-
-  // Room connections (destinations)
-  "A1_room419": [],
-  "A1_room420": [],
-  "A1_room420A": [],
-  "A1_room420B": [],
-  "A1_room420C": [],
-  "A1_room421": [],
-  "A1_room422": [],
-  "A1_room423": [],
-  "A1_room424": [],
-  "A1_room425": [],
-  "A1_room426": [],
-  "A4_bathroom": []
 };
 
 // ! Dijkstra algorithm for shortest path (weighted by Euclidean distance between node coordinates)

@@ -366,11 +366,13 @@ function LibraryFloorMap() {
 
               const coord1 = point1?.coord;
               const coord1Floor = point1?.floor;
-              
+
               const point2 = backendRooms.find(r => r.id === nextNode.id);
 
               const coord2 = point2?.coord;
               const coord2Floor = point2?.floor;
+
+              //console.log(coord1Floor, coord2Floor);
 
               if (!coord1 || !coord2) return null;
               if (floorNumToString(coord1Floor) !== activeFloor || floorNumToString(coord2Floor) !== activeFloor) return null;
