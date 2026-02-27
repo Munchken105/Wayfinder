@@ -231,3 +231,9 @@ html, body {
   font-size: 1.5rem;
   line-height: 1.4;
 }
+
+.qr-container {
+  display: flex;
+  justify-content: center; /* horizontal center */
+  margin-top: 3rem;
+}
