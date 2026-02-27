@@ -22,13 +22,18 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
   const [searched, setSearched] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const MAX_QUERY_LENGTH = 40; // Max allowed characters for the search bar
+
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const trimmedQuery = query.trim().slice(0, MAX_QUERY_LENGTH);
+
     if (!query.trim()) return;
 
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/search?q=${query}`);
+      const res = await fetch(`http://localhost:5000/search?q=${encodeURIComponent(trimmedQuery)}`);
       const data = await res.json();
       const r = data.results || [];
       setResults(r);
@@ -63,7 +68,7 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
           className="search-bar-input"
           placeholder={placeholder}
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => setQuery(e.target.value.slice(0, MAX_QUERY_LENGTH))} // enforce limit while typing
         />
         <button type="submit" className="search-bar-button">
           {loading ? "..." : "Search"}

@@ -10,4 +10,17 @@ export default defineConfig({
       },
     }),
   ],
+  server: {
+    host: true,
+    port: 5173,
+    strictPort: true,
+    allowedHosts: ["glottic-lucy-nonphonetically.ngrok-free.dev"],
+      proxy:{
+    "/api":{
+      target: "http://localhost:5000",
+      changeOrigin: true
+    }
+  }
+  },
+
 })
