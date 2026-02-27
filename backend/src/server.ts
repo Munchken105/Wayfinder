@@ -81,18 +81,28 @@ const nodes: Node[] = [
   { id: "A1_room424", name: "Room 424", type: "room", floor: 4, coord:[514, 475] },
   { id: "A1_room425", name: "Room 425", type: "room", floor: 4, coord:[510, 436]},
   { id: "A1_room426", name: "Room 426", type: "room", floor: 4, coord:[564, 436]},
+  { id: "A4_bathroom", name: "Bathroom", type: "room", floor: 4, coord:[624, 64]},
 
   // Elevators
   { id: "floor4_elevator", name: "elevator at floor 4", type: "elevator", floor: 4, coord:[514, 345]},
 
   // Stairs / Fire Exit
   { id: "A1_floor4stair1", name: "Fire Exit 1", type: "stairs", floor: 4, coord:[492, 385]},
+  { id: "A2_floor4stair2", name: "Fire Exit 2", type: "stairs", floor: 4, coord:[246, 472]},
+  { id: "A3_floor4stair3", name: "Fire Exit 3", type: "stairs", floor: 4, coord:[87, 172]},
+  { id: "A4_floor4stair4", name: "Fire Exit 4", type: "stairs", floor: 4, coord:[550, 64]},
 
   // Waypoint (nodes that are used as means to get to the the actual destination)
   { id: "A1_nexttoroom419", name: "next to room 419", type: "waypoint", floor: 4, coord: [488, 475]},
   { id: "A1_nexttoroom425", name: "next to room 425", type: "waypoint", floor: 4, coord: [488, 436]},
   { id: "A1_bottomhalf", name: "bookshelves to the left of fire exit", type: "waypoint", floor: 4, coord: [440, 380]},
   { id: "A1_middleright", name: "bookshelves to the right of elevator", type: "waypoint", floor: 4, coord: [550, 300]},
+  { id: "A2_nearfireexit", name: "next to fire exit", type: "waypoint", floor: 4, coord: [207, 446]},
+  { id: "A2_straightahead_leftside", name: "straight ahead, along the bookshelves", type: "waypoint", floor: 4, coord: [207, 306]},
+  { id: "A3_straightahead_leftside", name: "straight ahead, along the bookshelves", type: "waypoint", floor: 4, coord: [207, 265]},
+  { id: "A3_corner_area", name: "top left corner of library", type: "waypoint", floor: 4, coord: [207, 171]},
+  { id: "A4_straightahead_fireexit", name: "straight, fire exit ahead", type: "waypoint", floor: 4, coord: [550, 150]},
+  { id: "A4_straightahead_bathroom", name: "straight, bathroom ahead", type: "waypoint", floor: 4, coord: [620, 150]}
 ];
 
 // Adjacency list - all connections on the same floor
@@ -102,7 +112,7 @@ const graph: { [key: string]: string[] } = {
   "C3_entrance": ["C3_tablet", "C3_floor2stair1"],
   "C3_tablet": ["C3_floor2stair2"],
 
-  "C3_elevator": ["B2_bottomhalf1"],
+  "C3_elevator": ["B2_bottomhalf1", "floor4_elevator"],
 
   "C3_floor2stair2":["C3_elevator"],
 
@@ -124,7 +134,57 @@ const graph: { [key: string]: string[] } = {
   "A1_central": ["A1_room221","A1_room221D","A1_room222","A1_room222A"],
   
   //This is left as empty because it's a destination
-  "A1_room221": []
+  "A1_room221": [],
+
+  // Floor 4 Room Node Connections
+  // Entry points to floor 4
+  "floor4_elevator": ["A1_middleright", "A1_nexttoroom419", "C3_elevator"],
+
+  // Central waypoint connects to main areas
+  "A1_middleright": ["A1_nexttoroom419", "A1_nexttoroom425", "A1_bottomhalf", "A4_straightahead_fireexit"],
+
+  // Waypoint cluster near rooms 419-425
+  "A1_nexttoroom419": ["A1_room419", "A1_room420", "A1_room420A", "A1_room420B", "A1_room420C", "A1_nexttoroom425"],
+  "A1_nexttoroom425": ["A1_room425", "A1_room426", "A1_room421", "A1_room422", "A1_room423", "A1_room424", "A1_bottomhalf"],
+
+  // Bottom left waypoint
+  "A1_bottomhalf": ["A1_floor4stair1", "A2_nearfireexit"],
+
+  // Fire exit 1 connections
+  "A1_floor4stair1": ["A1_bottomhalf"],
+
+  // Left side vertical corridor
+  "A2_nearfireexit": ["A2_floor4stair2", "A2_straightahead_leftside"],
+  "A2_straightahead_leftside": ["A3_straightahead_leftside"],
+  "A3_straightahead_leftside": ["A3_corner_area"],
+  "A3_corner_area": ["A3_floor4stair3"],
+
+  // Fire exit 2 connections
+  "A2_floor4stair2": ["A2_nearfireexit"],
+
+  // Fire exit 3 connections
+  "A3_floor4stair3": ["A3_corner_area"],
+
+  // Top corridor
+  "A4_straightahead_fireexit": ["A4_straightahead_bathroom"],
+  "A4_straightahead_bathroom": ["A4_bathroom", "A4_floor4stair4"],
+
+  // Fire exit 4 connections
+  "A4_floor4stair4": ["A4_straightahead_fireexit"],
+
+  // Room connections (destinations)
+  "A1_room419": [],
+  "A1_room420": [],
+  "A1_room420A": [],
+  "A1_room420B": [],
+  "A1_room420C": [],
+  "A1_room421": [],
+  "A1_room422": [],
+  "A1_room423": [],
+  "A1_room424": [],
+  "A1_room425": [],
+  "A1_room426": [],
+  "A4_bathroom": []
 };
 
 // ! Dijkstra algorithm for shortest path (weighted by Euclidean distance between node coordinates)
@@ -358,16 +418,6 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
     return res.status(404).json({ 
       error: `End location '${end}' not found`,
       availableRooms: nodes.filter(n => n.type === 'room').map(n => ({ id: n.id, name: n.name, floor: n.floor }))
-    });
-  }
-
-  // Check if both locations are on the same floor
-  if (startNode.floor !== endNode.floor) {
-    return res.status(400).json({ 
-      error: "Multi-floor navigation not supported",
-      message: "This building only has single-floor navigation. Both locations must be on the same floor.",
-      startFloor: `${startNode.floor}F`,
-      endFloor: `${endNode.floor}F`
     });
   }
 
