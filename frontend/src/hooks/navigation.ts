@@ -33,7 +33,12 @@ export function useNavigation() {
       const urlFrom = encodeURIComponent(from);
       const urlTo = encodeURIComponent(to);
       const response = await fetch(
-        `http://localhost:5000/api/navigation/from/${urlFrom}/to/${urlTo}`
+        `/api/navigation/from/${urlFrom}/to/${urlTo}`,
+        {
+          headers: {
+            "ngrok-skip-browser-warning": "true",
+          },
+        }
       );
       const data = await response.json();
 

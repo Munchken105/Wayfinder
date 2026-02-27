@@ -90,3 +90,20 @@ This will start the development server for the frontend.
 ### Step 8 - Open a browser and visit [http://localhost:5173](http://localhost:5173) to open the frontend
 
 This should connect to the backend automatically.
+
+## Tailscale SSH
+
+### Step 1 - Go to tailscale.com Login using the Wayfinder Gmail Account (Found on our private Doc)
+
+### Step 2 Connect to tailnet
+
+Open Terminal
+```bash
+tailscale up
+```
+
+### Step 3 - ssh
+```bash
+ssh wayfinder@2ndFloor
+```
+you are now sshed into the our 2ndFloor rasbery pi as more pi's come along ill update each pi with its own ssh instructions

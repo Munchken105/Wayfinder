@@ -17,7 +17,7 @@ export default function WayfindPage({ room }: { room: string }){
   return (
     <div>
       <h1>
-        Navigating from Main Entrance to {room}
+        Navigating from Kiosk to {room}
       </h1>
       {loading && <div className="status">Computing path...</div>}
       {error && <div className="status error">Error: {error}</div>}
@@ -30,7 +30,9 @@ export default function WayfindPage({ room }: { room: string }){
         </ol>
       </div>
 
-      { <QRCodePage room={room} /> }
+      <div className="qr-container">
+        <QRCodePage room={room} />
+      </div>
     </div>
   )
 }

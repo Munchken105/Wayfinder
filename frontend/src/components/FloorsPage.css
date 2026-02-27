@@ -18,6 +18,7 @@ html, body {
   flex-shrink: 0;
   min-height: 100vh;
   align-items: stretch;
+  z-index: 200;
 }
 .Map-Content {
   flex-grow: 1;
@@ -112,10 +113,47 @@ html, body {
   box-shadow: 4px 0 6px rgba(0,0,0,0.2);
   transition: left 0.3s ease;
   z-index: 100;
+
+  transition: left 0.3s ease, transform 0.3s ease;
+  will-change: transform;
 }
 
 .info-panel.show {
   left: 0; 
+}
+
+.info-panel.collapsed {
+  transform: translateX(calc(-100%));
+}
+
+/* Collapse toggle button */
+.collapse-toggle {
+  position: absolute;
+  right: -25px;               /* slightly outside the panel */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 25px;
+  height: 60px;
+  background: #1e90ff;        /* nice blue color */
+  border: 2px solid #0c6cd8; /* darker blue border */
+  border-left: none;          /* remove overlapping border */
+  border-radius: 0 6px 6px 0;
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  z-index: 101;
+  color: white;               /* arrow color */
+  font-weight: bold;          /* arrow more visible */
+}
+
+/* Hover effect */
+.collapse-toggle:hover {
+  background: #0c6cd8;        /* darker blue on hover */
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+  border-color: #084a9e;      /* slightly darker border on hover */
 }
 
 .close-btn {
@@ -192,4 +230,10 @@ html, body {
 .room-description {
   font-size: 1.5rem;
   line-height: 1.4;
+}
+
+.qr-container {
+  display: flex;
+  justify-content: center; /* horizontal center */
+  margin-top: 3rem;
 }
