@@ -215,7 +215,7 @@ function findShortestPathDijkstra(startNodeId: string, endNodeId: string): PathR
     // pop smallest
     pq.sort(compare);
     const [u] = pq.shift()!;
-    
+
     if (visited.has(u)) continue;
     visited.add(u);
 
@@ -226,7 +226,7 @@ function findShortestPathDijkstra(startNodeId: string, endNodeId: string): PathR
       if (visited.has(v)) continue;
       const weight = euclidean(u, v);
       const alt = (dist.get(u) ?? Infinity) + weight;
-      
+
       if (alt < (dist.get(v) ?? Infinity)) {
         dist.set(v, alt);
         prev.set(v, u);
@@ -298,7 +298,7 @@ function generateInstructions(path: string[]): string[] {
   // 4. Handle the arrival point
   const endNode = nodes.find(n => n.id === path[path.length - 1]);
   instructions.push(`Arrive at ${endNode?.name || 'destination'}`);
-  
+
   return instructions;
 }
 
@@ -331,7 +331,7 @@ app.get("/api/rooms", (req: Request, res: Response) => {
     node.type === 'waypoint' ||
     node.type === 'stairs'
   );
-  
+
   // Sort locations by type and name for better organization in dropdown
   const sortedLocations = locations.sort((a, b) => {
     // First sort by type
@@ -361,7 +361,7 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
 
   // Check if parameters are provided
   if (!start || !end) {
-    return res.status(400).json({ 
+    return res.status(400).json({
       error: "Both start and end parameters are required",
       example: "/api/navigation/from/223/to/classroom_b20"
     });
@@ -377,7 +377,7 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
 
   if (!startNode) {
     console.warn(`Start node not found for provided param: '${start}'`);
-    return res.status(404).json({ 
+    return res.status(404).json({
       error: `Start location '${start}' not found`,
       availableRooms: nodes.filter(n => n.type === 'room').map(n => ({ id: n.id, name: n.name, floor: n.floor }))
     });
@@ -385,7 +385,7 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
 
   if (!endNode) {
     console.warn(`End node not found for provided param: '${end}'`);
-    return res.status(404).json({ 
+    return res.status(404).json({
       error: `End location '${end}' not found`,
       availableRooms: nodes.filter(n => n.type === 'room').map(n => ({ id: n.id, name: n.name, floor: n.floor }))
     });
@@ -427,7 +427,7 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
       console.error('Error during reachability debug:', derr);
     }
 
-    return res.status(404).json({ 
+    return res.status(404).json({
       error: "No path found between the specified locations",
       start: startNode.name,
       end: endNode.name,
@@ -466,7 +466,7 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
 // Specific route for Room 202 to Classroom B20 (same floor)
 app.get("/api/navigation/room202-to-b20", (req: Request, res: Response) => {
   const pathResult = findShortestPathDijkstra("223", "classroom_b20");
-  
+
   if (!pathResult) {
     return res.status(404).json({ error: "No path found from Room 202 to Classroom B20" });
   }
@@ -497,15 +497,15 @@ app.get("/api/navigation/room202-to-b20", (req: Request, res: Response) => {
 // Get available routes on this floor
 app.get("/api/floor/:floorNumber/routes", (req: Request, res: Response) => {
   const floorNumber = req.params.floorNumber;
-  
+
   if (!floorNumber) {
     return res.status(400).json({ error: "Floor number is required" });
   }
 
-  const floorRooms = nodes.filter(node => 
+  const floorRooms = nodes.filter(node =>
     node.type === 'room' && node.floor.toString() === floorNumber
   );
-  
+
   res.json({
     floor: `${floorNumber}F`,
     availableRooms: floorRooms.map(room => ({
@@ -516,13 +516,30 @@ app.get("/api/floor/:floorNumber/routes", (req: Request, res: Response) => {
   });
 });
 
+// Get public URL configuration (e.g. from ngrok) to help frontend generate QR codes
+app.get("/api/config", async (req: Request, res: Response) => {
+  try {
+    const response = await fetch("http://127.0.0.1:4040/api/tunnels");
+    if (response.ok) {
+      const data: any = await response.json();
+      const httpsTunnel = data.tunnels?.find((t: any) => t.public_url.startsWith("https://"));
+      if (httpsTunnel) {
+        return res.json({ publicUrl: httpsTunnel.public_url });
+      }
+    }
+  } catch (e) {
+    console.warn("Could not fetch ngrok tunnels. Fallback will be used.", e);
+  }
+  return res.json({ publicUrl: "" });
+});
+
 // Health check
 app.get("/health", (req: Request, res: Response) => {
   const floor2Rooms = nodes.filter(n => n.type === 'room' && n.floor === 2);
   const floor2All = nodes.filter(n => n.floor === 2);
-  
-  res.json({ 
-    status: "healthy", 
+
+  res.json({
+    status: "healthy",
     timestamp: new Date().toISOString(),
     algorithm: "Dijkstra (Weighted - Euclidean distance)",
     navigationType: "Single Floor Only",
@@ -554,6 +571,6 @@ app.use((req: Request, res: Response) => {
 app.listen(PORT, () => {
   const floor2Rooms = nodes.filter(n => n.type === 'room' && n.floor === 2);
   const floor2All = nodes.filter(n => n.floor === 2);
-  
+
   // Startup logs removed
 });
