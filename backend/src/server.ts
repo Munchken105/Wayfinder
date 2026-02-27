@@ -69,7 +69,51 @@ const nodes: Node[] = [
 
   { id: "A1_central", name: "In front of Room 223", type: "waypoint", floor: 2, coord: [708, 100]},
 
-  // ------------------------------------------------------------------------------------------------------------------- 
+
+
+
+  // Floor 3
+  // { id: "", name: "", type: "", floor: 3, coord: [0, 0]},
+  // Courtyard
+  { id: "fl3_courtyd_bottom_left", name: "bottom left corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [245, 488]},
+  { id: "fl3_courtyd_top_left", name: "top left corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [245, 201]},
+  { id: "fl3_courtyd_top_right", name: "top right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [700, 201]},
+  { id: "fl3_courtyd_middle_right", name: "middle right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [700, 343]},
+  { id: "fl_3_courtyd_bottom_right", name: "bottom right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [549, 488]},
+
+  // Floor 3 Rooms
+  { id: "room_319", name: "room 319", type: "room", floor: 3, coord: [744, 425]},
+  { id: "room_320", name: "room 320", type: "room", floor: 3, coord: [896, 586]},
+  { id: "room_321", name: "room 321", type: "room", floor: 3, coord: [729, 586]},
+  { id: "room_322", name: "room 322", type: "room", floor: 3, coord: [700, 586]},
+  { id: "room_323", name: "room 323", type: "room", floor: 3, coord: [668, 586]},
+  { id: "room_324", name: "room 324", type: "room", floor: 3, coord: [633, 586]},
+  { id: "room_325", name: "room 325", type: "room", floor: 3, coord: [629, 537]},
+  { id: "room_326", name: "room 326", type: "room", floor: 3, coord: [693, 537]},
+
+  // Nodes to make it so that the navigation line doesnt go through walls 
+  { id: "middle_of_324_and_325", name: "midpoint between rooms 324 and 325", type: "waypoint", floor: 3, coord: [606, 561]},
+  { id: "fl3_right_study_hall", name: "waypoint in right study area", type: "waypoint", floor: 3, coord: [813, 536]},
+  { id: "middle_of_321_and_326", name: "midpoint between rooms 321 and 326", type: "waypoint", floor: 3, coord: [757, 557]},
+  { id: "left_of_324", name: "waypoint to the left of 324", type: "waypoint", floor: 3, coord: [608, 617]},
+  { id: "fl3_elevator", name: "the floor 3 elevator", type: "elevator", floor: 3, coord: [647, 423]},
+  { id: "325_upper_left", name: "waypoint to the upper left of 325, where the AED is", type: "waypoint", floor: 3, coord: [604, 493]},
+  { id: "fl3_stairs2_upper_right", name: "waypoint in the upper right corner of the 2nd fl3 staircase", type: "waypoint", floor: 3, coord: [327, 567]},
+  { id: "fl3_stairs2_right", name: "waypoint to the right of the 2nd fl3 staircase", type: "waypoint", floor: 3, coord: [324, 614]},
+  { id: "fl3_stairs1_right", name: "waypoint to the right of the 1st fl3 staircase", type: "waypoint", floor: 3, coord: [117, 203]},
+  { id: "fl3_bathroom_right", name: "waypoint to the right of the 1st fl3 bathroom", type: "waypoint", floor: 3, coord: [119, 275]},
+
+  //Floor 3 Bathrooms
+  { id: "fl3_bathroom_1", name: "leftmost bathroom", type: "room", floor: 3, coord: [87, 276]},
+  { id: "fl3_bathroom_2", name: "rightmost bathroom", type: "room", floor: 3, coord: [779, 82]},
+
+  //Floor 3 Stairs
+  { id: "fl3_stairs_1", name: "fl3 leftmost stairs", type: "stairs", floor: 3, coord: [87, 204]},
+  { id: "fl3_stairs_2", name: "fl3 middle stairs", type: "stairs", floor: 3, coord: [298, 572]},
+  { id: "fl3_stairs_3", name: "fl3 rightmost stairs", type: "stairs", floor: 3, coord: [678, 86]},
+  { id: "fl3_stairs_at_elevators", name: "the stairs right at the elevator", type: "stairs", floor: 3, coord: [614, 457]},
+
+
   
   // All available rooms on the first floor
   { id: "room116", name: "Room 116", type: "room", floor: 1, coord:[220, 275]},
