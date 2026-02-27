@@ -39,12 +39,11 @@ function LibraryFloorMap() {
       .then(data => {
         if (data.nodes) {
           // Include all location types: rooms, entrances, bathrooms, elevators, stairs, computer areas, study areas
-          setBackendRooms(data.nodes.filter((n: any) =>
-            n.type === 'room' ||
-            n.type === 'entrance' ||
-            n.type === 'computer_area' ||
-            n.type === 'study_area' ||
-            n.type === 'bathroom' ||
+          setBackendRooms(data.nodes.filter((n: any) => 
+            n.type === 'room' || 
+            n.type === 'entrance' || 
+            n.type === 'waypoint' ||
+            n.type === 'tablet' ||
             n.type === 'elevator' ||
             n.type === 'stairs'
           ));
@@ -101,6 +100,7 @@ function LibraryFloorMap() {
   };
 
   const floorNumToString = (floorNumber: number): keyof typeof floors => {
+  
     if (floorNumber == 0) return "Basement";
     if (floorNumber == 1) return "Floor 1";
     if (floorNumber == 2) return "Floor 2";
@@ -327,9 +327,74 @@ function LibraryFloorMap() {
               style={{ top: `${lastClick.y}px`, left: `${lastClick.x}px` }}>
             </div>)
           }
-          {/*----------------------------------------------------------------------------------------------------------*/}
+        {/*----------------------------------------------------------------------------------------------------------*/} 
+        
+        {activeFloor && floors[activeFloor].map(room => (
+        <div
+          key={room.id}
+          className={`hotspot ${selectedRoom?.id === room.id ? "active" : ""}`}
+          style={{
+            top: `${room.top}px`,
+            left: `${room.left}px`,
+            width: `${room.width}px`,
+            height: `${room.height}px`,
+            position: "absolute",
+            clipPath: room.clipPath ? room.clipPath : undefined,
+          }}
+          onClick={() => {setSelectedRoom(room); setWayfindClicked(false); setIsCollapsed(false);}}/>
+      ))}
+        
+        {/* SVG lines connecting path nodes */}
+        {wayfindClicked && currentPath.length > 0 && (
+          <svg
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              pointerEvents: "none",
+              zIndex: 5,
+            }}
+          >
+            {/* Draw lines between consecutive nodes in the path */}
+            {currentPath.map((node, i) => {
+              if (i === currentPath.length - 1) return null; // Skip last node
+              const nextNode = currentPath[i + 1];
 
-          {activeFloor && floors[activeFloor].map(room => (
+              const point1 = backendRooms.find(r => r.id === node.id);
+
+              const coord1 = point1?.coord;
+              const coord1Floor = point1?.floor;
+              
+              const point2 = backendRooms.find(r => r.id === nextNode.id);
+
+              const coord2 = point2?.coord;
+              const coord2Floor = point2?.floor;
+
+              if (!coord1 || !coord2) return null;
+              if (floorNumToString(coord1Floor) !== activeFloor || floorNumToString(coord2Floor) !== activeFloor) return null;
+              return (
+                <line
+                  key={`line-${i}`}
+                  x1={coord1[0]}
+                  y1={coord1[1]}
+                  x2={coord2[0]}
+                  y2={coord2[1]}
+                  stroke="red"
+                  strokeWidth="3"
+                />
+              );
+            })}
+          </svg>
+        )}
+
+        {/* Render red dots only for nodes in the current path */}
+        {wayfindClicked && currentPath.length > 0 && currentPath.map(node => {
+          const location = backendRooms.find(r => r.id === node.id);
+          if (!location || !location.coord) return null;
+          if (floorNumToString(location.floor) !== activeFloor) return null;
+          return (
             <div
               key={room.id}
               className={`hotspot ${selectedRoom?.id === room.id ? "active" : ""}`}
