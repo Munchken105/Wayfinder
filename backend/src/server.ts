@@ -33,6 +33,7 @@ interface PathResult {
 
 // Single floor building graph - all rooms on the same floor
 const nodes: Node[] = [
+  // * ------------------------------------------ Second floor layout ------------------------------------------
   // All available rooms on the second floors
   { id: "A1_room221", name: "Room 221", type: "room", floor: 2, coord:[440, 100] },
   { id: "A1_room221D", name: "Room 221-D", type: "room", floor: 2, coord:[535, 100]},
@@ -68,6 +69,30 @@ const nodes: Node[] = [
 
   { id: "A1_central", name: "In front of Room 223", type: "waypoint", floor: 2, coord: [708, 100]},
   
+  // * ------------------------------------- All available rooms on the fourth floors -------------------------------------  
+  { id: "A1_room419", name: "Room 419", type: "room", floor: 4, coord:[610, 345]},
+  { id: "A1_room420", name: "Room 420", type: "room", floor: 4, coord:[733, 475]},
+  { id: "A1_room420A", name: "Room 420A", type: "room", floor: 4, coord:[660, 475]},
+  { id: "A1_room420B", name: "Room 420B", type: "room", floor: 4, coord:[635, 475]},
+  { id: "A1_room420C", name: "Room 420C", type: "room", floor: 4, coord:[610, 475]},
+  { id: "A1_room421", name: "Room 421", type: "room", floor: 4, coord:[585, 475]},
+  { id: "A1_room422", name: "Room 422", type: "room", floor: 4, coord:[561, 475]},
+  { id: "A1_room423", name: "Room 423", type: "room", floor: 4, coord:[538, 475] },
+  { id: "A1_room424", name: "Room 424", type: "room", floor: 4, coord:[514, 475] },
+  { id: "A1_room425", name: "Room 425", type: "room", floor: 4, coord:[510, 436]},
+  { id: "A1_room426", name: "Room 426", type: "room", floor: 4, coord:[564, 436]},
+
+  // Elevators
+  { id: "floor4_elevator", name: "elevator at floor 4", type: "elevator", floor: 4, coord:[514, 345]},
+
+  // Stairs / Fire Exit
+  { id: "A1_floor4stair1", name: "Fire Exit 1", type: "stairs", floor: 4, coord:[492, 385]},
+
+  // Waypoint (nodes that are used as means to get to the the actual destination)
+  { id: "A1_nexttoroom419", name: "next to room 419", type: "waypoint", floor: 4, coord: [488, 475]},
+  { id: "A1_nexttoroom425", name: "next to room 425", type: "waypoint", floor: 4, coord: [488, 436]},
+  { id: "A1_bottomhalf", name: "bookshelves to the left of fire exit", type: "waypoint", floor: 4, coord: [440, 380]},
+  { id: "A1_middleright", name: "bookshelves to the right of elevator", type: "waypoint", floor: 4, coord: [550, 300]},
 ];
 
 // Adjacency list - all connections on the same floor
