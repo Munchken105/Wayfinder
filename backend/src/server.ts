@@ -113,7 +113,32 @@ const nodes: Node[] = [
   { id: "fl3_stairs_3", name: "fl3 rightmost stairs", type: "stairs", floor: 3, coord: [678, 86]},
   { id: "fl3_stairs_at_elevators", name: "the stairs right at the elevator", type: "stairs", floor: 3, coord: [614, 457]},
 
+  // * ------------------------------------- All available rooms on the basement floor ------------------------------------- 
 
+  // All available rooms on the basement floor
+  { id: "roomB48", name: "Room B48", type: "room", floor: 0, coord:[260, 560]},
+  { id: "roomB41", name: "Room B41", type: "room", floor: 0, coord:[285, 565]},
+  { id: "roomB40", name: "Room B40", type: "room", floor: 0, coord:[400, 565]},
+  { id: "roomB30", name: "Room B30", type: "room", floor: 0, coord:[660, 85]},
+  { id: "basement_bathroom", name: "bathroom", type: "room", floor: 0, coord:[610, 85]},
+
+  // Elevator nodes
+  { id: "basement_elevator", name: "the elevator", type: "elevator", floor: 0, coord:[420, 435]},
+
+  // Stairs nodes / Fire Exit
+  { id: "basement_stairs", name: "stairs", type: "stairs", floor: 0, coord:[20, 465]},
+  { id: "basement_fire_exit_1", name: "Fire Exit 1", type: "stairs", floor: 0, coord:[395, 480]},
+  { id: "basement_fire_exit_2", name: "Fire Exit 2", type: "stairs", floor: 0, coord:[475, 90]},
+
+  // Waypoint (nodes that are used as means to get to the the actual destination)
+
+  { id: "basement_leftmost", name: "study area", type: "waypoint", floor: 0, coord:[20, 350]},
+  { id: "basement_left", name: "study area", type: "waypoint", floor: 0, coord:[200, 350]},
+  { id: "basement_nextToStudyArea", name: "next to rooms", type: "waypoint", floor: 0, coord:[325, 510]},
+  { id: "basement_nextToMapCollections", name: "next to map collections", type: "waypoint", floor: 0, coord:[440, 390]},
+  { id: "basement_nextToFireExit", name: "next to fire exit", type: "waypoint", floor: 0, coord:[440, 135]},
+
+  // * ------------------------------------- All available rooms on the first floor ------------------------------------- 
   
   // All available rooms on the first floor
   { id: "room116", name: "Room 116", type: "room", floor: 1, coord:[220, 275]},
@@ -149,7 +174,7 @@ const nodes: Node[] = [
   { id: "floor1_fire_exit_1_node", name: "next to the fire exit 1", type: "waypoint", floor: 1, coord:[810, 320]},
   { id: "floor1_fire_exit_2_node", name: "next to the fire exit 2", type: "waypoint", floor: 1, coord:[315, 460]},
   { id: "floor1_room108A_node", name: "next to room 108A", type: "waypoint", floor: 1, coord:[810, 365]},
-  // * ------------------------------------- All available rooms on the fourth floors -------------------------------------  
+  // * ------------------------------------- All available rooms on the fourth floor -------------------------------------  
   { id: "A1_room419", name: "Room 419", type: "room", floor: 4, coord:[610, 345]},
   { id: "A1_room420", name: "Room 420", type: "room", floor: 4, coord:[733, 475]},
   { id: "A1_room420A", name: "Room 420A", type: "room", floor: 4, coord:[660, 475]},
@@ -193,7 +218,7 @@ const graph: { [key: string]: string[] } = {
 
   "C3_tablet": ["C3_floor2stair2", "C3_floor2stair1"], // Our starting node
 
-  "C3_elevator": ["B2_bottomhalf1", "floor4_elevator"],
+  "C3_elevator": ["B2_bottomhalf1", "basement_elevator", "floor4_elevator"],
 
   "C3_floor2stair2":["C3_elevator"],
 
@@ -219,6 +244,22 @@ const graph: { [key: string]: string[] } = {
 
   // -------------------------------------------------------------------------------------------------------------------
 
+  // Basement Node Connections
+
+  "basement_elevator": ["basement_nextToStudyArea", "basement_nextToMapCollections"],
+  "basement_fire_exit_1": ["basement_nextToStudyArea", "basement_nextToMapCollections"],
+
+  "basement_nextToMapCollections": ["basement_nextToFireExit"],
+  "basement_nextToStudyArea": ["roomB40", "roomB41", "roomB48"],
+
+  "basement_nextToFireExit": ["basement_fire_exit_2", "basement_bathroom", "roomB30"],
+
+  "basement_stairs": ["basement_leftmost"],
+  "basement_leftmost": ["basement_left"],
+  "basement_left": ["basement_nextToStudyArea"],
+
+  // -------------------------------------------------------------------------------------------------------------------
+
   // Connecting nodes from floor 2 to floor 1
 
   "C3_floor2stair1": ["start_floor1_stairs"],
@@ -238,9 +279,12 @@ const graph: { [key: string]: string[] } = {
   "floor1_bottom": ["floor1_bathroom"],
   "floor1_bathroom": ["floor1_fire_exit_2_node"],
   "floor1_fire_exit_2_node": ["floor1_fire_exit_2"],
+
+  // -------------------------------------------------------------------------------------------------------------------
+
   // Floor 4 Room Node Connections
   // Entry points to floor 4
-  "floor4_elevator": ["A1_middleright", "A1_nexttoroom419", "C3_elevator"],
+  "floor4_elevator": ["A1_middleright", "A1_nexttoroom419"],
 
   // Central waypoint connects to main areas
   "A1_middleright": ["A1_nexttoroom419", "A1_nexttoroom425", "A1_bottomhalf", "A4_straightahead_fireexit"],
@@ -274,19 +318,7 @@ const graph: { [key: string]: string[] } = {
   // Fire exit 4 connections
   "A4_floor4stair4": ["A4_straightahead_fireexit"],
 
-  // Room connections (destinations)
-  "A1_room419": [],
-  "A1_room420": [],
-  "A1_room420A": [],
-  "A1_room420B": [],
-  "A1_room420C": [],
-  "A1_room421": [],
-  "A1_room422": [],
-  "A1_room423": [],
-  "A1_room424": [],
-  "A1_room425": [],
-  "A1_room426": [],
-  "A4_bathroom": []
+
 };
 
 // ! Dijkstra algorithm for shortest path (weighted by Euclidean distance between node coordinates)
