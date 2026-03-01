@@ -24,13 +24,13 @@
 }
 
 .search-bar-input:focus {
-  border-color: #2563eb;
+  border-color: #005bbb;
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
 /* Button */
 .search-bar-button {
-  background-color: #2563eb;
+  background-color: #005bbb;
   color: white;
   padding: 0 16px;
   border: none;
@@ -41,7 +41,7 @@
 }
 
 .search-bar-button:hover {
-  background-color: #1d4ed8;
+  background-color: #004799;
 }
 
 /* Dropdown list */
