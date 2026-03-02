@@ -327,67 +327,69 @@ function LibraryFloorMap() {
               style={{ top: `${lastClick.y}px`, left: `${lastClick.x}px` }}>
             </div>)
           }
-          {/*----------------------------------------------------------------------------------------------------------*/}
+        {/*----------------------------------------------------------------------------------------------------------*/} 
+        
+        {activeFloor && floors[activeFloor].map(room => (
+        <div
+          key={room.id}
+          className={`hotspot ${selectedRoom?.id === room.id ? "active" : ""}`}
+          style={{
+            top: `${room.top}px`,
+            left: `${room.left}px`,
+            width: `${room.width}px`,
+            height: `${room.height}px`,
+            position: "absolute",
+            clipPath: room.clipPath ? room.clipPath : undefined,
+          }}
+          onClick={() => {setSelectedRoom(room); setWayfindClicked(false); setIsCollapsed(false);}}/>
+      ))}
+        
+        {/* SVG lines connecting path nodes */}
+        {wayfindClicked && currentPath.length > 0 && (
+          <svg
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              pointerEvents: "none",
+              zIndex: 5,
+            }}
+          >
+            {/* Draw lines between consecutive nodes in the path */}
+            {currentPath.map((node, i) => {
+              if (i === currentPath.length - 1) return null; // Skip last node
+              const nextNode = currentPath[i + 1];
 
-          {activeFloor && floors[activeFloor].map(room => (
-            <div
-              key={room.id}
-              className={`hotspot ${selectedRoom?.id === room.id ? "active" : ""}`}
-              style={{
-                top: `${room.top}px`,
-                left: `${room.left}px`,
-                width: `${room.width}px`,
-                height: `${room.height}px`,
-                position: "absolute",
-                clipPath: room.clipPath ? room.clipPath : undefined,
-              }}
-              onClick={() => { setSelectedRoom(room); setWayfindClicked(false); setIsCollapsed(false); }} />
-          ))}
+              const point1 = backendRooms.find(r => r.id === node.id);
 
-          {/* SVG lines connecting path nodes */}
-          {wayfindClicked && currentPath.length > 0 && (
-            <svg
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                pointerEvents: "none",
-                zIndex: 5,
-              }}
-            >
-              {/* Draw lines between consecutive nodes in the path */}
-              {currentPath.map((node, i) => {
-                if (i === currentPath.length - 1) return null; // Skip last node
-                const nextNode = currentPath[i + 1];
+              const coord1 = point1?.coord;
+              const coord1Floor = point1?.floor;
 
-                const point1 = backendRooms.find(r => r.id === node.id);
+              const point2 = backendRooms.find(r => r.id === nextNode.id);
 
-                const coord1 = point1?.coord;
-                const coord1Floor = point1?.floor;
+              const coord2 = point2?.coord;
+              const coord2Floor = point2?.floor;
 
-                const point2 = backendRooms.find(r => r.id === nextNode.id);
+              //console.log(coord1Floor, coord2Floor);
 
-                const coord2 = point2?.coord;
-                const coord2Floor = point2?.floor;
-
-                if (!coord1 || !coord2) return null;
-                if (floorNumToString(coord1Floor) !== activeFloor || floorNumToString(coord2Floor) !== activeFloor) return null;
-                return (
-                  <line
-                    key={`line-${i}`}
-                    x1={coord1[0]}
-                    y1={coord1[1]}
-                    x2={coord2[0]}
-                    y2={coord2[1]}
-                    stroke="red"
-                    strokeWidth="3"
-                  />
-                );
-              })}
-            </svg>
-          )}
+              if (!coord1 || !coord2) return null;
+              if (floorNumToString(coord1Floor) !== activeFloor || floorNumToString(coord2Floor) !== activeFloor) return null;
+              return (
+                <line
+                  key={`line-${i}`}
+                  x1={coord1[0]}
+                  y1={coord1[1]}
+                  x2={coord2[0]}
+                  y2={coord2[1]}
+                  stroke="red"
+                  strokeWidth="3"
+                />
+              );
+            })}
+          </svg>
+        )}
 
           {/* Render red dots only for nodes in the current path */}
           {wayfindClicked && currentPath.length > 0 && currentPath.map(node => {
