@@ -1,0 +1,15 @@
+[Unit]
+Description=Wayfinder Backend
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/node /home/wayfinder/WayfinderMain/backend/dist/server.js
+Restart=always
+User=wayfinder
+WorkingDirectory=/home/wayfinder/WayfinderMain/backend
+Environment=PORT=5000
+StandardOutput=append:/var/log/wayfinder/backend.log
+StandardError=append:/var/log/wayfinder/backend.log
+
+[Install]
+WantedBy=multi-user.target
