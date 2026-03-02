@@ -202,7 +202,8 @@ const nodes: Node[] = [
   { id: "A1_nexttoroom424", name: "next to room 424", type: "waypoint", floor: 4, coord: [488, 475]},
   { id: "A1_nexttoroom425", name: "next to room 425", type: "waypoint", floor: 4, coord: [488, 436]},
   { id: "A1_bottomhalf", name: "bookshelves to the left of fire exit", type: "waypoint", floor: 4, coord: [440, 380]},
-  { id: "A1_middleright", name: "bookshelves to the right of elevator", type: "waypoint", floor: 4, coord: [550, 300]},
+  { id: "A1_middleright", name: "bookshelves to the right of elevator", type: "waypoint", floor: 4, coord: [550, 315]},
+  { id: "A1_nexttoroom419", name: "next to room 419", type: "waypoint", floor: 4, coord: [610, 315]},
   { id: "A2_nearfireexit", name: "next to fire exit", type: "waypoint", floor: 4, coord: [207, 446]},
   { id: "A2_straightahead_leftside", name: "straight ahead, along the bookshelves", type: "waypoint", floor: 4, coord: [207, 385]},
   { id: "A3_straightahead_leftside", name: "straight ahead, along the bookshelves", type: "waypoint", floor: 4, coord: [207, 265]},
@@ -288,7 +289,8 @@ const graph: { [key: string]: string[] } = {
   "floor4_elevator": ["A1_floor4stair1", "A1_middleright"],
 
   // Central waypoint connects to main areas
-  "A1_middleright": ["A1_room419", "A4_straightahead_fireexit"],
+  "A1_middleright": ["A4_straightahead_fireexit", "A1_nexttoroom419"],
+  "A1_nexttoroom419": ["A1_room419"],
 
   // Waypoint cluster near rooms 419-425
   "A1_room419": ["A1_room420C", "A4_straightahead_bathroom"],
