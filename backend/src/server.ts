@@ -93,7 +93,7 @@ const nodes: Node[] = [
 
   // Nodes to make it so that the navigation line doesnt go through walls 
   { id: "middle_of_324_and_325", name: "midpoint between rooms 324 and 325", type: "waypoint", floor: 3, coord: [606, 561]},
-  { id: "fl3_right_study_hall", name: "waypoint in right study area", type: "waypoint", floor: 3, coord: [813, 536]},
+  { id: "fl3_right_study_hall", name: "waypoint in right study area", type: "waypoint", floor: 3, coord: [813, 396]},
   { id: "middle_of_321_and_326", name: "midpoint between rooms 321 and 326", type: "waypoint", floor: 3, coord: [757, 557]},
   { id: "left_of_324", name: "waypoint to the left of 324", type: "waypoint", floor: 3, coord: [608, 617]},
   { id: "fl3_elevator", name: "the floor 3 elevator", type: "elevator", floor: 3, coord: [647, 423]},
@@ -286,8 +286,8 @@ const graph: { [key: string]: string[] } = {
   "fl3_stairs_1": ["fl3_stairs1_right"],
   "fl3_stairs_2": ["fl3_courtyd_bottom_left", "fl3_stairs2_upper_right"],
   "fl3_stairs_3": ["fl3_courtyd_top_right", "fl3_bathroom_2"],
-  "fl3_stairs_at_elevators": ["fl3_courtyd_bottom_left", "fl3_courtyd_middle_right", "325_upper_left"],
-  "fl3_elevator": ["fl3_courtyd_bottom_right", "fl3_courtyd_middle_right"],
+  "fl3_stairs_at_elevators": ["fl3_courtyd_bottom_right", "fl3_courtyd_middle_right", "325_upper_left"],
+  "fl3_elevator": ["fl3_courtyd_bottom_right", "fl3_courtyd_middle_right", "fl3_stairs_at_elevators"],
 
 
   // edges that go to rooms 319-326
@@ -297,6 +297,7 @@ const graph: { [key: string]: string[] } = {
 
   //other general waypoints
   "fl3_right_study_hall": ["room_319", "middle_of_321_and_326", "room_320"],
+  "325_upper_left": ["middle_of_324_and_325"],
 
 
 
