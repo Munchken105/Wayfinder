@@ -193,7 +193,7 @@ const graph: { [key: string]: string[] } = {
 
   "C3_tablet": ["C3_floor2stair2", "C3_floor2stair1"], // Our starting node
 
-  "C3_elevator": ["B2_bottomhalf1", "floor4_elevator"],
+  "C3_elevator": ["B2_bottomhalf1", "floor4_elevator", "fl3_elevator"],
 
   "C3_floor2stair2":["C3_elevator"],
 
@@ -240,7 +240,7 @@ const graph: { [key: string]: string[] } = {
   "floor1_fire_exit_2_node": ["floor1_fire_exit_2"],
   // Floor 4 Room Node Connections
   // Entry points to floor 4
-  "floor4_elevator": ["A1_middleright", "A1_nexttoroom419", "C3_elevator"],
+  "floor4_elevator": ["A1_middleright", "A1_nexttoroom419"],
 
   // Central waypoint connects to main areas
   "A1_middleright": ["A1_nexttoroom419", "A1_nexttoroom425", "A1_bottomhalf", "A4_straightahead_fireexit"],
@@ -274,19 +274,33 @@ const graph: { [key: string]: string[] } = {
   // Fire exit 4 connections
   "A4_floor4stair4": ["A4_straightahead_fireexit"],
 
-  // Room connections (destinations)
-  "A1_room419": [],
-  "A1_room420": [],
-  "A1_room420A": [],
-  "A1_room420B": [],
-  "A1_room420C": [],
-  "A1_room421": [],
-  "A1_room422": [],
-  "A1_room423": [],
-  "A1_room424": [],
-  "A1_room425": [],
-  "A1_room426": [],
-  "A4_bathroom": []
+    // Floor 3 edges; I made alot of them bidirectional even though its not needed
+  //courtyard
+  "fl3_courtyd_bottom_left": ["fl3_courtyd_top_left", "fl3_courtyd_bottom_right", "fl3_stairs_2"],
+  "fl3_courtyd_top_left": ["fl3_courtyd_top_right", "fl3_stairs1_right"],
+  "fl3_courtyd_top_right": ["fl3_courtyd_top_left", "fl3_courtyd_middle_right", "fl3_stairs_3", "fl3_bathroom_2"],
+  "fl3_courtyd_middle_right": ["fl3_courtyd_bottom_left", "fl3_right_study_hall", "fl3_elevator", "fl3_stairs_at_elevators"],
+  "fl3_courtyd_bottom_right": ["fl3_courtyd_bottom_left", "fl3_courtyd_middle_right", "fl3_elevator", "fl3_stairs_at_elevators", "325_upper_left"],
+
+  //staircases and elevator
+  "fl3_stairs_1": ["fl3_stairs1_right"],
+  "fl3_stairs_2": ["fl3_courtyd_bottom_left", "fl3_stairs2_upper_right"],
+  "fl3_stairs_3": ["fl3_courtyd_top_right", "fl3_bathroom_2"],
+  "fl3_stairs_at_elevators": ["fl3_courtyd_bottom_left", "fl3_courtyd_middle_right", "325_upper_left"],
+  "fl3_elevator": ["fl3_courtyd_bottom_right", "fl3_courtyd_middle_right"],
+
+
+  // edges that go to rooms 319-326
+  "middle_of_324_and_325": ["room_321", "room_322", "room_323", "room_324", "room_325", "room_326", "325_upper_left", "middle_of_321_and_326", "left_of_324"],
+  "middle_of_321_and_326": ["room_319", "room_320", "room_321", "room_322", "room_323", "room_324", "room_325", "room_326", "middle_of_324_and_325", "fl3_right_study_area"],
+
+
+  //other general waypoints
+  "fl3_right_study_hall": ["room_319", "middle_of_321_and_326", "room_320"],
+
+
+
+
 };
 
 // ! Dijkstra algorithm for shortest path (weighted by Euclidean distance between node coordinates)
