@@ -12,7 +12,7 @@ html, body {
 .sidebar {
   width: 200px;
   background-color: #ffffff; 
-  border: 2px solid rgb(0, 98, 184);
+  border: 2px solid rgb(0, 91, 187);
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
@@ -50,12 +50,12 @@ html, body {
 }
 
 .sidebar-box:hover {
-  background-color: #92c7ff;
+  background-color: #2f9fd0;
   color: rgb(255, 255, 255);
 }
 
 .sidebar-box.active {
-  background-color: #005BBB;
+  background-color: #005bbb;
   color: rgb(255, 255, 255);
 }
 
@@ -134,8 +134,8 @@ html, body {
   transform: translateY(-50%);
   width: 25px;
   height: 60px;
-  background: #1e90ff;        /* nice blue color */
-  border: 2px solid #0c6cd8; /* darker blue border */
+  background: #005bbb;        /* nice blue color */
+  border: 2px solid #005bbb;
   border-left: none;          /* remove overlapping border */
   border-radius: 0 6px 6px 0;
   box-shadow: 2px 2px 6px rgba(0,0,0,0.2);
@@ -151,9 +151,9 @@ html, body {
 
 /* Hover effect */
 .collapse-toggle:hover {
-  background: #0c6cd8;        /* darker blue on hover */
+  background: #004799;        /* darker blue on hover */
   box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
-  border-color: #084a9e;      /* slightly darker border on hover */
+  border-color: #004799;
 }
 
 .close-btn {
@@ -176,7 +176,7 @@ html, body {
   padding: 10px 18px;
   font-size: 16px;
   font-weight: 500;
-  background-color: #2563eb; 
+  background-color: #005bbb; 
   color: #ffffff;          
   border: none;
   border-radius: 8px;
@@ -185,7 +185,7 @@ html, body {
 }
 
 .back-button:hover {
-  background-color: #1d4ed8;
+  background-color: #004799;
 }
 
 .back-button:active {
@@ -198,7 +198,7 @@ html, body {
   padding: 18px 36px;           /* bigger padding for a more substantial button */
   font-size: 20px;              /* larger text */
   font-weight: 600;             /* slightly bolder for impact */
-  background-color: #2563eb; 
+  background-color: #005bbb; 
   color: #ffffff;          
   border: none;
   border-radius: 12px;          /* slightly more rounded */
@@ -211,7 +211,7 @@ html, body {
 }
 
 .wayfind-button:hover {
-  background-color: #1d4ed8;
+  background-color: #004799;
   box-shadow: 0 8px 20px rgba(0,0,0,0.25); /* hover “lift” effect */
   transform: translateY(-2px);              /* subtle lift on hover */
 }
