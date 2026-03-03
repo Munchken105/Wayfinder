@@ -78,7 +78,7 @@ const nodes: Node[] = [
   { id: "fl3_courtyd_bottom_left", name: "bottom left corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [245, 488]},
   { id: "fl3_courtyd_top_left", name: "top left corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [245, 201]},
   { id: "fl3_courtyd_top_right", name: "top right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [700, 201]},
-  { id: "fl3_courtyd_middle_right", name: "middle right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [700, 343]},
+  { id: "fl3_courtyd_middle_right", name: "middle right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [690, 385]},
   { id: "fl_3_courtyd_bottom_right", name: "bottom right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [549, 488]},
 
   // Floor 3 Rooms
@@ -92,8 +92,8 @@ const nodes: Node[] = [
   { id: "room_326", name: "room 326", type: "room", floor: 3, coord: [693, 537]},
 
   // Nodes to make it so that the navigation line doesnt go through walls 
-  { id: "middle_of_324_and_325", name: "midpoint between rooms 324 and 325", type: "waypoint", floor: 3, coord: [606, 561]},
-  { id: "fl3_right_study_hall", name: "waypoint in right study area", type: "waypoint", floor: 3, coord: [813, 396]},
+  { id: "middle_of_324_and_325", name: "midpoint between rooms 324 and 325", type: "waypoint", floor: 3, coord: [610, 561]},
+  { id: "fl3_right_study_hall", name: "waypoint in right study area", type: "waypoint", floor: 3, coord: [744, 385]},
   { id: "middle_of_321_and_326", name: "midpoint between rooms 321 and 326", type: "waypoint", floor: 3, coord: [757, 557]},
   { id: "left_of_324", name: "waypoint to the left of 324", type: "waypoint", floor: 3, coord: [608, 617]},
   { id: "fl3_elevator", name: "the floor 3 elevator", type: "elevator", floor: 3, coord: [647, 423]},
