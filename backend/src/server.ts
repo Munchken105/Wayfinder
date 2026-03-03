@@ -75,11 +75,11 @@ const nodes: Node[] = [
   // Floor 3
   // { id: "", name: "", type: "", floor: 3, coord: [0, 0]},
   // Courtyard
-  { id: "fl3_courtyd_bottom_left", name: "bottom left corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [245, 488] },
-  { id: "fl3_courtyd_top_left", name: "top left corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [245, 201] },
-  { id: "fl3_courtyd_top_right", name: "top right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [700, 201] },
-  { id: "fl3_courtyd_middle_right", name: "middle right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [700, 343] },
-  { id: "fl_3_courtyd_bottom_right", name: "bottom right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [549, 488] },
+  { id: "fl3_courtyd_bottom_left", name: "bottom left corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [245, 488]},
+  { id: "fl3_courtyd_top_left", name: "top left corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [245, 201]},
+  { id: "fl3_courtyd_top_right", name: "top right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [700, 201]},
+  { id: "fl3_courtyd_middle_right", name: "middle right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [690, 385]},
+  { id: "fl_3_courtyd_bottom_right", name: "bottom right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [549, 488]},
 
   // Floor 3 Rooms
   { id: "room_319", name: "room 319", type: "room", floor: 3, coord: [744, 425] },
@@ -92,16 +92,16 @@ const nodes: Node[] = [
   { id: "room_326", name: "room 326", type: "room", floor: 3, coord: [693, 537] },
 
   // Nodes to make it so that the navigation line doesnt go through walls 
-  { id: "middle_of_324_and_325", name: "midpoint between rooms 324 and 325", type: "waypoint", floor: 3, coord: [606, 561] },
-  { id: "fl3_right_study_hall", name: "waypoint in right study area", type: "waypoint", floor: 3, coord: [813, 536] },
-  { id: "middle_of_321_and_326", name: "midpoint between rooms 321 and 326", type: "waypoint", floor: 3, coord: [757, 557] },
-  { id: "left_of_324", name: "waypoint to the left of 324", type: "waypoint", floor: 3, coord: [608, 617] },
-  { id: "fl3_elevator", name: "the floor 3 elevator", type: "elevator", floor: 3, coord: [647, 423] },
-  { id: "325_upper_left", name: "waypoint to the upper left of 325, where the AED is", type: "waypoint", floor: 3, coord: [604, 493] },
-  { id: "fl3_stairs2_upper_right", name: "waypoint in the upper right corner of the 2nd fl3 staircase", type: "waypoint", floor: 3, coord: [327, 567] },
-  { id: "fl3_stairs2_right", name: "waypoint to the right of the 2nd fl3 staircase", type: "waypoint", floor: 3, coord: [324, 614] },
-  { id: "fl3_stairs1_right", name: "waypoint to the right of the 1st fl3 staircase", type: "waypoint", floor: 3, coord: [117, 203] },
-  { id: "fl3_bathroom_right", name: "waypoint to the right of the 1st fl3 bathroom", type: "waypoint", floor: 3, coord: [119, 275] },
+  { id: "middle_of_324_and_325", name: "midpoint between rooms 324 and 325", type: "waypoint", floor: 3, coord: [610, 561]},
+  { id: "fl3_right_study_hall", name: "waypoint in right study area", type: "waypoint", floor: 3, coord: [744, 385]},
+  { id: "middle_of_321_and_326", name: "midpoint between rooms 321 and 326", type: "waypoint", floor: 3, coord: [757, 557]},
+  { id: "left_of_324", name: "waypoint to the left of 324", type: "waypoint", floor: 3, coord: [608, 617]},
+  { id: "fl3_elevator", name: "the floor 3 elevator", type: "elevator", floor: 3, coord: [647, 423]},
+  { id: "325_upper_left", name: "waypoint to the upper left of 325, where the AED is", type: "waypoint", floor: 3, coord: [604, 493]},
+  { id: "fl3_stairs2_upper_right", name: "waypoint in the upper right corner of the 2nd fl3 staircase", type: "waypoint", floor: 3, coord: [327, 567]},
+  { id: "fl3_stairs2_right", name: "waypoint to the right of the 2nd fl3 staircase", type: "waypoint", floor: 3, coord: [324, 614]},
+  { id: "fl3_stairs1_right", name: "waypoint to the right of the 1st fl3 staircase", type: "waypoint", floor: 3, coord: [117, 203]},
+  { id: "fl3_bathroom_right", name: "waypoint to the right of the 1st fl3 bathroom", type: "waypoint", floor: 3, coord: [119, 275]},
 
   //Floor 3 Bathrooms
   { id: "fl3_bathroom_1", name: "leftmost bathroom", type: "room", floor: 3, coord: [87, 276] },
@@ -260,7 +260,7 @@ const graph: { [key: string]: string[] } = {
 
   "C3_tablet": ["C3_floor2stair2", "C3_floor2stair1"], // Our starting node
 
-  "C3_elevator": ["B2_bottomhalf1", "basement_elevator", "floor4_elevator", "floor5_elevator"],
+  "C3_elevator": ["B2_bottomhalf1", "basement_elevator", "fl3_elevator", "floor4_elevator", "floor5_elevator"],
 
   "C3_floor2stair2": ["C3_elevator"],
 
@@ -321,6 +321,31 @@ const graph: { [key: string]: string[] } = {
   "floor1_bottom": ["floor1_bathroom"],
   "floor1_bathroom": ["floor1_fire_exit_2_node"],
   "floor1_fire_exit_2_node": ["floor1_fire_exit_2"],
+  
+  // Floor 3 edges; I made alot of them bidirectional even though its not needed
+  //courtyard
+  "fl3_courtyd_bottom_left": ["fl3_courtyd_top_left", "fl3_courtyd_bottom_right", "fl3_stairs_2"],
+  "fl3_courtyd_top_left": ["fl3_courtyd_top_right", "fl3_stairs1_right"],
+  "fl3_courtyd_top_right": ["fl3_courtyd_top_left", "fl3_courtyd_middle_right", "fl3_stairs_3", "fl3_bathroom_2"],
+  "fl3_courtyd_middle_right": ["fl3_courtyd_bottom_left", "fl3_right_study_hall", "fl3_elevator", "fl3_stairs_at_elevators"],
+  "fl3_courtyd_bottom_right": ["fl3_courtyd_bottom_left", "fl3_courtyd_middle_right", "fl3_elevator", "fl3_stairs_at_elevators", "325_upper_left"],
+
+  //staircases and elevator
+  "fl3_stairs_1": ["fl3_stairs1_right"],
+  "fl3_stairs_2": ["fl3_courtyd_bottom_left", "fl3_stairs2_upper_right"],
+  "fl3_stairs_3": ["fl3_courtyd_top_right", "fl3_bathroom_2"],
+  "fl3_stairs_at_elevators": ["fl3_courtyd_bottom_right", "fl3_courtyd_middle_right", "325_upper_left"],
+  "fl3_elevator": ["fl3_courtyd_bottom_right", "fl3_courtyd_middle_right", "fl3_stairs_at_elevators"],
+
+
+  // edges that go to rooms 319-326
+  "middle_of_324_and_325": ["room_321", "room_322", "room_323", "room_324", "room_325", "room_326", "325_upper_left", "middle_of_321_and_326", "left_of_324"],
+  "middle_of_321_and_326": ["room_319", "room_320", "room_321", "room_322", "room_323", "room_324", "room_325", "room_326", "middle_of_324_and_325", "fl3_right_study_area"],
+
+
+  //other general waypoints
+  "fl3_right_study_hall": ["room_319", "middle_of_321_and_326", "room_320"],
+  "325_upper_left": ["middle_of_324_and_325"],
 
   // -------------------------------------------------------------------------------------------------------------------
   // Floor 4 Node Connections
