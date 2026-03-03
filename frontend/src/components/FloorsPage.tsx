@@ -34,14 +34,14 @@ function LibraryFloorMap() {
 
   // Fetch backend nodes with coordinates (all location types)
   useEffect(() => {
-    fetch("http://localhost:5000/api/nodes")
+    fetch("/api/nodes", { headers: { "ngrok-skip-browser-warning": "true" } })
       .then(res => res.json())
       .then(data => {
         if (data.nodes) {
           // Include all location types: rooms, entrances, bathrooms, elevators, stairs, computer areas, study areas
-          setBackendRooms(data.nodes.filter((n: any) => 
-            n.type === 'room' || 
-            n.type === 'entrance' || 
+          setBackendRooms(data.nodes.filter((n: any) =>
+            n.type === 'room' ||
+            n.type === 'entrance' ||
             n.type === 'waypoint' ||
             n.type === 'tablet' ||
             n.type === 'elevator' ||
@@ -54,7 +54,7 @@ function LibraryFloorMap() {
 
   // Fetch the path when a room is selected for wayfinding
   const handleWayfind = (roomName: string) => {
-    fetch(`http://localhost:5000/api/navigation/from/main%20entrance/to/${encodeURIComponent(roomName)}`)
+    fetch(`/api/navigation/from/main%20entrance/to/${encodeURIComponent(roomName)}`, { headers: { "ngrok-skip-browser-warning": "true" } })
       .then(res => res.json())
       .then(data => {
         if (data.path) {
@@ -100,7 +100,7 @@ function LibraryFloorMap() {
   };
 
   const floorNumToString = (floorNumber: number): keyof typeof floors => {
-  
+
     if (floorNumber == 0) return "Basement";
     if (floorNumber == 1) return "Floor 1";
     if (floorNumber == 2) return "Floor 2";
@@ -366,11 +366,13 @@ function LibraryFloorMap() {
 
               const coord1 = point1?.coord;
               const coord1Floor = point1?.floor;
-              
+
               const point2 = backendRooms.find(r => r.id === nextNode.id);
 
               const coord2 = point2?.coord;
               const coord2Floor = point2?.floor;
+
+              //console.log(coord1Floor, coord2Floor);
 
               if (!coord1 || !coord2) return null;
               if (floorNumToString(coord1Floor) !== activeFloor || floorNumToString(coord2Floor) !== activeFloor) return null;

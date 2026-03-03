@@ -33,7 +33,9 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
 
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:5000/search?q=${encodeURIComponent(trimmedQuery)}`);
+      const res = await fetch(`/api/search?q=${encodeURIComponent(trimmedQuery)}`, {
+        headers: { "ngrok-skip-browser-warning": "true" }
+      });
       const data = await res.json();
       const r = data.results || [];
       setResults(r);
