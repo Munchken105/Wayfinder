@@ -40,11 +40,11 @@ const nodes: Node[] = [
   { id: "A1_room222", name: "Room 222", type: "room", floor: 2, coord: [584, 100] },
   { id: "A1_room222A", name: "Room 222-A", type: "room", floor: 2, coord: [653, 100] },
   { id: "A1_room223", name: "Room 223", type: "room", floor: 2, coord: [740, 75] },
-  { id: "B2_room228", name: "Room 228", type: "room", floor: 2, coord: [975, 85] },
+  { id: "B2_room228", name: "Room 228", type: "room", floor: 2, coord: [977, 85] },
   { id: "B2_room229", name: "Room 229", type: "room", floor: 2, coord: [941, 58] },
   { id: "B2_room230", name: "Room 230", type: "room", floor: 2, coord: [941, 30] },
   { id: "B2_room232", name: "Room 232", type: "room", floor: 2, coord: [1005, 58] },
-  { id: "B2_bathroom", name: "Bathroom", type: "room", floor: 2, coord: [867, 100] },
+  { id: "B2_bathroom", name: "Bathroom", type: "room", floor: 2, coord: [880, 100] },
 
   // Entrances of the Second Floor
   { id: "C3_entrance", name: "main entrance", type: "entrance", floor: 2, coord: [532, 612] },
@@ -61,16 +61,12 @@ const nodes: Node[] = [
   { id: "B2_floor2stair3", name: "Fire Exit in front", type: "stairs", floor: 2, coord:[761, 80]},
 
   // Waypoint (nodes that are used as means to get to the the actual destination)
-  { id: "B2_bottomhalf1", name: "the computer area", type: "waypoint", floor: 2, coord: [764, 390]}, //lower layer 1 computer area
+  { id: "B2_bottomhalf1", name: "the computer area", type: "waypoint", floor: 2, coord: [760, 390]}, //lower layer 1 computer area
   { id: "B2_bottomhalf2", name: "lower layer 2 computer area", type: "waypoint", floor: 2, coord:[880, 307]}, //lower layer 2 computer area
   { id: "B2_tophalf1", name: " the area between the courtyard (On the Left) and computers (On the Right)", type: "waypoint", floor: 2, coord: [772, 256]}, //middle layer 3 computer area
-  { id: "B2_tophalf2", name: "the end of the computer area", type: "waypoint", floor: 2, coord:[761, 192]}, //middle layer 4 computer area
-  { id: "B2_tophalf3", name: "", type: "waypoint", floor: 2, coord: [876, 192]}, //middle layer 5 computer area
+  { id: "B2_tophalf2", name: "the end of the computer area", type: "waypoint", floor: 2, coord:[760, 192]}, //middle layer 4 computer area
 
   { id: "A1_central", name: "Room 223", type: "waypoint", floor: 2, coord: [708, 100]},
-
-
-
 
   // Floor 3
   // { id: "", name: "", type: "", floor: 3, coord: [0, 0]},
@@ -258,21 +254,19 @@ const graph: { [key: string]: string[] } = {
 
   "C3_entrance": ["C3_tablet", "C3_floor2stair1"],
 
-  "C3_tablet": ["C3_floor2stair2", "C3_floor2stair1"], // Our starting node
+  "C3_tablet": ["C3_floor2stair2", "C3_floor2stair1", "B2_bottomhalf1", "C3_elevator"], // Our starting node
 
   "C3_elevator": ["B2_bottomhalf1", "basement_elevator", "fl3_elevator", "floor4_elevator", "floor5_elevator"],
 
   "C3_floor2stair2": ["C3_elevator"],
 
-  "B2_bottomhalf1": ["B2_tophalf1", "B2_bottomhalf2"],
+  "B2_bottomhalf1": ["B2_tophalf1", "B2_bottomhalf2", "B2_tophalf2"],
 
-  "B2_bottomhalf2": ["B2_tophalf3"],
+  "B2_bottomhalf2": ["B2_bathroom"],
 
   "B2_tophalf1": ["B2_tophalf2"],
 
   "B2_tophalf2": ["A1_central", "A1_room223", "B2_floor2stair3"],
-
-  "B2_tophalf3": ["B2_bathroom"],
 
   "B2_bathroom": ["B2_room228"],
 
@@ -308,7 +302,7 @@ const graph: { [key: string]: string[] } = {
 
   // Floor 1 Node Connections
 
-  "start_floor1_stairs": ["A2_floor1_elevator", "floor1_bookshelf", "floor1_top", "floor1_middle"],
+  "start_floor1_stairs": ["A2_floor1_elevator", "floor1_bookshelf", "floor1_top", "floor1_middle", "floor1_middle_bottom"],
   "floor1_bookshelf": ["A1_floor1_elevator", "room119", "room118", "room117", "room116"],
 
   "floor1_top": ["room105", "floor1_fire_exit_1_node"],
@@ -354,7 +348,7 @@ const graph: { [key: string]: string[] } = {
 
   // Central waypoint connects to main areas
   "A1_middleright": ["A4_straightahead_fireexit", "A1_nexttoroom419"],
-  "A1_nexttoroom419": ["A1_room419"],
+  "A1_nexttoroom419": ["A1_room419", "A1_room420C"],
 
   // Waypoint cluster near rooms 419-425
   "A1_room419": ["A1_room420C", "A4_straightahead_bathroom"],
