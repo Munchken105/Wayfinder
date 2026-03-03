@@ -49,24 +49,24 @@ const nodes: Node[] = [
   { id: "C3_entrance", name: "main entrance", type: "entrance", floor: 2, coord:[532, 612]},
 
   // Elevators
-  { id: "C3_elevator", name: "the elevator", type: "elevator", floor: 2, coord:[708, 474]},
+  { id: "C3_elevator", name: "the front of the elevator", type: "elevator", floor: 2, coord:[708, 474]},
 
   // Tablet Location
   { id: "C3_tablet", name: "Wayfinder tablet", type: "tablet", floor: 2, coord:[624, 593]},
 
   // Stairs / Fire Exit
   { id: "C3_floor2stair1", name: "stairs to 1st Floor", type: "stairs", floor: 2, coord:[480, 525]},
-  { id: "C3_floor2stair2", name: "Fire Exit 1", type: "stairs", floor: 2, coord:[681, 503]},
-  { id: "B2_floor2stair3", name: "Fire Exit 2", type: "stairs", floor: 2, coord:[761, 80]},
+  { id: "C3_floor2stair2", name: "Fire Exit to the right", type: "stairs", floor: 2, coord:[681, 503]}, // Fire Exit 1
+  { id: "B2_floor2stair3", name: "Fire Exit in front", type: "stairs", floor: 2, coord:[761, 80]},
 
   // Waypoint (nodes that are used as means to get to the the actual destination)
-  { id: "B2_bottomhalf1", name: "lower layer 1 computer area", type: "waypoint", floor: 2, coord: [764, 390]},
-  { id: "B2_bottomhalf2", name: "lower layer 2 computer area", type: "waypoint", floor: 2, coord:[880, 307]},
-  { id: "B2_tophalf1", name: "middle layer 3 computer area", type: "waypoint", floor: 2, coord: [772, 256]},
-  { id: "B2_tophalf2", name: "middle layer 4 computer area", type: "waypoint", floor: 2, coord:[761, 192]},
-  { id: "B2_tophalf3", name: "middle layer 5 computer area", type: "waypoint", floor: 2, coord: [876, 192]},
+  { id: "B2_bottomhalf1", name: "the computer area", type: "waypoint", floor: 2, coord: [764, 390]}, //lower layer 1 computer area
+  { id: "B2_bottomhalf2", name: "lower layer 2 computer area", type: "waypoint", floor: 2, coord:[880, 307]}, //lower layer 2 computer area
+  { id: "B2_tophalf1", name: " the area between the courtyard (On the Left) and computers (On the Right)", type: "waypoint", floor: 2, coord: [772, 256]}, //middle layer 3 computer area
+  { id: "B2_tophalf2", name: "the end of the computer area", type: "waypoint", floor: 2, coord:[761, 192]}, //middle layer 4 computer area
+  { id: "B2_tophalf3", name: "", type: "waypoint", floor: 2, coord: [876, 192]}, //middle layer 5 computer area
 
-  { id: "A1_central", name: "In front of Room 223", type: "waypoint", floor: 2, coord: [708, 100]},
+  { id: "A1_central", name: "Room 223", type: "waypoint", floor: 2, coord: [708, 100]},
 
   // ------------------------------------------------------------------------------------------------------------------- 
   
@@ -277,13 +277,13 @@ function generateInstructions(path: string[]): string[] {
 
     // 3. Logic based on node types to make it human-readable
     if (currentNode.type === 'elevator') {
-      instruction = `Exit the elevator and head toward ${nextNode.name}`;
+      instruction = `Leave the elevator and head toward ${nextNode.name}`;
     } 
     else if (nextNode.type === 'waypoint') {
-      instruction = `Walk past the ${nextNode.name}`;
+      instruction = `Walk to ${nextNode.name}`;
     } 
     else if (nextNode.type === 'room') {
-      instruction = `Go to the entrance of ${nextNode.name}`;
+      instruction = `Walk to ${nextNode.name}`;
     } 
     else {
       // Default fallback for entrances, tablets, etc.
@@ -297,7 +297,7 @@ function generateInstructions(path: string[]): string[] {
 
   // 4. Handle the arrival point
   const endNode = nodes.find(n => n.id === path[path.length - 1]);
-  instructions.push(`Arrive at ${endNode?.name || 'destination'}`);
+  //instructions.push(`Arrive at ${endNode?.name || 'destination'}`);
 
   return instructions;
 }
