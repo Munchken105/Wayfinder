@@ -62,7 +62,7 @@ const nodes: Node[] = [
 
   // Waypoint (nodes that are used as means to get to the the actual destination)
   { id: "B2_bottomhalf1", name: "the computer area", type: "waypoint", floor: 2, coord: [760, 390]}, //lower layer 1 computer area
-  { id: "B2_bottomhalf2", name: "lower layer 2 computer area", type: "waypoint", floor: 2, coord:[880, 307]}, //lower layer 2 computer area
+  { id: "B2_bottomhalf2", name: "the area between the computer (On the Left) and bookself corridor(On the Right)", type: "waypoint", floor: 2, coord:[880, 307]}, //lower layer 2 computer area
   { id: "B2_tophalf1", name: " the area between the courtyard (On the Left) and computers (On the Right)", type: "waypoint", floor: 2, coord: [772, 256]}, //middle layer 3 computer area
   { id: "B2_tophalf2", name: "the end of the computer area", type: "waypoint", floor: 2, coord:[760, 192]}, //middle layer 4 computer area
 
@@ -90,15 +90,15 @@ const nodes: Node[] = [
 
   // Nodes to make it so that the navigation line doesnt go through walls 
   { id: "middle_of_324_and_325", name: "midpoint between rooms 324 and 325", type: "waypoint", floor: 3, coord: [610, 561]},
-  { id: "fl3_right_study_hall", name: "waypoint in right study area", type: "waypoint", floor: 3, coord: [744, 385]},
+  { id: "fl3_right_study_hall", name: "the area in the right study area", type: "waypoint", floor: 3, coord: [744, 385]},
   { id: "middle_of_321_and_326", name: "midpoint between rooms 321 and 326", type: "waypoint", floor: 3, coord: [757, 557]},
-  { id: "left_of_324", name: "waypoint to the left of 324", type: "waypoint", floor: 3, coord: [608, 617]},
+  { id: "left_of_324", name: "area to the left of Room 324", type: "waypoint", floor: 3, coord: [608, 617]},
   { id: "fl3_elevator", name: "elevator on floor 3", type: "elevator", floor: 3, coord: [647, 423]},
-  { id: "325_upper_left", name: "waypoint to the upper left of 325, where the AED is", type: "waypoint", floor: 3, coord: [604, 493]},
-  { id: "fl3_stairs2_upper_right", name: "waypoint in the upper right corner of the 2nd fl3 staircase", type: "waypoint", floor: 3, coord: [327, 567]},
-  { id: "fl3_stairs2_right", name: "waypoint to the right of the 2nd fl3 staircase", type: "waypoint", floor: 3, coord: [324, 614]},
-  { id: "fl3_stairs1_right", name: "waypoint to the right of the 1st fl3 staircase", type: "waypoint", floor: 3, coord: [117, 203]},
-  { id: "fl3_bathroom_right", name: "waypoint to the right of the 1st fl3 bathroom", type: "waypoint", floor: 3, coord: [119, 275]},
+  { id: "325_upper_left", name: "area to the top left of room 325 (Near an automated external defibrillator)", type: "waypoint", floor: 3, coord: [604, 493]},
+  { id: "fl3_stairs2_upper_right", name: "area in the upper right corner of the floor 3 staircase", type: "waypoint", floor: 3, coord: [327, 567]},
+  { id: "fl3_stairs2_right", name: "area to the right of the a floor 3 staircase", type: "waypoint", floor: 3, coord: [324, 614]},
+  { id: "fl3_stairs1_right", name: "area to the right of a floor 3 staircase", type: "waypoint", floor: 3, coord: [117, 203]},
+  { id: "fl3_bathroom_right", name: "area to the right of a floor 3 bathroom", type: "waypoint", floor: 3, coord: [119, 275]},
 
   //Floor 3 Bathrooms
   { id: "fl3_bathroom_1", name: "leftmost bathroom", type: "room", floor: 3, coord: [87, 276] },
@@ -196,11 +196,11 @@ const nodes: Node[] = [
   { id: "A4_floor4stair4", name: "Fire Exit 4", type: "stairs", floor: 4, coord: [550, 64] },
 
   // Waypoint (nodes that are used as means to get to the the actual destination)
-  { id: "A1_nexttoroom424", name: "next to room 424", type: "waypoint", floor: 4, coord: [490, 475]},
-  { id: "A1_nexttoroom425", name: "next to room 425", type: "waypoint", floor: 4, coord: [490, 440]},
+  { id: "A1_nexttoroom424", name: "the area next to room 424", type: "waypoint", floor: 4, coord: [490, 475]},
+  { id: "A1_nexttoroom425", name: "the area next to room 425", type: "waypoint", floor: 4, coord: [490, 440]},
   { id: "A1_bottomhalf", name: "bookshelves to the left of fire exit", type: "waypoint", floor: 4, coord: [440, 380]},
   { id: "A1_middleright", name: "bookshelves to the right of elevator", type: "waypoint", floor: 4, coord: [550, 315]},
-  { id: "A1_nexttoroom419", name: "next to room 419", type: "waypoint", floor: 4, coord: [610, 315]},
+  { id: "A1_nexttoroom419", name: "the area next to room 419", type: "waypoint", floor: 4, coord: [610, 315]},
   { id: "A2_nearfireexit", name: "next to fire exit", type: "waypoint", floor: 4, coord: [207, 446]},
   { id: "A2_straightahead_leftside", name: "straight ahead, along the bookshelves", type: "waypoint", floor: 4, coord: [207, 385]},
   { id: "A3_straightahead_leftside", name: "straight ahead, along the bookshelves", type: "waypoint", floor: 4, coord: [207, 265]},
@@ -232,21 +232,21 @@ const nodes: Node[] = [
   { id: "floor5_elevator", name: "the elevator for floor 5", type: "elevator", floor: 5, coord: [580, 380] },
 
   // Stairs / Fire Exit
-  { id: "A1_floor5stair1", name: "Fire Exit 1", type: "stairs", floor: 5, coord: [550, 410] },
-  { id: "A2_floor5stair2", name: "Fire Exit 2", type: "stairs", floor: 5, coord: [265, 505] },
-  { id: "A3_floor5stair3", name: "Fire Exit 3", type: "stairs", floor: 5, coord: [100, 195] },
-  { id: "A4_floor5stair4", name: "Fire Exit 4", type: "stairs", floor: 5, coord: [612, 75] },
+  { id: "A1_floor5stair1", name: "Fire Exit uphead", type: "stairs", floor: 5, coord: [550, 410] }, //Fire Exit 1
+  { id: "A2_floor5stair2", name: "Fire Exit nearby", type: "stairs", floor: 5, coord: [265, 505] }, //Fire Exit 2
+  { id: "A3_floor5stair3", name: "Fire Exit nearby", type: "stairs", floor: 5, coord: [100, 195] }, //Fire Exit 3
+  { id: "A4_floor5stair4", name: "Fire Exit nearby", type: "stairs", floor: 5, coord: [612, 75] }, //Fire Exit 4
 
   // Waypoint (nodes that are used as means to get to the the actual destination)
-  { id: "A1_floor5_nearRoom525", name: "next to room 525", type: "waypoint", floor: 5, coord: [510, 485]},
-  { id: "A1_floor5_nearFireExit", name: "near Fire Exit 1", type: "waypoint", floor: 5, coord: [510, 440]},
-  { id: "A1_floor5_nextToElevator", name: "next to Elevator", type: "waypoint", floor: 5, coord: [612, 350]},
-  { id: "A1_floor5_nextToRoom519", name: "next to Room 519", type: "waypoint", floor: 5, coord: [672, 350]},
+  { id: "A1_floor5_nearRoom525", name: "the area next to room 525", type: "waypoint", floor: 5, coord: [510, 485]},
+  { id: "A1_floor5_nearFireExit", name: "the area near Fire Exit 1", type: "waypoint", floor: 5, coord: [510, 440]},
+  { id: "A1_floor5_nextToElevator", name: "the area next to Elevator", type: "waypoint", floor: 5, coord: [612, 350]},
+  { id: "A1_floor5_nextToRoom519", name: "the area next to Room 519", type: "waypoint", floor: 5, coord: [672, 350]},
 
   { id: "A2_floor5_nextToMusicLibrary", name: "next to Music Library", type: "waypoint", floor: 5, coord: [265, 440]},
   { id: "A2_floor5_nextToPianoPods", name: "next to Piano Pods", type: "waypoint", floor: 5, coord: [100, 505]},
 
-  { id: "A4_floor5_nextToRoom517", name: "next to Room 517", type: "waypoint", floor: 5, coord: [803, 75]},
+  { id: "A4_floor5_nextToRoom517", name: "the area next to Room 517", type: "waypoint", floor: 5, coord: [803, 75]},
 ];
 
 // * Adjacency list - all connections on the same floor
