@@ -115,7 +115,6 @@ function LibraryFloorMap() {
   useEffect(() => {
 
     if (activeFloor && pendingRoom) {
-      console.log(pendingRoom);
       const roomObj = floors[activeFloor].find(r => r.name === pendingRoom);
       if (roomObj) {
         setSelectedRoom(roomObj);

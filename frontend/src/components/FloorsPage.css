@@ -47,6 +47,7 @@ html, body {
   font-weight: 500;
   border: 1px solid #444;
   cursor: pointer;
+  flex: 1;
 }
 
 .sidebar-box:hover {
@@ -245,4 +246,9 @@ html, body {
   display: flex;
   justify-content: center; /* horizontal center */
   margin-top: 3rem;
+}
+
+.toggle-boxes {
+  display: flex;
+  gap: 12px;        /* space between buttons */
 }
