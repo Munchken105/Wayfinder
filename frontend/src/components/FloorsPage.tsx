@@ -385,6 +385,8 @@ function LibraryFloorMap() {
                   y2={coord2[1]}
                   stroke="red"
                   strokeWidth="3"
+                  className="waypoint-line"
+                  strokeLinecap="round"
                 />
               );
             })}
