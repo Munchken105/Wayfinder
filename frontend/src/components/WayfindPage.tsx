@@ -1,5 +1,5 @@
 import QRCodePage from "./QRCodePage";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigation } from "../hooks/navigation"
 
 export default function WayfindPage({ room }: { room: string }){
@@ -9,6 +9,8 @@ export default function WayfindPage({ room }: { room: string }){
     loading,
     error
   } = useNavigation();
+
+  const [useElevator, setElevator] = useState(false);
 
   useEffect(() => { //calls useNavigation
     findPath("Main Entrance", room);
@@ -21,6 +23,11 @@ export default function WayfindPage({ room }: { room: string }){
       </h1>
       {loading && <div className="status">Computing path...</div>}
       {error && <div className="status error">Error: {error}</div>}
+
+      <div className="toggle-boxes">
+        <button className={`sidebar-box ${useElevator === false ? "active" : ""}`} onClick={() => { setElevator(false) }}>Stairs</button>
+        <button className={`sidebar-box ${useElevator === true ? "active" : ""}`} onClick={() => { setElevator(true) }}>Elevator</button>
+      </div>
 
       <div className="instructions">
         <ol>
