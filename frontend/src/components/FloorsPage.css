@@ -248,6 +248,20 @@ html, body {
   margin-top: 3rem;
 }
 
+.waypoint-line {
+  stroke-dasharray: 18;
+  animation: dash-animation 2s linear infinite; /*Conveyor Belt Effect*/
+}
+
+@keyframes dash-animation {
+  from{
+    stroke-dashoffset: 100;
+  } to {
+    stroke-dashoffset: 0;
+  }
+  
+}
+
 .toggle-boxes {
   display: flex;
   gap: 12px;        /* space between buttons */
