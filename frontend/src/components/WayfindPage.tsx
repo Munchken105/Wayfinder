@@ -1,8 +1,9 @@
 import QRCodePage from "./QRCodePage";
 import { useState, useEffect } from "react";
 import { useNavigation } from "../hooks/navigation"
+import { FaWheelchair } from "react-icons/fa";
 
-export default function WayfindPage({ room }: { room: string }){
+export default function WayfindPage({ room, setUseElevator }: { room: string, setUseElevator: (value: boolean) => void; }){
   const {
     navigationResult,
     findPath,
@@ -12,9 +13,21 @@ export default function WayfindPage({ room }: { room: string }){
 
   const [useElevator, setElevator] = useState(false);
 
+  const floorFromRoom = (room: string) => {
+    const num = parseInt(room.replace(/\D/g, ""), 10);
+
+    if (isNaN(num)) return "Floor 2";
+    if (num < 100) return "Basement";
+    if (num < 200) return "Floor 1";
+    if (num < 300) return "Floor 2";
+    if (num < 400) return "Floor 3";
+    if (num < 500) return "Floor 4";
+    return "Floor 5";
+  };
+
   useEffect(() => { //calls useNavigation
-    findPath("Main Entrance", room);
-  }, [room]);
+    findPath("Main Entrance", room, useElevator);
+  }, [room, useElevator]);
 
   return (
     <div>
@@ -24,10 +37,14 @@ export default function WayfindPage({ room }: { room: string }){
       {loading && <div className="status">Computing path...</div>}
       {error && <div className="status error">Error: {error}</div>}
 
-      <div className="toggle-boxes">
-        <button className={`sidebar-box ${useElevator === false ? "active" : ""}`} onClick={() => { setElevator(false) }}>Stairs</button>
-        <button className={`sidebar-box ${useElevator === true ? "active" : ""}`} onClick={() => { setElevator(true) }}>Elevator</button>
-      </div>
+      {floorFromRoom(room) !== "Floor 2" && (
+        <div className="toggle-boxes">
+          <button className={`sidebar-box ${useElevator === false ? "active" : ""}`} onClick={() => { setElevator(false), setUseElevator(false); }}>Stairs</button>
+          <button className={`sidebar-box ${useElevator === true ? "active" : ""}`} onClick={() => { setElevator(true), setUseElevator(true); }}> 
+            <FaWheelchair className="icon" />
+             Elevator</button>
+        </div>
+      )}
 
       <div className="instructions">
         <ol>

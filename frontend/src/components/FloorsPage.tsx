@@ -18,8 +18,13 @@ function LibraryFloorMap() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [wayfindClicked, setWayfindClicked] = useState(false);
   const [backendRooms, setBackendRooms] = useState<any[]>([]);
-  const [currentPath, setCurrentPath] = useState<any[]>([]); // Store nodes in the current navigation path
 
+  const [useElevator, setUseElevator] = useState(false);
+
+  const [stairsPath, setStairsPath] = useState<any[]>([]); // Store the stairs path
+  const [elevatorPath, setElevatorPath] = useState<any[]>([]); // Store the elevator path
+
+  const [currentPath, setCurrentPath] = useState<any[]>([]); // Store nodes in the current navigation path
 
   type Room = {
     id: string
@@ -53,16 +58,36 @@ function LibraryFloorMap() {
   }, []);
 
   // Fetch the path when a room is selected for wayfinding
+  // const handleWayfind = (roomName: string) => {
+  //   fetch(`/api/navigation/from/main%20entrance/to/${encodeURIComponent(roomName)}`, { headers: { "ngrok-skip-browser-warning": "true" } })
+  //     .then(res => res.json())
+  //     .then(data => {
+  //       if (data.path) {
+  //         setCurrentPath(data.path);
+  //         setWayfindClicked(true);
+  //       }
+  //     })
+  //     .catch(err => console.error('Failed to fetch path:', err));
+  // };
+
   const handleWayfind = (roomName: string) => {
-    fetch(`/api/navigation/from/main%20entrance/to/${encodeURIComponent(roomName)}`, { headers: { "ngrok-skip-browser-warning": "true" } })
-      .then(res => res.json())
-      .then(data => {
-        if (data.path) {
-          setCurrentPath(data.path);
-          setWayfindClicked(true);
-        }
-      })
-      .catch(err => console.error('Failed to fetch path:', err));
+    Promise.all([
+      fetch(`/api/navigation/from/main%20entrance/to/${encodeURIComponent(roomName)}?mode=stairs`,
+        { headers: { "ngrok-skip-browser-warning": "true" } }),
+
+      fetch(`/api/navigation/from/main%20entrance/to/${encodeURIComponent(roomName)}?mode=elevator`,
+        { headers: { "ngrok-skip-browser-warning": "true" } })
+    ])
+    .then(async ([stairsRes, elevatorRes]) => {
+      const stairsData = await stairsRes.json();
+      const elevatorData = await elevatorRes.json();
+
+      if (stairsData.path) setStairsPath(stairsData.path);
+      if (elevatorData.path) setElevatorPath(elevatorData.path);
+
+      setWayfindClicked(true);
+    })
+    .catch(err => console.error("Failed to fetch path:", err));
   };
 
   const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
@@ -123,6 +148,10 @@ function LibraryFloorMap() {
     }
 
   }, [pendingRoom]);
+
+  useEffect(() => {
+    setCurrentPath(useElevator ? elevatorPath : stairsPath);
+  }, [wayfindClicked, useElevator]);
 
   const navigate = useNavigate();
 
@@ -297,7 +326,7 @@ function LibraryFloorMap() {
 
               {!isCollapsed && (
                 <>
-                  <button className="close-btn" onClick={() => { setSelectedRoom(null); setWayfindClicked(false); setCurrentPath([]); setIsCollapsed(false); }}>Close</button>
+                  <button className="close-btn" onClick={() => { setSelectedRoom(null); setWayfindClicked(false); setCurrentPath([]); setIsCollapsed(false); setUseElevator(false);}}>Close</button>
                   <h3 className="room-name">{selectedRoom.name}</h3>
                   <p className="room-description">{selectedRoom.description}</p>
 
@@ -307,6 +336,7 @@ function LibraryFloorMap() {
                     wayfindClicked &&
                     <WayfindPage
                       room={selectedRoom.name}
+                      setUseElevator={setUseElevator}
                     />
                   }
                 </>
@@ -340,7 +370,7 @@ function LibraryFloorMap() {
             position: "absolute",
             clipPath: room.clipPath ? room.clipPath : undefined,
           }}
-          onClick={() => {setSelectedRoom(room); setWayfindClicked(false); setIsCollapsed(false);}}/>
+          onClick={() => {setSelectedRoom(room); setWayfindClicked(false); setIsCollapsed(false); setUseElevator(false);}}/>
       ))}
         
         {/* SVG lines connecting path nodes */}
@@ -370,8 +400,6 @@ function LibraryFloorMap() {
 
               const coord2 = point2?.coord;
               const coord2Floor = point2?.floor;
-
-              //console.log(coord1Floor, coord2Floor);
 
               if (!coord1 || !coord2) return null;
               if (floorNumToString(coord1Floor) !== activeFloor || floorNumToString(coord2Floor) !== activeFloor) return null;
