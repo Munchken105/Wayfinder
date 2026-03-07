@@ -31,9 +31,9 @@ export default function WayfindPage({ room, setUseElevator }: { room: string, se
 
   return (
     <div>
-      <h1>
+      <h2>
         Navigating from Kiosk to {room}
-      </h1>
+      </h2>
       {loading && <div className="status">Computing path...</div>}
       {error && <div className="status error">Error: {error}</div>}
 
