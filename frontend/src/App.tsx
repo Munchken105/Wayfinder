@@ -9,7 +9,7 @@ function App() {
     <div className="app">
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/floors" element={<LibraryFloorMap />} />
+        <Route path="/floors" element={<LibraryFloorMap/>} />
         <Route path="/mobile" element={<MobilePage/>}/>
         <Route path="*" element={<div>ROUTE NOT FOUND</div>} />
       </Routes>

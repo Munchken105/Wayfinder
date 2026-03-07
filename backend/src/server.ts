@@ -51,6 +51,7 @@ const nodes: Node[] = [
 
   // Elevators
   { id: "C3_elevator", name: "elevator on floor 2", type: "elevator", floor: 2, coord:[708, 474]},
+  { id: "level_up_elevator", name: "Level Up Elevator", type: "elevator", floor: 2, coord:[300, 405]},
 
   // Tablet Location
   { id: "C3_tablet", name: "Wayfinder tablet", type: "tablet", floor: 2, coord: [624, 593] },
@@ -68,49 +69,9 @@ const nodes: Node[] = [
 
   { id: "A1_central", name: "Room 223", type: "waypoint", floor: 2, coord: [708, 100]},
 
+  { id: "outside_lockwood", name: "outside Lockwood", type: "waypoint", floor: 2, coord: [355, 660]},
 
-  // Floor 3
-  // { id: "", name: "", type: "", floor: 3, coord: [0, 0]},
-  // Courtyard
-  { id: "fl3_courtyd_bottom_left", name: "bottom left corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [245, 488]},
-  { id: "fl3_courtyd_top_left", name: "top left corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [245, 201]},
-  { id: "fl3_courtyd_top_right", name: "top right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [700, 201]},
-  { id: "fl3_courtyd_middle_right", name: "middle right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [690, 385]},
-  { id: "fl_3_courtyd_bottom_right", name: "bottom right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [549, 488]},
-
-  // Floor 3 Rooms
-  { id: "room_319", name: "room 319", type: "room", floor: 3, coord: [744, 425] },
-  { id: "room_320", name: "room 320", type: "room", floor: 3, coord: [896, 586] },
-  { id: "room_321", name: "room 321", type: "room", floor: 3, coord: [729, 586] },
-  { id: "room_322", name: "room 322", type: "room", floor: 3, coord: [700, 586] },
-  { id: "room_323", name: "room 323", type: "room", floor: 3, coord: [668, 586] },
-  { id: "room_324", name: "room 324", type: "room", floor: 3, coord: [633, 586] },
-  { id: "room_325", name: "room 325", type: "room", floor: 3, coord: [629, 537] },
-  { id: "room_326", name: "room 326", type: "room", floor: 3, coord: [693, 537] },
-
-  // Nodes to make it so that the navigation line doesnt go through walls 
-  { id: "middle_of_324_and_325", name: "midpoint between rooms 324 and 325", type: "waypoint", floor: 3, coord: [610, 561]},
-  { id: "fl3_right_study_hall", name: "the area in the right study area", type: "waypoint", floor: 3, coord: [744, 385]},
-  { id: "middle_of_321_and_326", name: "midpoint between rooms 321 and 326", type: "waypoint", floor: 3, coord: [757, 557]},
-  { id: "left_of_324", name: "area to the left of Room 324", type: "waypoint", floor: 3, coord: [608, 617]},
-  { id: "fl3_elevator", name: "elevator on floor 3", type: "elevator", floor: 3, coord: [647, 423]},
-  { id: "325_upper_left", name: "area to the top left of room 325 (Near an automated external defibrillator)", type: "waypoint", floor: 3, coord: [604, 493]},
-  { id: "fl3_stairs2_upper_right", name: "area in the upper right corner of the floor 3 staircase", type: "waypoint", floor: 3, coord: [327, 567]},
-  { id: "fl3_stairs2_right", name: "area to the right of the a floor 3 staircase", type: "waypoint", floor: 3, coord: [324, 614]},
-  { id: "fl3_stairs1_right", name: "area to the right of a floor 3 staircase", type: "waypoint", floor: 3, coord: [117, 203]},
-  { id: "fl3_bathroom_right", name: "area to the right of a floor 3 bathroom", type: "waypoint", floor: 3, coord: [119, 275]},
-
-  //Floor 3 Bathrooms
-  { id: "fl3_bathroom_1", name: "leftmost bathroom", type: "room", floor: 3, coord: [87, 276] },
-  { id: "fl3_bathroom_2", name: "rightmost bathroom", type: "room", floor: 3, coord: [779, 82] },
-
-  //Floor 3 Stairs
-  { id: "fl3_stairs_1", name: "fl3 leftmost stairs", type: "stairs", floor: 3, coord: [87, 204] },
-  { id: "fl3_stairs_2", name: "fl3 middle stairs", type: "stairs", floor: 3, coord: [298, 572] },
-  { id: "fl3_stairs_3", name: "fl3 rightmost stairs", type: "stairs", floor: 3, coord: [678, 86] },
-  { id: "fl3_stairs_at_elevators", name: "the stairs right at the elevator", type: "stairs", floor: 3, coord: [614, 457] },
-
-  // * ------------------------------------- All available rooms on the basement floor ------------------------------------- 
+  // * ------------------------------------- Basement floor layout ------------------------------------- 
 
   // All available rooms on the basement floor
   { id: "roomB48", name: "Room B48", type: "room", floor: 0, coord: [260, 560] },
@@ -152,8 +113,8 @@ const nodes: Node[] = [
   { id: "floor1_bathroom", name: "bathroom", type: "room", floor: 1, coord: [380, 460] },
 
   // Elevator nodes
-  { id: "A1_floor1_elevator", name: "the elevator", type: "elevator", floor: 1, coord: [465, 275] },
-  { id: "A2_floor1_elevator", name: "the elevator", type: "elevator", floor: 1, coord: [465, 225] },
+  { id: "A1_floor1_elevator", name: "elevator", type: "elevator", floor: 1, coord: [465, 275] },
+  { id: "A2_floor1_elevator", name: "elevator", type: "elevator", floor: 1, coord: [465, 225] },
 
   // Stairs nodes / Fire Exit
   { id: "start_floor1_stairs", name: "stairs on the floor 1", type: "stairs", floor: 1, coord: [550, 112] },
@@ -171,6 +132,47 @@ const nodes: Node[] = [
   { id: "floor1_fire_exit_1_node", name: "the area next to the fire exit 1", type: "waypoint", floor: 1, coord:[810, 320]},
   { id: "floor1_fire_exit_2_node", name: "the area next to the fire exit 2", type: "waypoint", floor: 1, coord:[315, 460]},
   { id: "floor1_room108A_node", name: "the area next to room 108A", type: "waypoint", floor: 1, coord:[810, 365]},
+
+  // * ------------------------------------- 3rd floor Layout -------------------------------------
+  
+  // Courtyard
+  { id: "fl3_courtyd_bottom_left", name: "bottom left corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [245, 488]},
+  { id: "fl3_courtyd_top_left", name: "top left corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [245, 201]},
+  { id: "fl3_courtyd_top_right", name: "top right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [700, 201]},
+  { id: "fl3_courtyd_middle_right", name: "middle right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [690, 385]},
+  { id: "fl_3_courtyd_bottom_right", name: "bottom right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [549, 488]},
+
+  // Floor 3 Rooms
+  { id: "room_319", name: "room 319", type: "room", floor: 3, coord: [744, 425] },
+  { id: "room_320", name: "room 320", type: "room", floor: 3, coord: [896, 586] },
+  { id: "room_321", name: "room 321", type: "room", floor: 3, coord: [729, 586] },
+  { id: "room_322", name: "room 322", type: "room", floor: 3, coord: [700, 586] },
+  { id: "room_323", name: "room 323", type: "room", floor: 3, coord: [668, 586] },
+  { id: "room_324", name: "room 324", type: "room", floor: 3, coord: [633, 586] },
+  { id: "room_325", name: "room 325", type: "room", floor: 3, coord: [629, 537] },
+  { id: "room_326", name: "room 326", type: "room", floor: 3, coord: [693, 537] },
+
+  // Nodes to make it so that the navigation line doesnt go through walls 
+  { id: "middle_of_324_and_325", name: "midpoint between rooms 324 and 325", type: "waypoint", floor: 3, coord: [610, 561]},
+  { id: "fl3_right_study_hall", name: "the area in the right study area", type: "waypoint", floor: 3, coord: [744, 385]},
+  { id: "middle_of_321_and_326", name: "midpoint between rooms 321 and 326", type: "waypoint", floor: 3, coord: [757, 557]},
+  { id: "left_of_324", name: "area to the left of Room 324", type: "waypoint", floor: 3, coord: [608, 617]},
+  { id: "fl3_elevator", name: "elevator on floor 3", type: "elevator", floor: 3, coord: [647, 423]},
+  { id: "325_upper_left", name: "area to the top left of room 325 (Near an automated external defibrillator)", type: "waypoint", floor: 3, coord: [604, 493]},
+  { id: "fl3_stairs2_upper_right", name: "area in the upper right corner of the floor 3 staircase", type: "waypoint", floor: 3, coord: [327, 567]},
+  { id: "fl3_stairs2_right", name: "area to the right of the a floor 3 staircase", type: "waypoint", floor: 3, coord: [324, 614]},
+  { id: "fl3_stairs1_right", name: "area to the right of a floor 3 staircase", type: "waypoint", floor: 3, coord: [117, 203]},
+  { id: "fl3_bathroom_right", name: "area to the right of a floor 3 bathroom", type: "waypoint", floor: 3, coord: [119, 275]},
+
+  //Floor 3 Bathrooms
+  { id: "fl3_bathroom_1", name: "leftmost bathroom", type: "room", floor: 3, coord: [87, 276] },
+  { id: "fl3_bathroom_2", name: "rightmost bathroom", type: "room", floor: 3, coord: [779, 82] },
+
+  //Floor 3 Stairs
+  { id: "fl3_stairs_1", name: "fl3 leftmost stairs", type: "stairs", floor: 3, coord: [87, 204] },
+  { id: "fl3_stairs_2", name: "fl3 middle stairs", type: "stairs", floor: 3, coord: [298, 572] },
+  { id: "fl3_stairs_3", name: "fl3 rightmost stairs", type: "stairs", floor: 3, coord: [678, 86] },
+  { id: "fl3_stairs_at_elevators", name: "the stairs right at the elevator", type: "stairs", floor: 3, coord: [614, 457] },
 
   // * ------------------------------------- 4th floor Layout -------------------------------------  
   { id: "A1_room419", name: "Room 419", type: "room", floor: 4, coord:[610, 345]},
@@ -190,7 +192,7 @@ const nodes: Node[] = [
   { id: "floor4_elevator", name: "elevator at floor 4", type: "elevator", floor: 4, coord: [514, 345] },
 
   // Stairs / Fire Exit
-  { id: "A1_floor4stair1", name: "Fire Exit 1", type: "stairs", floor: 4, coord: [490, 385] },
+  { id: "A1_floor4stair1", name: "Fire Exit 1", type: "stairs", floor: 4, coord: [490, 375] },
   { id: "A2_floor4stair2", name: "Fire Exit 2", type: "stairs", floor: 4, coord: [246, 472] },
   { id: "A3_floor4stair3", name: "Fire Exit 3", type: "stairs", floor: 4, coord: [87, 172] },
   { id: "A4_floor4stair4", name: "Fire Exit 4", type: "stairs", floor: 4, coord: [550, 64] },
@@ -229,7 +231,7 @@ const nodes: Node[] = [
   { id: "A4_floor5_bathroom", name: "Bathroom", type: "room", floor: 5, coord:[695, 75]},
 
   // Elevator nodes
-  { id: "floor5_elevator", name: "the elevator for floor 5", type: "elevator", floor: 5, coord: [580, 380] },
+  { id: "floor5_elevator", name: "elevator for floor 5", type: "elevator", floor: 5, coord: [580, 380] },
 
   // Stairs / Fire Exit
   { id: "A1_floor5stair1", name: "Fire Exit uphead", type: "stairs", floor: 5, coord: [550, 410] }, //Fire Exit 1
@@ -255,11 +257,11 @@ const graph: { [key: string]: string[] } = {
 
   "C3_entrance": ["C3_tablet", "C3_floor2stair1"],
 
-  "C3_tablet": ["C3_floor2stair2", "C3_floor2stair1", "B2_bottomhalf1", "C3_elevator"], // Our starting node
+  "C3_tablet": ["C3_floor2stair2", "C3_floor2stair1", "B2_bottomhalf1", "C3_elevator", "outside_lockwood"], // Our starting node
 
   "C3_elevator": ["B2_bottomhalf1", "basement_elevator", "fl3_elevator", "floor4_elevator", "floor5_elevator"],
 
-  "C3_floor2stair2": ["C3_elevator"],
+  "C3_floor2stair2": ["basement_fire_exit_1", "fl3_stairs_at_elevators", "A1_floor4stair1", "A1_floor5stair1"],
 
   "B2_bottomhalf1": ["B2_tophalf1", "B2_bottomhalf2", "B2_tophalf2"],
 
@@ -276,8 +278,7 @@ const graph: { [key: string]: string[] } = {
   //This is the main point for all the left room
   "A1_central": ["A1_room221", "A1_room221D", "A1_room222", "A1_room222A"],
 
-  //This is left as empty because it's a destination
-  "A1_room221": [],
+  "outside_lockwood": ["level_up_elevator"],
 
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -300,6 +301,9 @@ const graph: { [key: string]: string[] } = {
   // Connecting nodes from floor 2 to floor 1
 
   "C3_floor2stair1": ["start_floor1_stairs"],
+  "level_up_elevator": ["A1_floor1_elevator"],
+
+  "A1_floor1_elevator": ["room119", "room118", "room117", "room116", "floor1_middle"],
 
   // Floor 1 Node Connections
 
@@ -307,7 +311,7 @@ const graph: { [key: string]: string[] } = {
   "floor1_bookshelf": ["A1_floor1_elevator", "room119", "room118", "room117", "room116"],
 
   "floor1_top": ["room105", "floor1_fire_exit_1_node"],
-  "floor1_middle": ["floor1_middle_bottom", "floor1_room108A_node"],
+  "floor1_middle": ["room105", "floor1_fire_exit_1_node", "floor1_room108A_node", "floor1_middle_bottom", "top_room109", "bottom_room109", "room110"],
   "floor1_middle_bottom": ["floor1_bottom", "top_room109", "bottom_room109", "room110"],
 
   "floor1_fire_exit_1_node": ["floor1_fire_exit_1"],
@@ -354,14 +358,14 @@ const graph: { [key: string]: string[] } = {
   // Waypoint cluster near rooms 419-425
   "A1_room419": ["A1_room420C", "A4_straightahead_bathroom"],
   "A1_room420C": ["A1_room420", "A1_room420A", "A1_room420B", "A1_room421", "A1_room422", "A1_room423", "A1_room424", "A1_room425", "A1_room426", "A1_nexttoroom424"],
-  "A1_nexttoroom425": ["A1_nexttoroom424", "A1_room425", "A1_room426", "A1_room420B", "A1_room421", "A1_room422", "A1_room423", "A1_room424"],
+  "A1_nexttoroom425": ["A1_nexttoroom424", "A1_room425", "A1_room426", "A1_room420B", "A1_room420C", "A1_room421", "A1_room422", "A1_room423", "A1_room424"],
   "A1_nexttoroom424": ["A2_floor4stair2"],
 
   // Bottom left waypoint
   "A1_bottomhalf": ["A2_straightahead_leftside"],
 
   // Fire exit 1 connections
-  "A1_floor4stair1": ["A1_bottomhalf", "A1_nexttoroom425"],
+  "A1_floor4stair1": ["A1_bottomhalf", "A1_middleright", "A1_nexttoroom425"],
   
   // Left side vertical corridor
   "A2_nearfireexit": ["A2_floor4stair2", "A2_straightahead_leftside"],
@@ -386,6 +390,7 @@ const graph: { [key: string]: string[] } = {
   // Floor 5 Node Connections
 
   "floor5_elevator": ["A1_floor5_nearFireExit", "A1_floor5_nextToElevator"],
+  "A1_floor5stair1": ["A1_floor5_nearFireExit", "A1_floor5_nextToElevator"],
   "A1_floor5_nextToElevator": ["A4_floor5stair4", "A1_floor5_nextToRoom519"],
   "A4_floor5stair4": ["A4_floor5_bathroom", "A4_floor5_nextToRoom517"],
   "A4_floor5_nextToRoom517": ["room517"],
@@ -404,7 +409,7 @@ const graph: { [key: string]: string[] } = {
 };
 
 // ! Dijkstra algorithm for shortest path (weighted by Euclidean distance between node coordinates)
-function findShortestPathDijkstra(startNodeId: string, endNodeId: string): PathResult | null {
+function findShortestPathDijkstra(startNodeId: string, endNodeId: string, mode: string): PathResult | null {
   if (startNodeId === endNodeId) {
     const node = nodes.find(n => n.id === startNodeId);
     return {
@@ -441,6 +446,11 @@ function findShortestPathDijkstra(startNodeId: string, endNodeId: string): PathR
     return Math.sqrt(dx * dx + dy * dy);
   };
 
+  // Determines if a node type is a stair or elevator to bypass them depending on mode
+  const getNodeType = (id: string) => nodes.find(n => n.id === id)?.type;
+  // Gets a node's floor
+  const getNodeFloor = (id: string) => nodes.find(n => n.id === id)?.floor;
+
   // Initialize distances
   for (const n of nodes) {
     dist.set(n.id, Infinity);
@@ -465,7 +475,17 @@ function findShortestPathDijkstra(startNodeId: string, endNodeId: string): PathR
 
     const neighbors = graph[u] || [];
     for (const v of neighbors) {
+
       if (visited.has(v)) continue;
+
+      const type = getNodeType(v);
+
+      const floorU = getNodeFloor(u);
+      const floorV = getNodeFloor(v);
+
+      if (mode === "stairs" && type === "elevator" && floorU !== floorV) continue;
+      if (mode === "elevator" && type === "stairs" && floorU !== floorV) continue;
+    
       const weight = euclidean(u, v);
       const alt = (dist.get(u) ?? Infinity) + weight;
 
@@ -520,7 +540,7 @@ function generateInstructions(path: string[]): string[] {
     // 3. Logic based on node types to make it human-readable
     if (currentNode.type === 'elevator') {
       if(nextNode.type === 'elevator' && (currentNode.floor !== nextNode.floor) ){
-        console.log(nextNode.floor);
+
         if(nextNode.floor === 0){
           instruction = `Go inside the ${currentNode.name} and head to the basement`;
         }else{
@@ -619,6 +639,12 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
   const start = req.params.start;
   const end = req.params.end;
 
+  const mode = req.query.mode as string;
+
+  if (!mode) {
+    return res.status(400).json({ error: "Mode is required (stairs or elevator)" });
+  }
+
   // Detailed request logging removed
 
   // Check if parameters are provided
@@ -654,7 +680,7 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
   }
 
   // Use Dijkstra to find the shortest path
-  const pathResult = findShortestPathDijkstra(startNode.id, endNode.id);
+  const pathResult = findShortestPathDijkstra(startNode.id, endNode.id, mode);
 
   if (!pathResult) {
     console.warn(`No path found between '${startNode.name}' and '${endNode.name}'`);
@@ -727,7 +753,7 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
 
 // Specific route for Room 202 to Classroom B20 (same floor)
 app.get("/api/navigation/room202-to-b20", (req: Request, res: Response) => {
-  const pathResult = findShortestPathDijkstra("223", "classroom_b20");
+  const pathResult = findShortestPathDijkstra("223", "classroom_b20", "stairs");
 
   if (!pathResult) {
     return res.status(404).json({ error: "No path found from Room 202 to Classroom B20" });

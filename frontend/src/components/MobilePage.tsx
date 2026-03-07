@@ -19,7 +19,7 @@ export default function MobilePage() {
     const room = searchParams.get("q") ?? "";
     console.log(room)
     if (!room) return
-    findPath("Main Entrance", room);
+    findPath("Main Entrance", room, false);
   }, []);
 
   return (
