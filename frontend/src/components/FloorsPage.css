@@ -47,6 +47,7 @@ html, body {
   font-weight: 500;
   border: 1px solid #444;
   cursor: pointer;
+  flex: 1;
 }
 
 .sidebar-box:hover {
@@ -170,6 +171,15 @@ html, body {
   color: red;
 }
 
+.close-btn:active {
+  transform: scale(0.95);
+}
+
+.close-btn:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
 .back-button {
   margin-top: 20px;
   margin-bottom: 20px;
@@ -236,4 +246,27 @@ html, body {
   display: flex;
   justify-content: center; /* horizontal center */
   margin-top: 3rem;
+}
+
+.waypoint-line {
+  stroke-dasharray: 18;
+  animation: dash-animation 2s linear infinite; /*Conveyor Belt Effect*/
+}
+
+@keyframes dash-animation {
+  from{
+    stroke-dashoffset: 100;
+  } to {
+    stroke-dashoffset: 0;
+  }
+  
+}
+
+.toggle-boxes {
+  display: flex;
+  gap: 12px;        /* space between buttons */
+}
+
+.icon {
+  margin-right: 0.5rem;
 }

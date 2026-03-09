@@ -14,7 +14,7 @@ export function useNavigation() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const findPath = async (from: string, to: string) => { //At the moment, from should only be "Main Entrance"
+  const findPath = async (from: string, to: string, mode: boolean) => { //At the moment, from should only be "Main Entrance"
     if (!to || !from) {
       setError("Please select both start and end locations");
       return;
@@ -32,8 +32,9 @@ export function useNavigation() {
     try {
       const urlFrom = encodeURIComponent(from);
       const urlTo = encodeURIComponent(to);
+      const urlMode = mode ? "elevator": "stairs";
       const response = await fetch(
-        `/api/navigation/from/${urlFrom}/to/${urlTo}`,
+        `/api/navigation/from/${urlFrom}/to/${urlTo}?mode=${urlMode}`,
         {
           headers: {
             "ngrok-skip-browser-warning": "true",
