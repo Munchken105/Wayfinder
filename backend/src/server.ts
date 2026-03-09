@@ -58,7 +58,7 @@ const nodes: Node[] = [
 
   // Stairs / Fire Exit
   { id: "C3_floor2stair1", name: "stairs to first floor", type: "stairs", floor: 2, coord:[480, 525]},
-  { id: "C3_floor2stair2", name: "Fire Exit to the right", type: "stairs", floor: 2, coord:[681, 503]}, // Fire Exit 1
+  { id: "C3_floor2stair2", name: "Fire Exit stairs to the right", type: "stairs", floor: 2, coord:[681, 503]}, // Fire Exit 1
   { id: "B2_floor2stair3", name: "Fire Exit in front", type: "stairs", floor: 2, coord:[761, 80]},
 
   // Waypoint (nodes that are used as means to get to the the actual destination)
@@ -136,11 +136,11 @@ const nodes: Node[] = [
   // * ------------------------------------- 3rd floor Layout -------------------------------------
   
   // Courtyard
-  { id: "fl3_courtyd_bottom_left", name: "bottom left corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [245, 488]},
-  { id: "fl3_courtyd_top_left", name: "top left corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [245, 201]},
-  { id: "fl3_courtyd_top_right", name: "top right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [700, 201]},
-  { id: "fl3_courtyd_middle_right", name: "middle right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [690, 385]},
-  { id: "fl_3_courtyd_bottom_right", name: "bottom right corner of fl3 courtyard", type: "waypoint", floor: 3, coord: [549, 488]},
+  { id: "fl3_courtyd_bottom_left", name: "bottom left corner of floor 3 courtyard", type: "waypoint", floor: 3, coord: [245, 488]},
+  { id: "fl3_courtyd_top_left", name: "top left corner of floor 3 courtyard", type: "waypoint", floor: 3, coord: [245, 201]},
+  { id: "fl3_courtyd_top_right", name: "top right corner of floor 3 courtyard", type: "waypoint", floor: 3, coord: [700, 201]},
+  { id: "fl3_courtyd_middle_right", name: "middle right corner of floor 3 courtyard", type: "waypoint", floor: 3, coord: [690, 385]},
+  { id: "fl_3_courtyd_bottom_right", name: "bottom right corner of floor 3 courtyard", type: "waypoint", floor: 3, coord: [549, 488]},
 
   // Floor 3 Rooms
   { id: "room_319", name: "room 319", type: "room", floor: 3, coord: [744, 425] },
@@ -169,9 +169,9 @@ const nodes: Node[] = [
   { id: "fl3_bathroom_2", name: "rightmost bathroom", type: "room", floor: 3, coord: [779, 82] },
 
   //Floor 3 Stairs
-  { id: "fl3_stairs_1", name: "fl3 leftmost stairs", type: "stairs", floor: 3, coord: [87, 204] },
-  { id: "fl3_stairs_2", name: "fl3 middle stairs", type: "stairs", floor: 3, coord: [298, 572] },
-  { id: "fl3_stairs_3", name: "fl3 rightmost stairs", type: "stairs", floor: 3, coord: [678, 86] },
+  { id: "fl3_stairs_1", name: "floor 3 leftmost stairs", type: "stairs", floor: 3, coord: [87, 204] },
+  { id: "fl3_stairs_2", name: "floor 3 middle stairs", type: "stairs", floor: 3, coord: [298, 572] },
+  { id: "fl3_stairs_3", name: "floor 3 rightmost stairs", type: "stairs", floor: 3, coord: [678, 86] },
   { id: "fl3_stairs_at_elevators", name: "the stairs right at the elevator", type: "stairs", floor: 3, coord: [614, 457] },
 
   // * ------------------------------------- 4th floor Layout -------------------------------------  
@@ -559,9 +559,13 @@ function generateInstructions(path: string[]): string[] {
       instruction = `Walk to ${nextNode.name}`;
     }
     else if (nextNode.type === 'stairs') {
-      if(currentNode.type === 'stairs' && (nextNode.floor < currentNode.floor)){
+      if(currentNode.type === 'stairs' && (nextNode.floor < currentNode.floor) && (nextNode.floor == 1)){
         instruction = `Walk down the stairs to the first floor`;
-      } else if (currentNode.type === 'stairs' && (nextNode.floor > currentNode.floor)){
+      }else if (currentNode.type === 'stairs' && (nextNode.floor < currentNode.floor) && (nextNode.floor != 0)){
+        instruction = `Walk down the stairs to floor ${nextNode.floor}`;
+      }else if (currentNode.type === 'stairs' && (nextNode.floor < currentNode.floor) && (nextNode.floor == 0)){
+        instruction = `Walk down the stairs to the basement`;
+      }else if (currentNode.type === 'stairs' && (nextNode.floor > currentNode.floor)){
         instruction = `Walk up the ${currentNode.name}`;
       }else{
         instruction = `Arrive at the ${nextNode.name}`;
