@@ -71,6 +71,9 @@ function LibraryFloorMap() {
   // };
 
   const handleWayfind = (roomName: string) => {
+
+    setActiveFloor("Floor 2");
+
     Promise.all([
       fetch(`/api/navigation/from/main%20entrance/to/${encodeURIComponent(roomName)}?mode=stairs`,
         { headers: { "ngrok-skip-browser-warning": "true" } }),
@@ -256,6 +259,10 @@ function LibraryFloorMap() {
     "Floor 5": fifthFloorRooms
   };
 
+  const destinationFloor =(wayfindClicked && currentPath.length > 0)
+    ? floorNumToString(currentPath[currentPath.length - 1].floor)
+    : null;
+
   return (
     <div className="floor-container">
       <div className="sidebar">
@@ -263,34 +270,34 @@ function LibraryFloorMap() {
 
         <div className="sidebar-boxes">
           <button
-            className={`sidebar-box ${activeFloor === "Floor 5" ? "active" : ""}`}
+            className={`sidebar-box ${activeFloor === "Floor 5" ? "active" : ""} ${destinationFloor === "Floor 5" ? "flash-destination" : ""}`}
             onClick={() => { setActiveFloor("Floor 5") }}
           >Floor 5</button>
 
           <button
-            className={`sidebar-box ${activeFloor === "Floor 4" ? "active" : ""}`}
+            className={`sidebar-box ${activeFloor === "Floor 4" ? "active" : ""} ${destinationFloor === "Floor 4" ? "flash-destination" : ""}`}
             onClick={() => { setActiveFloor("Floor 4") }}
           >Floor 4</button>
 
           <button
-            className={`sidebar-box ${activeFloor === "Floor 3" ? "active" : ""}`}
+            className={`sidebar-box ${activeFloor === "Floor 3" ? "active" : ""} ${destinationFloor === "Floor 3" ? "flash-destination" : ""}`}
             onClick={() => { setActiveFloor("Floor 3") }}
           >Floor 3</button>
 
 
           <button
-            className={`sidebar-box ${activeFloor === "Floor 2" ? "active" : ""}`}
+            className={`sidebar-box ${activeFloor === "Floor 2" ? "active" : ""} ${destinationFloor === "Floor 2" ? "flash-destination" : ""}`}
             onClick={() => { setActiveFloor("Floor 2") }}
           >Floor 2</button>
 
 
           <button
-            className={`sidebar-box ${activeFloor === "Floor 1" ? "active" : ""}`}
+            className={`sidebar-box ${activeFloor === "Floor 1" ? "active" : ""} ${destinationFloor === "Floor 1" ? "flash-destination" : ""}`}
             onClick={() => { setActiveFloor("Floor 1") }}
           >Floor 1</button>
 
           <button
-            className={`sidebar-box ${activeFloor === "Basement" ? "active" : ""}`}
+            className={`sidebar-box ${activeFloor === "Basement" ? "active" : ""} ${destinationFloor === "Basement" ? "flash-destination" : ""}`}
             onClick={() => { setActiveFloor("Basement") }}
           >Basement</button>
 
