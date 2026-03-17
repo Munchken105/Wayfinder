@@ -17,7 +17,6 @@ export default function MobilePage() {
 
   useEffect(() => { //calls useNavigation
     const room = searchParams.get("q") ?? "";
-    console.log(room)
     if (!room) return
     findPath("Main Entrance", room, false);
   }, []);
