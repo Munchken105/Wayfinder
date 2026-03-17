@@ -270,3 +270,14 @@ html, body {
 .icon {
   margin-right: 0.5rem;
 }
+
+@keyframes pulse-blue {
+  0% { background-color: #f0f0f0; color: black; }
+  50% { background-color: #2f9fd0; color: white; box-shadow: 0 0 10px #2f9fd0; }
+  100% { background-color: #f0f0f0; color: black; }
+}
+
+.flash-destination:not(.active) {
+  animation: pulse-blue 1.5s infinite;
+  border: 1px solid #000000;
+}

@@ -57,20 +57,11 @@ function LibraryFloorMap() {
       .catch(err => console.error('Failed to fetch nodes:', err));
   }, []);
 
-  // Fetch the path when a room is selected for wayfinding
-  // const handleWayfind = (roomName: string) => {
-  //   fetch(`/api/navigation/from/main%20entrance/to/${encodeURIComponent(roomName)}`, { headers: { "ngrok-skip-browser-warning": "true" } })
-  //     .then(res => res.json())
-  //     .then(data => {
-  //       if (data.path) {
-  //         setCurrentPath(data.path);
-  //         setWayfindClicked(true);
-  //       }
-  //     })
-  //     .catch(err => console.error('Failed to fetch path:', err));
-  // };
-
+  // Fetch the path for both stairs and elevator when a room is selected for wayfinding
   const handleWayfind = (roomName: string) => {
+
+    setActiveFloor("Floor 2");
+
     Promise.all([
       fetch(`/api/navigation/from/main%20entrance/to/${encodeURIComponent(roomName)}?mode=stairs`,
         { headers: { "ngrok-skip-browser-warning": "true" } }),
@@ -93,7 +84,7 @@ function LibraryFloorMap() {
   const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
     const x = e.nativeEvent.offsetX;
     const y = e.nativeEvent.offsetY;
-    console.log(`Clicked at: ${x}, ${y}`);
+    // console.log(`Clicked at: ${x}, ${y}`); // Only for debugging purposes
     setLastClick({ x, y });
   };
 
@@ -256,6 +247,10 @@ function LibraryFloorMap() {
     "Floor 5": fifthFloorRooms
   };
 
+  const destinationFloor =(wayfindClicked && currentPath.length > 0)
+    ? floorNumToString(currentPath[currentPath.length - 1].floor)
+    : null;
+
   return (
     <div className="floor-container">
       <div className="sidebar">
@@ -263,34 +258,34 @@ function LibraryFloorMap() {
 
         <div className="sidebar-boxes">
           <button
-            className={`sidebar-box ${activeFloor === "Floor 5" ? "active" : ""}`}
+            className={`sidebar-box ${activeFloor === "Floor 5" ? "active" : ""} ${destinationFloor === "Floor 5" ? "flash-destination" : ""}`}
             onClick={() => { setActiveFloor("Floor 5") }}
           >Floor 5</button>
 
           <button
-            className={`sidebar-box ${activeFloor === "Floor 4" ? "active" : ""}`}
+            className={`sidebar-box ${activeFloor === "Floor 4" ? "active" : ""} ${destinationFloor === "Floor 4" ? "flash-destination" : ""}`}
             onClick={() => { setActiveFloor("Floor 4") }}
           >Floor 4</button>
 
           <button
-            className={`sidebar-box ${activeFloor === "Floor 3" ? "active" : ""}`}
+            className={`sidebar-box ${activeFloor === "Floor 3" ? "active" : ""} ${destinationFloor === "Floor 3" ? "flash-destination" : ""}`}
             onClick={() => { setActiveFloor("Floor 3") }}
           >Floor 3</button>
 
 
           <button
-            className={`sidebar-box ${activeFloor === "Floor 2" ? "active" : ""}`}
+            className={`sidebar-box ${activeFloor === "Floor 2" ? "active" : ""} ${destinationFloor === "Floor 2" ? "flash-destination" : ""}`}
             onClick={() => { setActiveFloor("Floor 2") }}
           >Floor 2</button>
 
 
           <button
-            className={`sidebar-box ${activeFloor === "Floor 1" ? "active" : ""}`}
+            className={`sidebar-box ${activeFloor === "Floor 1" ? "active" : ""} ${destinationFloor === "Floor 1" ? "flash-destination" : ""}`}
             onClick={() => { setActiveFloor("Floor 1") }}
           >Floor 1</button>
 
           <button
-            className={`sidebar-box ${activeFloor === "Basement" ? "active" : ""}`}
+            className={`sidebar-box ${activeFloor === "Basement" ? "active" : ""} ${destinationFloor === "Basement" ? "flash-destination" : ""}`}
             onClick={() => { setActiveFloor("Basement") }}
           >Basement</button>
 
@@ -336,6 +331,7 @@ function LibraryFloorMap() {
                     wayfindClicked &&
                     <WayfindPage
                       room={selectedRoom.name}
+                      useElevator={useElevator}
                       setUseElevator={setUseElevator}
                     />
                   }
@@ -348,15 +344,16 @@ function LibraryFloorMap() {
         <div className="map_wrapper">
           {ChosenMapImage()}
 
-          {/*-----------------------------------------USE TO FIND COORDINATE-------------------------------------------*/}
+          {/*-----------------------------------------USE TO FIND COORDINATE (FOR DEBUGGING ONLY) -------------------------------------------*/}
 
-          {lastClick && (
+          {/* {lastClick && (
             <div
               className="hotspot-marker"
               style={{ top: `${lastClick.y}px`, left: `${lastClick.x}px` }}>
             </div>)
-          }
-        {/*----------------------------------------------------------------------------------------------------------*/} 
+          } */}
+
+        {/*----------------------------------------------------------------------------------------------------------------------------------*/} 
         
         {activeFloor && floors[activeFloor].map(room => (
         <div
