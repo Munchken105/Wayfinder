@@ -57,19 +57,7 @@ function LibraryFloorMap() {
       .catch(err => console.error('Failed to fetch nodes:', err));
   }, []);
 
-  // Fetch the path when a room is selected for wayfinding
-  // const handleWayfind = (roomName: string) => {
-  //   fetch(`/api/navigation/from/main%20entrance/to/${encodeURIComponent(roomName)}`, { headers: { "ngrok-skip-browser-warning": "true" } })
-  //     .then(res => res.json())
-  //     .then(data => {
-  //       if (data.path) {
-  //         setCurrentPath(data.path);
-  //         setWayfindClicked(true);
-  //       }
-  //     })
-  //     .catch(err => console.error('Failed to fetch path:', err));
-  // };
-
+  // Fetch the path for both stairs and elevator when a room is selected for wayfinding
   const handleWayfind = (roomName: string) => {
 
     setActiveFloor("Floor 2");
@@ -96,7 +84,7 @@ function LibraryFloorMap() {
   const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
     const x = e.nativeEvent.offsetX;
     const y = e.nativeEvent.offsetY;
-    console.log(`Clicked at: ${x}, ${y}`);
+    // console.log(`Clicked at: ${x}, ${y}`); // Only for debugging purposes
     setLastClick({ x, y });
   };
 
@@ -356,15 +344,16 @@ function LibraryFloorMap() {
         <div className="map_wrapper">
           {ChosenMapImage()}
 
-          {/*-----------------------------------------USE TO FIND COORDINATE-------------------------------------------*/}
+          {/*-----------------------------------------USE TO FIND COORDINATE (FOR DEBUGGING ONLY) -------------------------------------------*/}
 
-          {lastClick && (
+          {/* {lastClick && (
             <div
               className="hotspot-marker"
               style={{ top: `${lastClick.y}px`, left: `${lastClick.x}px` }}>
             </div>)
-          }
-        {/*----------------------------------------------------------------------------------------------------------*/} 
+          } */}
+
+        {/*----------------------------------------------------------------------------------------------------------------------------------*/} 
         
         {activeFloor && floors[activeFloor].map(room => (
         <div
