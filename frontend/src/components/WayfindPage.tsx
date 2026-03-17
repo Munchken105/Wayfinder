@@ -1,7 +1,8 @@
 import QRCodePage from "./QRCodePage";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigation } from "../hooks/navigation"
 import { FaWheelchair } from "react-icons/fa";
+import { floorFromRoom } from "../utils/floorFromRoom";
 
 export default function WayfindPage({ room, useElevator, setUseElevator }: { room: string; useElevator: boolean; setUseElevator: (value: boolean) => void; }){
   const {
@@ -10,18 +11,6 @@ export default function WayfindPage({ room, useElevator, setUseElevator }: { roo
     loading,
     error
   } = useNavigation();
-
-  const floorFromRoom = (room: string) => {
-    const num = parseInt(room.replace(/\D/g, ""), 10);
-
-    if (isNaN(num)) return "Floor 2";
-    if (num < 100) return "Basement";
-    if (num < 200) return "Floor 1";
-    if (num < 300) return "Floor 2";
-    if (num < 400) return "Floor 3";
-    if (num < 500) return "Floor 4";
-    return "Floor 5";
-  };
 
   useEffect(() => { //calls useNavigation
     findPath("Main Entrance", room, useElevator);

@@ -13,7 +13,6 @@ import floor5Img from "../assets/Floor5layout.jpg";
 
 function LibraryFloorMap() {
 
-  const [lastClick, setLastClick] = useState<{ x: number; y: number } | null>(null); // this is for knowing where to set up boxes
   const [selectedRoom, setSelectedRoom] = useState<{ name: string; description: string; id: string } | null>(null); // this is for making the clicking of the rooms useful
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [wayfindClicked, setWayfindClicked] = useState(false);
@@ -81,11 +80,8 @@ function LibraryFloorMap() {
     .catch(err => console.error("Failed to fetch path:", err));
   };
 
-  const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
-    const x = e.nativeEvent.offsetX;
-    const y = e.nativeEvent.offsetY;
-    // console.log(`Clicked at: ${x}, ${y}`); // Only for debugging purposes
-    setLastClick({ x, y });
+  const handleImageClick = () => {
+    // no-op (kept so onClick handlers remain stable)
   };
 
   //------------------------------------------Initializing the Map-----------------------------------------------------
