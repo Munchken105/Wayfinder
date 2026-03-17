@@ -3,15 +3,13 @@ import { useState, useEffect } from "react";
 import { useNavigation } from "../hooks/navigation"
 import { FaWheelchair } from "react-icons/fa";
 
-export default function WayfindPage({ room, setUseElevator }: { room: string, setUseElevator: (value: boolean) => void; }){
+export default function WayfindPage({ room, useElevator, setUseElevator }: { room: string; useElevator: boolean; setUseElevator: (value: boolean) => void; }){
   const {
     navigationResult,
     findPath,
     loading,
     error
   } = useNavigation();
-
-  const [useElevator, setElevator] = useState(false);
 
   const floorFromRoom = (room: string) => {
     const num = parseInt(room.replace(/\D/g, ""), 10);
@@ -39,8 +37,8 @@ export default function WayfindPage({ room, setUseElevator }: { room: string, se
 
       {floorFromRoom(room) !== "Floor 2" && (
         <div className="toggle-boxes">
-          <button className={`sidebar-box ${useElevator === false ? "active" : ""}`} onClick={() => { setElevator(false), setUseElevator(false); }}>Stairs</button>
-          <button className={`sidebar-box ${useElevator === true ? "active" : ""}`} onClick={() => { setElevator(true), setUseElevator(true); }}> 
+          <button className={`sidebar-box ${!useElevator ? "active" : ""}`} onClick={() => { setUseElevator(false); }}>Stairs</button>
+          <button className={`sidebar-box ${useElevator ? "active" : ""}`} onClick={() => { setUseElevator(true); }}> 
             <FaWheelchair className="icon" />
              Elevator</button>
         </div>

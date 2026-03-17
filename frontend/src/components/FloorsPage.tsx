@@ -343,6 +343,7 @@ function LibraryFloorMap() {
                     wayfindClicked &&
                     <WayfindPage
                       room={selectedRoom.name}
+                      useElevator={useElevator}
                       setUseElevator={setUseElevator}
                     />
                   }
