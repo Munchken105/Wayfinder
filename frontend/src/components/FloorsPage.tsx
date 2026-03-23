@@ -347,6 +347,7 @@ function LibraryFloorMap() {
 
             {!isCollapsed && (
               <>
+                <button className="close-btn" onClick={() => { setSelectedRoom(null); setWayfindClicked(false); setCurrentPath([]); setIsCollapsed(false); setUseElevator(false);}}>Close</button>
                 <h3 className="room-name">{selectedRoom.name}</h3>
                 <p className="room-description">{selectedRoom.description}</p>
 

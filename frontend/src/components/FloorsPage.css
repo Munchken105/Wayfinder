@@ -376,6 +376,12 @@ html, body {
 }
 
 @media (max-width: 640px) {
+  .hotspot {
+    pointer-events: none;
+    background: transparent;
+    border: none;
+  }
+
   .info-panel {
     display: none;
   }
