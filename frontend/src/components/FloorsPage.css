@@ -8,7 +8,7 @@ html, body {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  gap: 12px;
+  gap: 0;
 }
 
 .sidebar {
@@ -24,7 +24,7 @@ html, body {
 }
 .Map-Content {
   flex-grow: 1;
-  padding: 10px;
+  padding: 0 10px 10px 0;
   position: relative;
   min-width: 0;
 }
@@ -120,7 +120,7 @@ html, body {
 
 .info-panel {
   position: absolute;
-  left: -250px; 
+  left: -304px; 
   width: 100%;
   max-width: 304px;
   height: calc(100% - 40px);
@@ -298,6 +298,10 @@ html, body {
   border: 1px solid #000000;
 }
 
+.mobile-wayfind-panel {
+  display: none;
+}
+
 @media (max-width: 1024px) {
   .floor-container {
     flex-direction: column;
@@ -372,6 +376,10 @@ html, body {
 }
 
 @media (max-width: 640px) {
+  .info-panel {
+    display: none;
+  }
+
   .search-bar-container {
     display: none;
   }
@@ -394,4 +402,14 @@ html, body {
   .back-button {
     display: none;
   }
+
+  .mobile-wayfind-panel {
+    display: block;
+    margin-top: 12px;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+  }
+
 }

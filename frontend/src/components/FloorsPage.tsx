@@ -135,19 +135,22 @@ function LibraryFloorMap() {
     return "Floor 2";
   };
 
-  const [pendingRoom, setPendingRoom] = useState<string | null>(null);
+  const handleSearchSelect = (room: string) => {
+    const floor = floorFromRoom(room) as keyof typeof floors;
+    setActiveFloor(floor);
 
-  useEffect(() => {
+    const roomNumber = room.split(" ")[0];
+    const normalizedRoomName = `Room ${roomNumber}`;
+    const roomObj = floors[floor].find(r => r.name === normalizedRoomName);
 
-    if (activeFloor && pendingRoom) {
-      const roomObj = floors[activeFloor].find(r => r.name === pendingRoom);
-      if (roomObj) {
-        setSelectedRoom(roomObj);
-      }
-      setPendingRoom(null); // clear pending
+    if (roomObj) {
+      setSelectedRoom(roomObj);
+      setWayfindClicked(false);
+      setCurrentPath([]);
+      setIsCollapsed(false);
+      setUseElevator(false);
     }
-
-  }, [pendingRoom]);
+  };
 
   useEffect(() => {
     setCurrentPath(useElevator ? elevatorPath : stairsPath);
@@ -322,53 +325,45 @@ function LibraryFloorMap() {
       </div>
 
       <div className="Map-Content">
-        <div className="searchbar-container">
+        {!deepLinkedRoom && (
           <SearchBar
             placeholder="Search for Librarians"
-            onSelectResult={room => {
-              const floor = floorFromRoom(room) as keyof typeof floors;
-              setActiveFloor(floor);
-              const roomNumber = room.split(" ")[0];
-              setPendingRoom("Room " + roomNumber); // will trigger useEffect
-              setWayfindClicked(false);
-              setIsCollapsed(false);
-            }}
+            onSelectResult={handleSearchSelect}
           />
-          {selectedRoom && (
-            <div className={`info-panel show ${isCollapsed ? "collapsed" : ""}`}>
+        )}
 
-              {/* Collapse / Expand toggle */}
-              <button
-                className="collapse-toggle"
-                onClick={() => setIsCollapsed(prev => !prev)}
-                aria-expanded={!isCollapsed}
-                aria-label={isCollapsed ? "Expand panel" : "Collapse panel"}
-              >
-                {isCollapsed ? ">" : "<"}
-              </button>
+        {selectedRoom && (
+          <div className={`info-panel show ${isCollapsed ? "collapsed" : ""}`}>
 
-              {!isCollapsed && (
-                <>
-                  <button className="close-btn" onClick={() => { setSelectedRoom(null); setWayfindClicked(false); setCurrentPath([]); setIsCollapsed(false); setUseElevator(false);}}>Close</button>
-                  <h3 className="room-name">{selectedRoom.name}</h3>
-                  <p className="room-description">{selectedRoom.description}</p>
+            {/* Collapse / Expand toggle */}
+            <button
+              className="collapse-toggle"
+              onClick={() => setIsCollapsed(prev => !prev)}
+              aria-expanded={!isCollapsed}
+              aria-label={isCollapsed ? "Expand panel" : "Collapse panel"}
+            >
+              {isCollapsed ? ">" : "<"}
+            </button>
 
-                  {!wayfindClicked && <button className="wayfind-button" onClick={() => handleWayfind(selectedRoom.name)}>Wayfind</button>}
+            {!isCollapsed && (
+              <>
+                <h3 className="room-name">{selectedRoom.name}</h3>
+                <p className="room-description">{selectedRoom.description}</p>
 
-                  {
-                    wayfindClicked &&
-                    <WayfindPage
-                      room={selectedRoom.name}
-                      useElevator={useElevator}
-                      setUseElevator={setUseElevator}
-                    />
-                  }
-                </>
-              )}
-            </div>
-          )}
+                {!wayfindClicked && <button className="wayfind-button" onClick={() => handleWayfind(selectedRoom.name)}>Wayfind</button>}
 
-        </div>
+                {
+                  wayfindClicked &&
+                  <WayfindPage
+                    room={selectedRoom.name}
+                    useElevator={useElevator}
+                    setUseElevator={setUseElevator}
+                  />
+                }
+              </>
+            )}
+          </div>
+        )}
         <div className="map_wrapper">
           {ChosenMapImage()}
 
@@ -472,6 +467,16 @@ function LibraryFloorMap() {
           })}
 
         </div>
+
+        {selectedRoom && wayfindClicked && (
+          <div className="mobile-wayfind-panel">
+            <WayfindPage
+              room={selectedRoom.name}
+              useElevator={useElevator}
+              setUseElevator={setUseElevator}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
