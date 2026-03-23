@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 export interface NavigationResult {
   start: string;
@@ -14,7 +14,7 @@ export function useNavigation() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const findPath = async (from: string, to: string, mode: boolean) => { //At the moment, from should only be "Main Entrance"
+  const findPath = useCallback(async (from: string, to: string, mode: boolean) => { //At the moment, from should only be "Main Entrance"
     if (!to || !from) {
       setError("Please select both start and end locations");
       return;
@@ -27,8 +27,6 @@ export function useNavigation() {
 
     setLoading(true);
     setError("");
-    setNavigationResult(null);
-
     try {
       const urlFrom = encodeURIComponent(from);
       const urlTo = encodeURIComponent(to);
@@ -53,7 +51,7 @@ export function useNavigation() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return {
     navigationResult,

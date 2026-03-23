@@ -1,7 +1,7 @@
 import QRCode from "react-qr-code";
 import { useState, useEffect } from "react";
 
-export default function generateQRCode({ room }: { room: string }) {
+export default function generateQRCode({ room, useElevator }: { room: string; useElevator: boolean }) {
     const [baseURL, setBaseURL] = useState(window.location.origin);
 
     useEffect(() => {
@@ -17,7 +17,8 @@ export default function generateQRCode({ room }: { room: string }) {
         }
     }, []);
 
-    const link = baseURL + `/mobile?q=${encodeURIComponent(room)}`;
+    const mode = useElevator ? "elevator" : "stairs";
+    const link = baseURL + `/floors?q=${encodeURIComponent(room)}&mode=${mode}`;
 
     return (
         <QRCode

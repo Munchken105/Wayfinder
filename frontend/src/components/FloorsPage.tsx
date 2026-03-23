@@ -1,8 +1,8 @@
 import "./FloorsPage.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef, type SyntheticEvent } from "react";
 import SearchBar from "./SearchBar";
 import WayfindPage from "./WayfindPage";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import BasementImg from "../assets/Basementlayout.jpg";
 import floor1Img from "../assets/Floor1layout.jpg";
@@ -12,6 +12,10 @@ import floor4Img from "../assets/Floor4layout.jpg";
 import floor5Img from "../assets/Floor5layout.jpg";
 
 function LibraryFloorMap() {
+  const [searchParams] = useSearchParams();
+  const deepLinkedRoom = (searchParams.get("q") || "").trim();
+  const deepLinkedMode = (searchParams.get("mode") || "stairs").trim().toLowerCase();
+  const hasHandledDeepLink = useRef("");
 
   const [selectedRoom, setSelectedRoom] = useState<{ name: string; description: string; id: string } | null>(null); // this is for making the clicking of the rooms useful
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -24,6 +28,7 @@ function LibraryFloorMap() {
   const [elevatorPath, setElevatorPath] = useState<any[]>([]); // Store the elevator path
 
   const [currentPath, setCurrentPath] = useState<any[]>([]); // Store nodes in the current navigation path
+  const [mapSize, setMapSize] = useState({ width: 1063, height: 706 });
 
   type Room = {
     id: string
@@ -57,7 +62,7 @@ function LibraryFloorMap() {
   }, []);
 
   // Fetch the path for both stairs and elevator when a room is selected for wayfinding
-  const handleWayfind = (roomName: string) => {
+  const handleWayfind = useCallback((roomName: string) => {
 
     setActiveFloor("Floor 2");
 
@@ -78,7 +83,7 @@ function LibraryFloorMap() {
       setWayfindClicked(true);
     })
     .catch(err => console.error("Failed to fetch path:", err));
-  };
+  }, []);
 
   const handleImageClick = () => {
     // no-op (kept so onClick handlers remain stable)
@@ -88,13 +93,21 @@ function LibraryFloorMap() {
 
   type FloorKey = keyof typeof floors;
   const [activeFloor, setActiveFloor] = useState<FloorKey>("Floor 2");
+
+  const handleMapLoad = (event: SyntheticEvent<HTMLImageElement>) => {
+    const img = event.currentTarget;
+    if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+      setMapSize({ width: img.naturalWidth, height: img.naturalHeight });
+    }
+  };
+
   const ChosenMapImage = () => {
-    if (activeFloor == "Basement") return <img src={BasementImg} className="libary-image" onClick={handleImageClick} />;
-    if (activeFloor == "Floor 1") return <img src={floor1Img} className="libary-image" onClick={handleImageClick} />;
-    if (activeFloor == "Floor 2") return <img src={floor2Img} className="libary-image" onClick={handleImageClick} />;
-    if (activeFloor == "Floor 3") return <img src={floor3Img} className="libary-image" onClick={handleImageClick} />;
-    if (activeFloor == "Floor 4") return <img src={floor4Img} className="libary-image" onClick={handleImageClick} />;
-    if (activeFloor == "Floor 5") return <img src={floor5Img} className="libary-image" onClick={handleImageClick} />;
+    if (activeFloor == "Basement") return <img src={BasementImg} className="libary-image" onClick={handleImageClick} onLoad={handleMapLoad} />;
+    if (activeFloor == "Floor 1") return <img src={floor1Img} className="libary-image" onClick={handleImageClick} onLoad={handleMapLoad} />;
+    if (activeFloor == "Floor 2") return <img src={floor2Img} className="libary-image" onClick={handleImageClick} onLoad={handleMapLoad} />;
+    if (activeFloor == "Floor 3") return <img src={floor3Img} className="libary-image" onClick={handleImageClick} onLoad={handleMapLoad} />;
+    if (activeFloor == "Floor 4") return <img src={floor4Img} className="libary-image" onClick={handleImageClick} onLoad={handleMapLoad} />;
+    if (activeFloor == "Floor 5") return <img src={floor5Img} className="libary-image" onClick={handleImageClick} onLoad={handleMapLoad} />;
 
     return <div className="Selection">Select a Floor</div>
   };
@@ -243,6 +256,25 @@ function LibraryFloorMap() {
     "Floor 5": fifthFloorRooms
   };
 
+  useEffect(() => {
+    if (!deepLinkedRoom || hasHandledDeepLink.current === deepLinkedRoom) return;
+
+    const floor = floorFromRoom(deepLinkedRoom) as keyof typeof floors;
+    setActiveFloor(floor);
+
+    const roomObj =
+      floors[floor].find(r => r.name.toLowerCase() === deepLinkedRoom.toLowerCase()) ??
+      floors[floor].find(r => r.name.toLowerCase().includes(deepLinkedRoom.toLowerCase()));
+
+    if (!roomObj) return;
+
+    setSelectedRoom(roomObj);
+    setIsCollapsed(false);
+    setUseElevator(deepLinkedMode === "elevator");
+    handleWayfind(roomObj.name);
+    hasHandledDeepLink.current = deepLinkedRoom;
+  }, [deepLinkedRoom, deepLinkedMode, handleWayfind]);
+
   const destinationFloor =(wayfindClicked && currentPath.length > 0)
     ? floorNumToString(currentPath[currentPath.length - 1].floor)
     : null;
@@ -356,10 +388,10 @@ function LibraryFloorMap() {
           key={room.id}
           className={`hotspot ${selectedRoom?.id === room.id ? "active" : ""}`}
           style={{
-            top: `${room.top}px`,
-            left: `${room.left}px`,
-            width: `${room.width}px`,
-            height: `${room.height}px`,
+            top: `${(room.top / mapSize.height) * 100}%`,
+            left: `${(room.left / mapSize.width) * 100}%`,
+            width: `${(room.width / mapSize.width) * 100}%`,
+            height: `${(room.height / mapSize.height) * 100}%`,
             position: "absolute",
             clipPath: room.clipPath ? room.clipPath : undefined,
           }}
@@ -369,6 +401,8 @@ function LibraryFloorMap() {
         {/* SVG lines connecting path nodes */}
         {wayfindClicked && currentPath.length > 0 && (
           <svg
+            viewBox={`0 0 ${mapSize.width} ${mapSize.height}`}
+            preserveAspectRatio="xMidYMid meet"
             style={{
               position: "absolute",
               top: 0,
@@ -423,8 +457,8 @@ function LibraryFloorMap() {
                 key={`dot-${node.id}`}
                 style={{
                   position: "absolute",
-                  left: `${location.coord[0]}px`,
-                  top: `${location.coord[1]}px`,
+                  left: `${(location.coord[0] / mapSize.width) * 100}%`,
+                  top: `${(location.coord[1] / mapSize.height) * 100}%`,
                   width: "10px",
                   height: "10px",
                   backgroundColor: "red",

@@ -42,7 +42,7 @@ export default function WayfindPage({ room, useElevator, setUseElevator }: { roo
       </div>
 
       <div className="qr-container">
-        <QRCodePage room={room} />
+        <QRCodePage room={room} useElevator={useElevator} />
       </div>
     </div>
   )
