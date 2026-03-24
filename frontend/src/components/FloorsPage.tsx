@@ -59,6 +59,10 @@ function LibraryFloorMap() {
 
   // Fetch the path for both stairs and elevator when a room is selected for wayfinding
   const handleWayfind = (roomName: string) => {
+    setWayfindClicked(false); 
+    setCurrentPath([]);
+    setStairsPath([]);
+    setElevatorPath([]);
 
     setActiveFloor("Floor 2");
 
@@ -116,13 +120,14 @@ function LibraryFloorMap() {
   };
 
   const floorNumToString = (floorNumber: number): keyof typeof floors => {
+    const f = String(floorNumber);
 
-    if (floorNumber == 0) return "Basement";
-    if (floorNumber == 1) return "Floor 1";
-    if (floorNumber == 2) return "Floor 2";
-    if (floorNumber == 3) return "Floor 3";
-    if (floorNumber == 4) return "Floor 4";
-    if (floorNumber == 5) return "Floor 5";
+    if (f === "0") return "Basement";
+    if (f === "1") return "Floor 1";
+    if (f === "2") return "Floor 2";
+    if (f === "3") return "Floor 3";
+    if (f === "4") return "Floor 4";
+    if (f === "5") return "Floor 5";
     return "Floor 2";
   };
 
@@ -142,7 +147,7 @@ function LibraryFloorMap() {
 
   useEffect(() => {
     setCurrentPath(useElevator ? elevatorPath : stairsPath);
-  }, [wayfindClicked, useElevator]);
+  }, [wayfindClicked, useElevator, stairsPath, elevatorPath]);
 
   const navigate = useNavigate();
 
@@ -274,18 +279,21 @@ function LibraryFloorMap() {
 
 
           <button
-            className={`sidebar-box ${activeFloor === "Floor 2" ? "active" : ""} ${destinationFloor === "Floor 2" ? "flash-destination" : ""}`}
+            className={`sidebar-box ${activeFloor === "Floor 2" ? "active" : ""} ${
+              destinationFloor === "Floor 2" && activeFloor !== "Floor 2" ? "flash-destination" : ""}`}
             onClick={() => { setActiveFloor("Floor 2") }}
           >Floor 2</button>
 
 
           <button
-            className={`sidebar-box ${activeFloor === "Floor 1" ? "active" : ""} ${destinationFloor === "Floor 1" ? "flash-destination" : ""}`}
+            className={`sidebar-box ${activeFloor === "Floor 1" ? "active" : ""} ${
+              destinationFloor === "Floor 1" ? "flash-destination" : ""}`}
             onClick={() => { setActiveFloor("Floor 1") }}
           >Floor 1</button>
 
           <button
-            className={`sidebar-box ${activeFloor === "Basement" ? "active" : ""} ${destinationFloor === "Basement" ? "flash-destination" : ""}`}
+            className={`sidebar-box ${activeFloor === "Basement" ? "active" : ""} ${
+              destinationFloor === "Basement" && activeFloor !== "Basement" ? "flash-destination" : ""}`}
             onClick={() => { setActiveFloor("Basement") }}
           >Basement</button>
 
@@ -437,7 +445,24 @@ function LibraryFloorMap() {
                   zIndex: 10,
                 }}
                 title={location.name}
-              />
+              >{location.type === 'tablet' && (
+                <div style={{
+                position: 'absolute',
+                top: '10px',      // 15px below the red dot
+                left: '50%',
+                transform: 'translateX(-50%)',
+                fontSize: '15px',
+                fontWeight: 'bold',
+                color: 'red',
+                whiteSpace: 'nowrap',
+                backgroundColor: 'rgba(255, 255, 255, 0.8)', // Slight background to make it readable
+                padding: '2px 4px',
+                borderRadius: '4px'
+              }}>
+          You are here.
+          </div>
+        )}
+        </div>
             );
           })}
 
