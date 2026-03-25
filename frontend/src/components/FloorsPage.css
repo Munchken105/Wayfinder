@@ -7,6 +7,8 @@ html, body {
 .floor-container {
   display: flex;
   flex-direction: row;
+  align-items: flex-start;
+  gap: 0;
 }
 
 .sidebar {
@@ -22,8 +24,9 @@ html, body {
 }
 .Map-Content {
   flex-grow: 1;
-  padding: 10px;
+  padding: 0 10px 10px 0;
   position: relative;
+  min-width: 0;
 }
 
 .sidebar-heading {
@@ -31,11 +34,13 @@ html, body {
 }
 
 .sidebar-boxes {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
   padding: 20px;
   gap: 10px;
   width: 100%;
+  justify-items: stretch;
+  align-items: stretch;
 }
 
 .sidebar-box {
@@ -47,7 +52,10 @@ html, body {
   font-weight: 500;
   border: 1px solid #444;
   cursor: pointer;
-  flex: 1;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sidebar-box:hover {
@@ -62,10 +70,18 @@ html, body {
 
 .map_wrapper {
   position: relative;
-  display: inline-block;
+  display: block;
+  width: 100%;
+  max-width: 1063px;
   margin: 0;
   padding: 0;
   margin-top: 20px;
+}
+
+.libary-image {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .hotspot-marker {
@@ -104,7 +120,7 @@ html, body {
 
 .info-panel {
   position: absolute;
-  left: -250px; 
+  left: -304px; 
   width: 100%;
   max-width: 304px;
   height: calc(100% - 40px);
@@ -280,4 +296,126 @@ html, body {
 .flash-destination:not(.active) {
   animation: pulse-blue 1.5s infinite;
   border: 1px solid #000000;
+}
+
+.mobile-wayfind-panel {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .floor-container {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-height: auto;
+    border-width: 1px;
+  }
+
+  .sidebar-boxes {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .sidebar-box {
+    min-width: 0;
+  }
+
+  .back-button {
+    width: 100%;
+    margin: 8px 0 0 0;
+  }
+
+  .Map-Content {
+    padding: 6px;
+  }
+
+  .info-panel {
+    position: static;
+    left: auto;
+    width: 100%;
+    max-width: none;
+    height: auto;
+    border-right: none;
+    border: 1px solid #d1d5db;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    margin: 8px 0;
+    transform: none;
+  }
+
+  .info-panel.show,
+  .info-panel.collapsed {
+    left: auto;
+    transform: none;
+  }
+
+  .collapse-toggle {
+    display: none;
+  }
+
+  .room-name {
+    font-size: 1.4rem;
+  }
+
+  .room-description {
+    font-size: 1rem;
+  }
+
+  .wayfind-button {
+    margin: 18px auto;
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+
+  .qr-container {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .hotspot {
+    pointer-events: none;
+    background: transparent;
+    border: none;
+  }
+
+  .info-panel {
+    display: none;
+  }
+
+  .search-bar-container {
+    display: none;
+  }
+
+  .sidebar-heading {
+    margin: 10px 0 2px;
+    font-size: 1.1rem;
+  }
+
+  .sidebar-box {
+    min-width: 0;
+    padding: 8px;
+    font-size: 0.95rem;
+  }
+
+  .toggle-boxes {
+    flex-wrap: wrap;
+  }
+
+  .back-button {
+    display: none;
+  }
+
+  .mobile-wayfind-panel {
+    display: block;
+    margin-top: 12px;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+  }
+
 }

@@ -1,8 +1,8 @@
 import "./FloorsPage.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef, type SyntheticEvent } from "react";
 import SearchBar from "./SearchBar";
 import WayfindPage from "./WayfindPage";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 import BasementImg from "../assets/Basementlayout.jpg";
 import floor1Img from "../assets/Floor1layout.jpg";
@@ -12,8 +12,11 @@ import floor4Img from "../assets/Floor4layout.jpg";
 import floor5Img from "../assets/Floor5layout.jpg";
 
 function LibraryFloorMap() {
+  const [searchParams] = useSearchParams();
+  const deepLinkedRoom = (searchParams.get("q") || "").trim();
+  const deepLinkedMode = (searchParams.get("mode") || "stairs").trim().toLowerCase();
+  const hasHandledDeepLink = useRef("");
 
-  const [lastClick, setLastClick] = useState<{ x: number; y: number } | null>(null); // this is for knowing where to set up boxes
   const [selectedRoom, setSelectedRoom] = useState<{ name: string; description: string; id: string } | null>(null); // this is for making the clicking of the rooms useful
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [wayfindClicked, setWayfindClicked] = useState(false);
@@ -25,6 +28,7 @@ function LibraryFloorMap() {
   const [elevatorPath, setElevatorPath] = useState<any[]>([]); // Store the elevator path
 
   const [currentPath, setCurrentPath] = useState<any[]>([]); // Store nodes in the current navigation path
+  const [mapSize, setMapSize] = useState({ width: 1063, height: 706 });
 
   type Room = {
     id: string
@@ -58,12 +62,12 @@ function LibraryFloorMap() {
   }, []);
 
   // Fetch the path for both stairs and elevator when a room is selected for wayfinding
-  const handleWayfind = (roomName: string) => {
+  const handleWayfind = useCallback((roomName: string) => {
     setWayfindClicked(false); 
     setCurrentPath([]);
     setStairsPath([]);
     setElevatorPath([]);
-
+    
     setActiveFloor("Floor 2");
 
     Promise.all([
@@ -83,26 +87,31 @@ function LibraryFloorMap() {
       setWayfindClicked(true);
     })
     .catch(err => console.error("Failed to fetch path:", err));
-  };
+  }, []);
 
-  const handleImageClick = (e: React.MouseEvent<HTMLImageElement>) => {
-    const x = e.nativeEvent.offsetX;
-    const y = e.nativeEvent.offsetY;
-    // console.log(`Clicked at: ${x}, ${y}`); // Only for debugging purposes
-    setLastClick({ x, y });
+  const handleImageClick = () => {
+    // no-op (kept so onClick handlers remain stable)
   };
 
   //------------------------------------------Initializing the Map-----------------------------------------------------
 
   type FloorKey = keyof typeof floors;
   const [activeFloor, setActiveFloor] = useState<FloorKey>("Floor 2");
+
+  const handleMapLoad = (event: SyntheticEvent<HTMLImageElement>) => {
+    const img = event.currentTarget;
+    if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+      setMapSize({ width: img.naturalWidth, height: img.naturalHeight });
+    }
+  };
+
   const ChosenMapImage = () => {
-    if (activeFloor == "Basement") return <img src={BasementImg} className="libary-image" onClick={handleImageClick} />;
-    if (activeFloor == "Floor 1") return <img src={floor1Img} className="libary-image" onClick={handleImageClick} />;
-    if (activeFloor == "Floor 2") return <img src={floor2Img} className="libary-image" onClick={handleImageClick} />;
-    if (activeFloor == "Floor 3") return <img src={floor3Img} className="libary-image" onClick={handleImageClick} />;
-    if (activeFloor == "Floor 4") return <img src={floor4Img} className="libary-image" onClick={handleImageClick} />;
-    if (activeFloor == "Floor 5") return <img src={floor5Img} className="libary-image" onClick={handleImageClick} />;
+    if (activeFloor == "Basement") return <img src={BasementImg} className="libary-image" onClick={handleImageClick} onLoad={handleMapLoad} />;
+    if (activeFloor == "Floor 1") return <img src={floor1Img} className="libary-image" onClick={handleImageClick} onLoad={handleMapLoad} />;
+    if (activeFloor == "Floor 2") return <img src={floor2Img} className="libary-image" onClick={handleImageClick} onLoad={handleMapLoad} />;
+    if (activeFloor == "Floor 3") return <img src={floor3Img} className="libary-image" onClick={handleImageClick} onLoad={handleMapLoad} />;
+    if (activeFloor == "Floor 4") return <img src={floor4Img} className="libary-image" onClick={handleImageClick} onLoad={handleMapLoad} />;
+    if (activeFloor == "Floor 5") return <img src={floor5Img} className="libary-image" onClick={handleImageClick} onLoad={handleMapLoad} />;
 
     return <div className="Selection">Select a Floor</div>
   };
@@ -131,19 +140,22 @@ function LibraryFloorMap() {
     return "Floor 2";
   };
 
-  const [pendingRoom, setPendingRoom] = useState<string | null>(null);
+  const handleSearchSelect = (room: string) => {
+    const floor = floorFromRoom(room) as keyof typeof floors;
+    setActiveFloor(floor);
 
-  useEffect(() => {
+    const roomNumber = room.split(" ")[0];
+    const normalizedRoomName = `Room ${roomNumber}`;
+    const roomObj = floors[floor].find(r => r.name === normalizedRoomName);
 
-    if (activeFloor && pendingRoom) {
-      const roomObj = floors[activeFloor].find(r => r.name === pendingRoom);
-      if (roomObj) {
-        setSelectedRoom(roomObj);
-      }
-      setPendingRoom(null); // clear pending
+    if (roomObj) {
+      setSelectedRoom(roomObj);
+      setWayfindClicked(false);
+      setCurrentPath([]);
+      setIsCollapsed(false);
+      setUseElevator(false);
     }
-
-  }, [pendingRoom]);
+  };
 
   useEffect(() => {
     setCurrentPath(useElevator ? elevatorPath : stairsPath);
@@ -252,6 +264,25 @@ function LibraryFloorMap() {
     "Floor 5": fifthFloorRooms
   };
 
+  useEffect(() => {
+    if (!deepLinkedRoom || hasHandledDeepLink.current === deepLinkedRoom) return;
+
+    const floor = floorFromRoom(deepLinkedRoom) as keyof typeof floors;
+    setActiveFloor(floor);
+
+    const roomObj =
+      floors[floor].find(r => r.name.toLowerCase() === deepLinkedRoom.toLowerCase()) ??
+      floors[floor].find(r => r.name.toLowerCase().includes(deepLinkedRoom.toLowerCase()));
+
+    if (!roomObj) return;
+
+    setSelectedRoom(roomObj);
+    setIsCollapsed(false);
+    setUseElevator(deepLinkedMode === "elevator");
+    handleWayfind(roomObj.name);
+    hasHandledDeepLink.current = deepLinkedRoom;
+  }, [deepLinkedRoom, deepLinkedMode, handleWayfind]);
+
   const destinationFloor =(wayfindClicked && currentPath.length > 0)
     ? floorNumToString(currentPath[currentPath.length - 1].floor)
     : null;
@@ -302,53 +333,46 @@ function LibraryFloorMap() {
       </div>
 
       <div className="Map-Content">
-        <div className="searchbar-container">
+        {!deepLinkedRoom && (
           <SearchBar
             placeholder="Search for Librarians"
-            onSelectResult={room => {
-              const floor = floorFromRoom(room) as keyof typeof floors;
-              setActiveFloor(floor);
-              const roomNumber = room.split(" ")[0];
-              setPendingRoom("Room " + roomNumber); // will trigger useEffect
-              setWayfindClicked(false);
-              setIsCollapsed(false);
-            }}
+            onSelectResult={handleSearchSelect}
           />
-          {selectedRoom && (
-            <div className={`info-panel show ${isCollapsed ? "collapsed" : ""}`}>
+        )}
 
-              {/* Collapse / Expand toggle */}
-              <button
-                className="collapse-toggle"
-                onClick={() => setIsCollapsed(prev => !prev)}
-                aria-expanded={!isCollapsed}
-                aria-label={isCollapsed ? "Expand panel" : "Collapse panel"}
-              >
-                {isCollapsed ? ">" : "<"}
-              </button>
+        {selectedRoom && (
+          <div className={`info-panel show ${isCollapsed ? "collapsed" : ""}`}>
 
-              {!isCollapsed && (
-                <>
-                  <button className="close-btn" onClick={() => { setSelectedRoom(null); setWayfindClicked(false); setCurrentPath([]); setIsCollapsed(false); setUseElevator(false);}}>Close</button>
-                  <h3 className="room-name">{selectedRoom.name}</h3>
-                  <p className="room-description">{selectedRoom.description}</p>
+            {/* Collapse / Expand toggle */}
+            <button
+              className="collapse-toggle"
+              onClick={() => setIsCollapsed(prev => !prev)}
+              aria-expanded={!isCollapsed}
+              aria-label={isCollapsed ? "Expand panel" : "Collapse panel"}
+            >
+              {isCollapsed ? ">" : "<"}
+            </button>
 
-                  {!wayfindClicked && <button className="wayfind-button" onClick={() => handleWayfind(selectedRoom.name)}>Wayfind</button>}
+            {!isCollapsed && (
+              <>
+                <button className="close-btn" onClick={() => { setSelectedRoom(null); setWayfindClicked(false); setCurrentPath([]); setIsCollapsed(false); setUseElevator(false);}}>Close</button>
+                <h3 className="room-name">{selectedRoom.name}</h3>
+                <p className="room-description">{selectedRoom.description}</p>
 
-                  {
-                    wayfindClicked &&
-                    <WayfindPage
-                      room={selectedRoom.name}
-                      useElevator={useElevator}
-                      setUseElevator={setUseElevator}
-                    />
-                  }
-                </>
-              )}
-            </div>
-          )}
+                {!wayfindClicked && <button className="wayfind-button" onClick={() => handleWayfind(selectedRoom.name)}>Wayfind</button>}
 
-        </div>
+                {
+                  wayfindClicked &&
+                  <WayfindPage
+                    room={selectedRoom.name}
+                    useElevator={useElevator}
+                    setUseElevator={setUseElevator}
+                  />
+                }
+              </>
+            )}
+          </div>
+        )}
         <div className="map_wrapper">
           {ChosenMapImage()}
 
@@ -368,10 +392,10 @@ function LibraryFloorMap() {
           key={room.id}
           className={`hotspot ${selectedRoom?.id === room.id ? "active" : ""}`}
           style={{
-            top: `${room.top}px`,
-            left: `${room.left}px`,
-            width: `${room.width}px`,
-            height: `${room.height}px`,
+            top: `${(room.top / mapSize.height) * 100}%`,
+            left: `${(room.left / mapSize.width) * 100}%`,
+            width: `${(room.width / mapSize.width) * 100}%`,
+            height: `${(room.height / mapSize.height) * 100}%`,
             position: "absolute",
             clipPath: room.clipPath ? room.clipPath : undefined,
           }}
@@ -381,6 +405,8 @@ function LibraryFloorMap() {
         {/* SVG lines connecting path nodes */}
         {wayfindClicked && currentPath.length > 0 && (
           <svg
+            viewBox={`0 0 ${mapSize.width} ${mapSize.height}`}
+            preserveAspectRatio="xMidYMid meet"
             style={{
               position: "absolute",
               top: 0,
@@ -435,8 +461,8 @@ function LibraryFloorMap() {
                 key={`dot-${node.id}`}
                 style={{
                   position: "absolute",
-                  left: `${location.coord[0]}px`,
-                  top: `${location.coord[1]}px`,
+                  left: `${(location.coord[0] / mapSize.width) * 100}%`,
+                  top: `${(location.coord[1] / mapSize.height) * 100}%`,
                   width: "10px",
                   height: "10px",
                   backgroundColor: "red",
@@ -467,6 +493,16 @@ function LibraryFloorMap() {
           })}
 
         </div>
+
+        {selectedRoom && wayfindClicked && (
+          <div className="mobile-wayfind-panel">
+            <WayfindPage
+              room={selectedRoom.name}
+              useElevator={useElevator}
+              setUseElevator={setUseElevator}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
