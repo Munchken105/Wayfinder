@@ -745,7 +745,7 @@ app.get("/api/navigation/from/:start/to/:end", (req: Request, res: Response) => 
         id: nodeId,
         name: node?.name || 'Unknown',
         type: node?.type || 'unknown',
-        floor: node?.floor || 2,
+        floor: node?.floor ?? 2,
         coord: node?.coord,
         x: node?.coord ? node.coord[0] : undefined,
         y: node?.coord ? node.coord[1] : undefined
@@ -777,7 +777,7 @@ app.get("/api/navigation/room202-to-b20", (req: Request, res: Response) => {
         id: nodeId,
         name: node?.name || 'Unknown',
         type: node?.type || 'unknown',
-        floor: node?.floor || 2,
+        floor: node?.floor ?? 2,
         coord: node?.coord
 
       };
