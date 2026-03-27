@@ -33,6 +33,7 @@ function LibraryFloorMap() {
   /** Pixel size of the map image as laid out — hotspots/SVG use this box (not the outer letterboxed wrapper). */
   const [mapOverlayPx, setMapOverlayPx] = useState<{ w: number; h: number } | null>(null);
   const mapImageRef = useRef<HTMLImageElement | null>(null);
+  const mapWrapperRef = useRef<HTMLDivElement | null>(null);
 
   type Room = {
     id: string
@@ -115,21 +116,35 @@ function LibraryFloorMap() {
   type FloorKey = keyof typeof floors;
   const [activeFloor, setActiveFloor] = useState<FloorKey>("Floor 2");
 
-  const syncMapOverlaySize = useCallback(() => {
+  /** Size map_inner from wrapper × natural pixels (object-contain math). Avoids measuring the img after layout, which fed back through max-height % and made scale jumpy on short viewports (e.g. 1024×600). */
+  const fitMapToWrapper = useCallback(() => {
+    if (isMobileLayout) return;
+    const wrap = mapWrapperRef.current;
     const img = mapImageRef.current;
-    if (!img || !img.naturalWidth) return;
-    const { width, height } = img.getBoundingClientRect();
-    if (width > 0 && height > 0) {
-      setMapOverlayPx({ w: width, h: height });
-    }
-  }, []);
+    if (!wrap || !img) return;
+    const natW = img.naturalWidth;
+    const natH = img.naturalHeight;
+    if (!natW || !natH) return;
+
+    const { width: cw, height: ch } = wrap.getBoundingClientRect();
+    if (!(cw > 0 && ch > 0)) return;
+
+    const scale = Math.min(cw / natW, ch / natH);
+    const w = natW * scale;
+    const h = natH * scale;
+
+    setMapOverlayPx((prev) => {
+      if (prev && Math.abs(prev.w - w) < 0.25 && Math.abs(prev.h - h) < 0.25) return prev;
+      return { w, h };
+    });
+  }, [isMobileLayout]);
 
   const handleMapLoad = (event: SyntheticEvent<HTMLImageElement>) => {
     const img = event.currentTarget;
     if (img.naturalWidth > 0 && img.naturalHeight > 0) {
       setMapSize({ width: img.naturalWidth, height: img.naturalHeight });
     }
-    requestAnimationFrame(() => syncMapOverlaySize());
+    requestAnimationFrame(() => fitMapToWrapper());
   };
 
   /* Reset overlay box before paint so the next floor isn’t measured inside the previous floor’s pixels. */
@@ -138,15 +153,16 @@ function LibraryFloorMap() {
   }, [activeFloor]);
 
   useEffect(() => {
-    const img = mapImageRef.current;
-    if (!img) return;
-    const ro = new ResizeObserver(() => {
-      requestAnimationFrame(() => syncMapOverlaySize());
-    });
-    ro.observe(img);
-    syncMapOverlaySize();
+    if (isMobileLayout) return;
+    const wrap = mapWrapperRef.current;
+    if (!wrap) return;
+
+    const run = () => requestAnimationFrame(() => fitMapToWrapper());
+    const ro = new ResizeObserver(run);
+    ro.observe(wrap);
+    run();
     return () => ro.disconnect();
-  }, [activeFloor, syncMapOverlaySize, isMobileLayout]);
+  }, [activeFloor, fitMapToWrapper, isMobileLayout]);
 
   const ChosenMapImage = () => {
     const imgProps = {
@@ -423,7 +439,7 @@ function LibraryFloorMap() {
             )}
           </div>
         )}
-        <div className="map_wrapper">
+        <div className="map_wrapper" ref={mapWrapperRef}>
           <div
             key={activeFloor}
             className="map_inner"
