@@ -29,6 +29,10 @@ function LibraryFloorMap() {
 
   const [currentPath, setCurrentPath] = useState<any[]>([]); // Store nodes in the current navigation path
   const [mapSize, setMapSize] = useState({ width: 1063, height: 706 });
+  const [isMobileLayout, setIsMobileLayout] = useState(false);
+  /** Pixel size of the map image as laid out — hotspots/SVG use this box (not the outer letterboxed wrapper). */
+  const [mapOverlayPx, setMapOverlayPx] = useState<{ w: number; h: number } | null>(null);
+  const mapImageRef = useRef<HTMLImageElement | null>(null);
 
   type Room = {
     id: string
@@ -59,6 +63,19 @@ function LibraryFloorMap() {
         }
       })
       .catch(err => console.error('Failed to fetch nodes:', err));
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 900px)");
+    const updateLayoutMode = (event: MediaQueryList | MediaQueryListEvent) => {
+      setIsMobileLayout(event.matches);
+    };
+
+    updateLayoutMode(mediaQuery);
+    mediaQuery.addEventListener("change", updateLayoutMode);
+    return () => {
+      mediaQuery.removeEventListener("change", updateLayoutMode);
+    };
   }, []);
 
   // Fetch the path for both stairs and elevator when a room is selected for wayfinding
@@ -98,20 +115,51 @@ function LibraryFloorMap() {
   type FloorKey = keyof typeof floors;
   const [activeFloor, setActiveFloor] = useState<FloorKey>("Floor 2");
 
+  const syncMapOverlaySize = useCallback(() => {
+    const img = mapImageRef.current;
+    if (!img || !img.naturalWidth) return;
+    const { width, height } = img.getBoundingClientRect();
+    if (width > 0 && height > 0) {
+      setMapOverlayPx({ w: width, h: height });
+    }
+  }, []);
+
   const handleMapLoad = (event: SyntheticEvent<HTMLImageElement>) => {
     const img = event.currentTarget;
     if (img.naturalWidth > 0 && img.naturalHeight > 0) {
       setMapSize({ width: img.naturalWidth, height: img.naturalHeight });
     }
+    requestAnimationFrame(() => syncMapOverlaySize());
   };
 
+  useEffect(() => {
+    setMapOverlayPx(null);
+  }, [activeFloor]);
+
+  useEffect(() => {
+    const img = mapImageRef.current;
+    if (!img) return;
+    const ro = new ResizeObserver(() => {
+      requestAnimationFrame(() => syncMapOverlaySize());
+    });
+    ro.observe(img);
+    syncMapOverlaySize();
+    return () => ro.disconnect();
+  }, [activeFloor, syncMapOverlaySize, isMobileLayout]);
+
   const ChosenMapImage = () => {
-    if (activeFloor == "Basement") return <img src={BasementImg} className="libary-image" onClick={handleImageClick} onLoad={handleMapLoad} />;
-    if (activeFloor == "Floor 1") return <img src={floor1Img} className="libary-image" onClick={handleImageClick} onLoad={handleMapLoad} />;
-    if (activeFloor == "Floor 2") return <img src={floor2Img} className="libary-image" onClick={handleImageClick} onLoad={handleMapLoad} />;
-    if (activeFloor == "Floor 3") return <img src={floor3Img} className="libary-image" onClick={handleImageClick} onLoad={handleMapLoad} />;
-    if (activeFloor == "Floor 4") return <img src={floor4Img} className="libary-image" onClick={handleImageClick} onLoad={handleMapLoad} />;
-    if (activeFloor == "Floor 5") return <img src={floor5Img} className="libary-image" onClick={handleImageClick} onLoad={handleMapLoad} />;
+    const imgProps = {
+      ref: mapImageRef,
+      className: "libary-image",
+      onClick: handleImageClick,
+      onLoad: handleMapLoad,
+    };
+    if (activeFloor == "Basement") return <img src={BasementImg} {...imgProps} alt="" />;
+    if (activeFloor == "Floor 1") return <img src={floor1Img} {...imgProps} alt="" />;
+    if (activeFloor == "Floor 2") return <img src={floor2Img} {...imgProps} alt="" />;
+    if (activeFloor == "Floor 3") return <img src={floor3Img} {...imgProps} alt="" />;
+    if (activeFloor == "Floor 4") return <img src={floor4Img} {...imgProps} alt="" />;
+    if (activeFloor == "Floor 5") return <img src={floor5Img} {...imgProps} alt="" />;
 
     return <div className="Selection">Select a Floor</div>
   };
@@ -333,7 +381,7 @@ function LibraryFloorMap() {
       </div>
 
       <div className="Map-Content">
-        {!deepLinkedRoom && (
+        {!deepLinkedRoom && !isMobileLayout && (
           <SearchBar
             placeholder="Search for Librarians"
             onSelectResult={handleSearchSelect}
@@ -374,6 +422,14 @@ function LibraryFloorMap() {
           </div>
         )}
         <div className="map_wrapper">
+          <div
+            className="map_inner"
+            style={{
+              position: "relative",
+              width: mapOverlayPx ? `${mapOverlayPx.w}px` : "100%",
+              height: mapOverlayPx ? `${mapOverlayPx.h}px` : "auto",
+            }}
+          >
           {ChosenMapImage()}
 
           {/*-----------------------------------------USE TO FIND COORDINATE (FOR DEBUGGING ONLY) -------------------------------------------*/}
@@ -492,6 +548,7 @@ function LibraryFloorMap() {
             );
           })}
 
+        </div>
         </div>
 
         {selectedRoom && wayfindClicked && (
