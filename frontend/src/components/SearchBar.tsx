@@ -33,6 +33,7 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const keyboardRef = useRef<{ setInput: (value: string) => void } | null>(null);
   const touchUi = useTouchUi();
@@ -84,6 +85,7 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setResults([]);
         setSearched(false);
+        setKeyboardVisible(false);
       }
     }
 
@@ -105,6 +107,7 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
           autoComplete="off"
           autoCorrect="off"
           spellCheck={false}
+          onFocus={() => setKeyboardVisible(true)}
           onChange={(e) => setQuery(e.target.value.slice(0, MAX_QUERY_LENGTH))}
         />
         <button type="submit" className="search-bar-button">
@@ -112,7 +115,7 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
         </button>
       </form>
 
-      {touchUi && (
+      {touchUi && keyboardVisible && (
         <div
           className="search-bar-virtual-keyboard"
           onMouseDown={(e) => e.preventDefault()}
@@ -144,6 +147,7 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
                   }
                   setResults([]);
                   setSearched(false);
+                  setKeyboardVisible(false);
                 }}
               >
                 <strong>
