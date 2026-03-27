@@ -2,58 +2,86 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  padding: 32px;
-  background: #eff4fb; /* light UB-friendly background */
+  /* One viewport tall — avoids “page scroll” on short kiosk screens (e.g. 1024×600) */
+  height: 100dvh;
+  max-height: 100dvh;
+  box-sizing: border-box;
+  padding: clamp(8px, 2vmin, 28px);
+  overflow: hidden;
+  background: #eff4fb;
 }
 
 /* Device frame wrapper (matches mock with a thick border box around the UI) */
 .device-frame {
-  width: min(920px, 95vw);
-  background: #0f1e2e; /* deep navy shell */
+  width: min(920px, calc(100vw - 2 * clamp(8px, 2vmin, 28px)));
+  max-height: 100%;
+  background: #0f1e2e;
   border-radius: 16px;
-  padding: 16px;
+  padding: clamp(8px, 1.5vmin, 16px);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
-/* White screen like the mock */
+/* White screen: height-first layout so image scales down to fit, not force vertical scroll */
 .screen {
   background: #ffffff;
   border-radius: 10px;
-  min-height: 540px;
-  padding: 40px 36px 56px;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 100%;
+  padding: clamp(12px, 2.2vh, 32px) clamp(14px, 3vw, 36px) clamp(14px, 2.5vh, 40px);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
+  gap: clamp(6px, 1.2vh, 16px);
   border: 2px solid #e3eaf6;
-}
-
-.lockwood-library-image {
-  width: min(560px, 100%);
-  height: auto;
-  object-fit: cover;
-  border-radius: 6px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  margin-top: 8px;
+  overflow: hidden;
 }
 
 .home-title {
-  margin: 28px 0 22px;
-  font-size: clamp(1.6rem, 3.6vw, 2.2rem);
+  flex: 0 0 auto;
+  margin: 0;
+  font-size: clamp(1.15rem, 2.8vh, 2.1rem);
   font-weight: 650;
   letter-spacing: 0.2px;
-  color: #005BBB; /* UB Blue */
+  color: #005bbb;
   text-align: center;
+  line-height: 1.15;
+}
+
+/* Fills remaining vertical space; image is limited by height (kiosk) / width (narrow) */
+.home-hero-image-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lockwood-library-image {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .start-button {
-  background: #005BBB; /* UB Blue */
+  flex: 0 0 auto;
+  background: #005bbb;
   color: #ffffff;
   border: none;
-  padding: 14px 56px;
+  padding: clamp(10px, 1.8vh, 14px) clamp(36px, 8vw, 56px);
   border-radius: 6px;
-  font-size: 1.05rem;
+  font-size: clamp(0.95rem, 1.8vh, 1.05rem);
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 8px 18px rgba(0, 91, 187, 0.35);
@@ -61,7 +89,7 @@
 }
 
 .start-button:hover {
-  background: #004799; /* darker UB Blue */
+  background: #004799;
   transform: translateY(-1px);
   box-shadow: 0 12px 24px rgba(0, 71, 153, 0.45);
 }
@@ -76,12 +104,14 @@
   outline-offset: 3px;
 }
 
+/* Small phones: width-first hero (unchanged intent), still no document scroll on home */
 @media (max-width: 640px) {
   .device-frame {
-    padding: 12px;
     border-radius: 12px;
+    padding: 10px;
   }
+
   .screen {
-    padding: 24px 16px 40px;
+    padding: 16px 14px 24px;
   }
 }

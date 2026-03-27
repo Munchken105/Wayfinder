@@ -11,12 +11,14 @@ function HomePage() {
     <div className="home-page">
       <div className="device-frame">
         <div className="screen">
-          <img
-            src={libraryImageUrl}
-            alt="Lockwood Library"
-            className="lockwood-library-image"
-          />
           <h1 className="home-title">Lockwood Library Wayfinder</h1>
+          <div className="home-hero-image-wrap">
+            <img
+              src={libraryImageUrl}
+              alt="Lockwood Library"
+              className="lockwood-library-image"
+            />
+          </div>
 
           <button className="start-button" onClick={() => navigate("/floors")}>
             Start
