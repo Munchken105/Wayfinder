@@ -28,6 +28,16 @@ function useTouchUi(): boolean {
   return touchUi;
 }
 
+/** Restrict in-page keyboard to the local kiosk session on the Pi. */
+function useLocalKioskHost(): boolean {
+  const [isLocalKioskHost, setIsLocalKioskHost] = useState(false);
+  useEffect(() => {
+    const host = window.location.hostname;
+    setIsLocalKioskHost(host === "localhost" || host === "127.0.0.1");
+  }, []);
+  return isLocalKioskHost;
+}
+
 export default function SearchBar({ placeholder = "Search...", onResults, onSelectResult }: SearchBarProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -38,6 +48,8 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
   const inputRef = useRef<HTMLInputElement>(null);
   const keyboardRef = useRef<{ setInput: (value: string) => void } | null>(null);
   const touchUi = useTouchUi();
+  const isLocalKioskHost = useLocalKioskHost();
+  const showVirtualKeyboard = touchUi && isLocalKioskHost;
 
   const MAX_QUERY_LENGTH = 40;
 
@@ -111,7 +123,7 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
           className="search-bar-input"
           placeholder={placeholder}
           value={query}
-          inputMode={touchUi ? "none" : undefined}
+          inputMode={showVirtualKeyboard ? "none" : undefined}
           autoComplete="off"
           autoCorrect="off"
           spellCheck={false}
@@ -131,7 +143,7 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
         </button>
       </form>
 
-      {touchUi && keyboardVisible && (
+      {showVirtualKeyboard && keyboardVisible && (
         <div
           className="search-bar-virtual-keyboard"
           onMouseDown={(e) => e.preventDefault()}
