@@ -1,5 +1,5 @@
 import "./FloorsPage.css";
-import { useState, useEffect, useCallback, useRef, type SyntheticEvent } from "react";
+import { useState, useEffect, useLayoutEffect, useCallback, useRef, type SyntheticEvent } from "react";
 import SearchBar from "./SearchBar";
 import WayfindPage from "./WayfindPage";
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -132,7 +132,8 @@ function LibraryFloorMap() {
     requestAnimationFrame(() => syncMapOverlaySize());
   };
 
-  useEffect(() => {
+  /* Reset overlay box before paint so the next floor isn’t measured inside the previous floor’s pixels. */
+  useLayoutEffect(() => {
     setMapOverlayPx(null);
   }, [activeFloor]);
 
@@ -149,6 +150,7 @@ function LibraryFloorMap() {
 
   const ChosenMapImage = () => {
     const imgProps = {
+      key: activeFloor,
       ref: mapImageRef,
       className: "libary-image",
       onClick: handleImageClick,
@@ -423,6 +425,7 @@ function LibraryFloorMap() {
         )}
         <div className="map_wrapper">
           <div
+            key={activeFloor}
             className="map_inner"
             style={{
               position: "relative",
