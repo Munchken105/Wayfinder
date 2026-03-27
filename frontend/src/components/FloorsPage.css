@@ -308,6 +308,30 @@ html, body {
   margin-top: 3rem;
 }
 
+.qr-code-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 280px;
+  text-align: center;
+}
+
+.qr-callout {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: #374151;
+}
+
+.qr-callout strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.98rem;
+  color: #111827;
+  font-weight: 650;
+}
+
 .waypoint-line {
   stroke-dasharray: 18;
   animation: dash-animation 2s linear infinite; /*Conveyor Belt Effect*/

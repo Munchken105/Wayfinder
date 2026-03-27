@@ -21,9 +21,12 @@ export default function generateQRCode({ room, useElevator }: { room: string; us
     const link = baseURL + `/floors?q=${encodeURIComponent(room)}&mode=${mode}`;
 
     return (
-        <QRCode
-            value={link}
-            size={150}
-        />
+        <div className="qr-code-block">
+            <p className="qr-callout">
+                <strong>Continue on your phone</strong>
+                Scan to open this route in Wayfinder—take turn-by-turn directions with you while you walk.
+            </p>
+            <QRCode value={link} size={150} />
+        </div>
     );
 }
