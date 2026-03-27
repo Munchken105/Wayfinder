@@ -84,6 +84,44 @@ html, body {
   display: block;
 }
 
+/* Desktop: fit map to available viewport height (sidebar + search). Mobile stays width-first below. */
+@media (min-width: 901px) {
+  .floor-container {
+    align-items: stretch;
+    min-height: 100vh;
+  }
+
+  .Map-Content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    max-height: 100vh;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+
+  .map_wrapper {
+    flex: 1 1 auto;
+    min-height: 0;
+    margin-top: 12px;
+    max-width: none;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .map_wrapper .libary-image {
+    width: auto;
+    height: auto;
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+  }
+}
+
 .hotspot-marker {
   position: absolute;
   width: 6px;
@@ -306,6 +344,7 @@ html, body {
   .floor-container {
     flex-direction: column;
     gap: 8px;
+    min-height: auto;
   }
 
   .sidebar {
@@ -331,6 +370,27 @@ html, body {
 
   .Map-Content {
     padding: 6px;
+    display: block;
+    max-height: none;
+    overflow: visible;
+    flex: none;
+  }
+
+  .map_wrapper {
+    flex: none;
+    min-height: 0;
+    display: block;
+    max-width: 1063px;
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .map_wrapper .libary-image {
+    width: 100%;
+    height: auto;
+    max-height: none;
+    max-width: none;
+    object-fit: initial;
   }
 
   .info-panel {

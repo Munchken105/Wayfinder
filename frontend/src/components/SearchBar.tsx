@@ -155,6 +155,8 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
             }}
             onChange={onKeyboardChange}
             onKeyPress={onKeyboardKeyPress}
+            useMouseEvents
+            clickOnMouseDown={false}
             theme="hg-theme-default hg-layout-default"
             physicalKeyboardHighlight
             physicalKeyboardHighlightTextColor="#ffffff"
