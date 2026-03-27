@@ -35,6 +35,7 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
   const [searched, setSearched] = useState(false);
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const keyboardRef = useRef<{ setInput: (value: string) => void } | null>(null);
   const touchUi = useTouchUi();
 
@@ -73,6 +74,8 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
   const onKeyboardKeyPress = (button: string) => {
     if (button === "{enter}") {
       void runSearch();
+      setKeyboardVisible(false);
+      inputRef.current?.blur();
     }
   };
 
@@ -81,7 +84,7 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
   }, [query]);
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    function handleInteractionOutside(event: Event) {
       if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         setResults([]);
         setSearched(false);
@@ -89,9 +92,13 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("pointerdown", handleInteractionOutside);
+    document.addEventListener("touchstart", handleInteractionOutside);
+    document.addEventListener("mousedown", handleInteractionOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("pointerdown", handleInteractionOutside);
+      document.removeEventListener("touchstart", handleInteractionOutside);
+      document.removeEventListener("mousedown", handleInteractionOutside);
     };
   }, []);
 
@@ -99,6 +106,7 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
     <div className="search-bar-container" ref={containerRef}>
       <form onSubmit={handleSearch} className="search-bar-form">
         <input
+          ref={inputRef}
           type="text"
           className="search-bar-input"
           placeholder={placeholder}
@@ -108,6 +116,14 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
           autoCorrect="off"
           spellCheck={false}
           onFocus={() => setKeyboardVisible(true)}
+          onBlur={() => {
+            window.setTimeout(() => {
+              const active = document.activeElement;
+              if (!containerRef.current?.contains(active)) {
+                setKeyboardVisible(false);
+              }
+            }, 0);
+          }}
           onChange={(e) => setQuery(e.target.value.slice(0, MAX_QUERY_LENGTH))}
         />
         <button type="submit" className="search-bar-button">
