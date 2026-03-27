@@ -7,6 +7,28 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* In-app virtual keyboard (touch / Pi kiosk); simple-keyboard base theme loaded in TSX */
+.search-bar-virtual-keyboard {
+  margin-top: 10px;
+  max-width: 100%;
+  touch-action: manipulation;
+}
+
+.search-bar-virtual-keyboard .simple-keyboard {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.search-bar-virtual-keyboard .hg-button {
+  font-size: 0.95rem;
+}
+
+.search-bar-virtual-keyboard .hg-button.hg-blue {
+  background: #005bbb;
+  color: #fff;
+}
+
 /* Form and Input */
 .search-bar-form {
   display: flex;

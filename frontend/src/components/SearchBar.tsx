@@ -1,4 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import Keyboard from "react-simple-keyboard";
+import "simple-keyboard/build/css/index.css";
 import "./SearchBar.css";
 
 interface SearchResult {
@@ -15,26 +17,36 @@ interface SearchBarProps {
   onSelectResult: (room: string) => void;
 }
 
+/** True when a touch screen or coarse pointer is present (e.g. Pi kiosk). */
+function useTouchUi(): boolean {
+  const [touchUi, setTouchUi] = useState(false);
+  useEffect(() => {
+    const coarse = window.matchMedia("(pointer: coarse)").matches;
+    const touch = navigator.maxTouchPoints > 0;
+    setTouchUi(coarse || touch);
+  }, []);
+  return touchUi;
+}
+
 export default function SearchBar({ placeholder = "Search...", onResults, onSelectResult }: SearchBarProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const keyboardRef = useRef<{ setInput: (value: string) => void } | null>(null);
+  const touchUi = useTouchUi();
 
-  const MAX_QUERY_LENGTH = 40; // Max allowed characters for the search bar
+  const MAX_QUERY_LENGTH = 40;
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const runSearch = useCallback(async () => {
     const trimmedQuery = query.trim().slice(0, MAX_QUERY_LENGTH);
-
-    if (!query.trim()) return;
+    if (!trimmedQuery) return;
 
     setLoading(true);
     try {
       const res = await fetch(`/api/search?q=${encodeURIComponent(trimmedQuery)}`, {
-        headers: { "ngrok-skip-browser-warning": "true" }
+        headers: { "ngrok-skip-browser-warning": "true" },
       });
       const data = await res.json();
       const r = data.results || [];
@@ -46,7 +58,26 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
     } finally {
       setLoading(false);
     }
+  }, [query, onResults]);
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await runSearch();
   };
+
+  const onKeyboardChange = (input: string) => {
+    setQuery(input.slice(0, MAX_QUERY_LENGTH));
+  };
+
+  const onKeyboardKeyPress = (button: string) => {
+    if (button === "{enter}") {
+      void runSearch();
+    }
+  };
+
+  useEffect(() => {
+    keyboardRef.current?.setInput(query);
+  }, [query]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -70,12 +101,36 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
           className="search-bar-input"
           placeholder={placeholder}
           value={query}
-          onChange={(e) => setQuery(e.target.value.slice(0, MAX_QUERY_LENGTH))} // enforce limit while typing
+          inputMode={touchUi ? "none" : undefined}
+          autoComplete="off"
+          autoCorrect="off"
+          spellCheck={false}
+          onChange={(e) => setQuery(e.target.value.slice(0, MAX_QUERY_LENGTH))}
         />
         <button type="submit" className="search-bar-button">
           {loading ? "..." : "Search"}
         </button>
       </form>
+
+      {touchUi && (
+        <div
+          className="search-bar-virtual-keyboard"
+          onMouseDown={(e) => e.preventDefault()}
+          onPointerDown={(e) => e.preventDefault()}
+        >
+          <Keyboard
+            keyboardRef={(r) => {
+              keyboardRef.current = r;
+            }}
+            onChange={onKeyboardChange}
+            onKeyPress={onKeyboardKeyPress}
+            theme="hg-theme-default hg-layout-default"
+            physicalKeyboardHighlight
+            physicalKeyboardHighlightTextColor="#ffffff"
+            physicalKeyboardHighlightBgColor="#005bbb"
+          />
+        </div>
+      )}
 
       {searched && (
         <ul className="search-bar-results">
@@ -91,7 +146,9 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
                   setSearched(false);
                 }}
               >
-                <strong>{r.first_name} {r.last_name}</strong>
+                <strong>
+                  {r.first_name} {r.last_name}
+                </strong>
                 {r.room && <span> {r.room}</span>}
                 {r.subjects && <span> {r.subjects}</span>}
               </li>
