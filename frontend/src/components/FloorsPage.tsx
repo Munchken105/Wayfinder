@@ -12,8 +12,8 @@ import floor4Img from "../assets/Floor4layout.jpg";
 import floor5Img from "../assets/Floor5layout.jpg";
 
 function LibraryFloorMap() {
-  const INACTIVITY_WARNING_MS = 30_000;
-  const INACTIVITY_TIMEOUT_MS = 60_000;
+  const INACTIVITY_WARNING_MS = 60_000;
+  const INACTIVITY_TIMEOUT_MS = 90_000;
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -151,6 +151,12 @@ function LibraryFloorMap() {
   }, [INACTIVITY_TIMEOUT_MS, INACTIVITY_WARNING_MS, clearInactivityTimers, navigate]);
 
   useEffect(() => {
+    if (isMobileLayout) {
+      clearInactivityTimers();
+      setShowInactivityWarning(false);
+      return;
+    }
+
     const resetInactivity = () => {
       armInactivityTimers();
     };
@@ -175,7 +181,7 @@ function LibraryFloorMap() {
       }
       clearInactivityTimers();
     };
-  }, [armInactivityTimers, clearInactivityTimers]);
+  }, [armInactivityTimers, clearInactivityTimers, isMobileLayout]);
 
   useEffect(() => {
     if (!showInactivityWarning) return;
