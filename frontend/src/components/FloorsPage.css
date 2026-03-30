@@ -410,6 +410,53 @@ html, body {
   display: none;
 }
 
+.inactivity-timeout-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.62);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.inactivity-timeout-dialog {
+  width: min(92vw, 440px);
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 20px 18px;
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28);
+  text-align: center;
+}
+
+.inactivity-timeout-title {
+  margin: 0 0 10px;
+  color: #0f172a;
+  font-size: 1.25rem;
+}
+
+.inactivity-timeout-body {
+  margin: 0;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.inactivity-timeout-button {
+  margin-top: 16px;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: #005bbb;
+  cursor: pointer;
+}
+
+.inactivity-timeout-button:hover {
+  background: #004799;
+}
+
 @media (max-width: 900px) {
   .floor-container {
     flex-direction: column;

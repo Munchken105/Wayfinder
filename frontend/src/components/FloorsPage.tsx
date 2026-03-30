@@ -12,6 +12,10 @@ import floor4Img from "../assets/Floor4layout.jpg";
 import floor5Img from "../assets/Floor5layout.jpg";
 
 function LibraryFloorMap() {
+  const INACTIVITY_WARNING_MS = 30_000;
+  const INACTIVITY_TIMEOUT_MS = 60_000;
+
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const deepLinkedRoom = (searchParams.get("q") || "").trim();
   const deepLinkedMode = (searchParams.get("mode") || "stairs").trim().toLowerCase();
@@ -32,8 +36,14 @@ function LibraryFloorMap() {
   const [isMobileLayout, setIsMobileLayout] = useState(false);
   /** Pixel size of the map image as laid out — hotspots/SVG use this box (not the outer letterboxed wrapper). */
   const [mapOverlayPx, setMapOverlayPx] = useState<{ w: number; h: number } | null>(null);
+  const [showInactivityWarning, setShowInactivityWarning] = useState(false);
+  const [inactivitySecondsLeft, setInactivitySecondsLeft] = useState(30);
   const mapImageRef = useRef<HTMLImageElement | null>(null);
   const mapWrapperRef = useRef<HTMLDivElement | null>(null);
+  const warningTimerRef = useRef<number | null>(null);
+  const timeoutTimerRef = useRef<number | null>(null);
+  const warningCountdownRef = useRef<number | null>(null);
+  const timeoutAtRef = useRef<number>(0);
 
   type Room = {
     id: string
@@ -110,6 +120,80 @@ function LibraryFloorMap() {
   const handleImageClick = () => {
     // no-op (kept so onClick handlers remain stable)
   };
+
+  const clearInactivityTimers = useCallback(() => {
+    if (warningTimerRef.current !== null) {
+      window.clearTimeout(warningTimerRef.current);
+      warningTimerRef.current = null;
+    }
+    if (timeoutTimerRef.current !== null) {
+      window.clearTimeout(timeoutTimerRef.current);
+      timeoutTimerRef.current = null;
+    }
+    if (warningCountdownRef.current !== null) {
+      window.clearInterval(warningCountdownRef.current);
+      warningCountdownRef.current = null;
+    }
+  }, []);
+
+  const armInactivityTimers = useCallback(() => {
+    clearInactivityTimers();
+    setShowInactivityWarning(false);
+    setInactivitySecondsLeft(Math.ceil((INACTIVITY_TIMEOUT_MS - INACTIVITY_WARNING_MS) / 1000));
+
+    timeoutAtRef.current = Date.now() + INACTIVITY_TIMEOUT_MS;
+    warningTimerRef.current = window.setTimeout(() => {
+      setShowInactivityWarning(true);
+    }, INACTIVITY_WARNING_MS);
+    timeoutTimerRef.current = window.setTimeout(() => {
+      navigate("/", { replace: true });
+    }, INACTIVITY_TIMEOUT_MS);
+  }, [INACTIVITY_TIMEOUT_MS, INACTIVITY_WARNING_MS, clearInactivityTimers, navigate]);
+
+  useEffect(() => {
+    const resetInactivity = () => {
+      armInactivityTimers();
+    };
+
+    const events: Array<keyof WindowEventMap> = [
+      "pointerdown",
+      "keydown",
+      "touchstart",
+      "wheel",
+      "scroll",
+      "mousedown",
+    ];
+
+    for (const eventName of events) {
+      window.addEventListener(eventName, resetInactivity, { passive: true });
+    }
+
+    armInactivityTimers();
+    return () => {
+      for (const eventName of events) {
+        window.removeEventListener(eventName, resetInactivity);
+      }
+      clearInactivityTimers();
+    };
+  }, [armInactivityTimers, clearInactivityTimers]);
+
+  useEffect(() => {
+    if (!showInactivityWarning) return;
+
+    const updateCountdown = () => {
+      const msLeft = Math.max(0, timeoutAtRef.current - Date.now());
+      setInactivitySecondsLeft(Math.ceil(msLeft / 1000));
+    };
+
+    updateCountdown();
+    warningCountdownRef.current = window.setInterval(updateCountdown, 250);
+    return () => {
+      if (warningCountdownRef.current !== null) {
+        window.clearInterval(warningCountdownRef.current);
+        warningCountdownRef.current = null;
+      }
+    };
+  }, [showInactivityWarning]);
 
   //------------------------------------------Initializing the Map-----------------------------------------------------
 
@@ -221,8 +305,6 @@ function LibraryFloorMap() {
   useEffect(() => {
     setCurrentPath(useElevator ? elevatorPath : stairsPath);
   }, [wayfindClicked, useElevator, stairsPath, elevatorPath]);
-
-  const navigate = useNavigate();
 
   const basementRooms: Room[] = [
     { id: "B48", name: "B48", description: "", top: 488, left: 120, width: 136, height: 84, clipPath: "polygon(0% 0%, 0% 100%, 100% 100%, 100% 15%, 90% 0%)" },
@@ -349,6 +431,7 @@ function LibraryFloorMap() {
     : null;
 
   return (
+    <>
     <div className="floor-container">
       <div className="sidebar">
         <h2 className="sidebar-heading">Library Floors</h2>
@@ -575,6 +658,20 @@ function LibraryFloorMap() {
         )}
       </div>
     </div>
+    {showInactivityWarning && (
+      <div className="inactivity-timeout-backdrop" role="presentation">
+        <div className="inactivity-timeout-dialog" role="alert" aria-live="assertive">
+          <h3 className="inactivity-timeout-title">Session timeout warning</h3>
+          <p className="inactivity-timeout-body">
+            No activity detected. Returning to the home page in {inactivitySecondsLeft}s.
+          </p>
+          <button className="inactivity-timeout-button" onClick={armInactivityTimers}>
+            Stay on this page
+          </button>
+        </div>
+      </div>
+    )}
+    </>
   );
 }
 
