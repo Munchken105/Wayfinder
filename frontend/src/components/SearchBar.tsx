@@ -77,6 +77,10 @@ export default function SearchBar({ placeholder = "Search...", onResults, onSele
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     await runSearch();
+    if (showVirtualKeyboard) {
+      setKeyboardVisible(false);
+      inputRef.current?.blur();
+    }
   };
 
   const onKeyboardChange = (input: string) => {

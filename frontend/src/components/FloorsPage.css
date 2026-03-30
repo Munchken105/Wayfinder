@@ -204,6 +204,8 @@ html, body {
 
   transition: left 0.3s ease, transform 0.3s ease;
   will-change: transform;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .info-panel.show {
@@ -332,7 +334,8 @@ html, body {
 .qr-container {
   display: flex;
   justify-content: center; /* horizontal center */
-  margin-top: 3rem;
+  margin-top: 1rem;
+  padding-bottom: 8px;
 }
 
 .qr-code-block {
