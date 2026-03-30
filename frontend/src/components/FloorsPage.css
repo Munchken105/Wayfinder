@@ -191,21 +191,21 @@ html, body {
 
 .info-panel {
   position: absolute;
-  left: -304px; 
+  top: 0;
+  left: -304px;
   width: 100%;
   max-width: 304px;
-  height: calc(100% - 40px);
+  height: 100dvh;
+  max-height: 100dvh;
   background: white;
   border-right: 2px solid #333;
-  padding: 10px;
   box-shadow: 4px 0 6px rgba(0,0,0,0.2);
   transition: left 0.3s ease;
   z-index: 100;
 
   transition: left 0.3s ease, transform 0.3s ease;
   will-change: transform;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: visible;
 }
 
 .info-panel.show {
@@ -215,6 +215,16 @@ html, body {
 .info-panel.collapsed {
   transform: translateX(calc(-100%));
 }
+
+.info-panel-content {
+  position: relative;
+  height: 100%;
+  padding: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+}
+
 
 /* Collapse toggle button */
 .collapse-toggle {
@@ -234,7 +244,7 @@ html, body {
   justify-content: center;
   cursor: pointer;
   transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  z-index: 101;
+  z-index: 140;
   color: white;               /* arrow color */
   font-weight: bold;          /* arrow more visible */
 }

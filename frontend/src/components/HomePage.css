@@ -126,3 +126,67 @@
     padding: 16px 14px 24px;
   }
 }
+
+/* 1024x600 kiosk tuning: keep title/button visible and let photo use more of the short landscape screen. */
+@media (min-width: 900px) and (max-height: 640px) {
+  .home-page {
+    padding: 8px;
+  }
+
+  .device-frame {
+    width: fit-content;
+    max-width: calc(100vw - 16px);
+    height: auto;
+    max-height: none;
+    border-radius: 12px;
+    padding: 8px;
+    margin-inline: auto;
+  }
+
+  .screen {
+    flex: 0 0 auto;
+    max-height: none;
+    min-height: 0;
+    /* For kiosk, target ~20% extra space on each image side (480px image -> ~672px screen). */
+    width: min(672px, calc(100vw - 48px));
+    max-width: 100%;
+    margin-inline: auto;
+    align-self: center;
+    padding: 14px 18px 18px;
+    gap: 14px;
+    justify-content: center;
+  }
+
+  .home-title {
+    font-size: clamp(1.45rem, 4.2vh, 2.3rem);
+    line-height: 1.15;
+  }
+
+  .home-hero-image-wrap {
+    flex: 0 0 auto;
+    display: inline-flex;
+    width: auto;
+    max-width: max-content;
+    height: min(56dvh, 360px);
+    max-height: min(56dvh, 360px);
+    margin-inline: auto;
+  }
+
+  .lockwood-library-image {
+    width: auto;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  /* Override base wrapper width so kiosk image-wrap hugs content. */
+  .screen > .home-hero-image-wrap {
+    width: auto !important;
+    max-width: max-content !important;
+  }
+
+  .start-button {
+    padding: 12px 44px;
+    font-size: clamp(1rem, 2.2vh, 1.2rem);
+  }
+}

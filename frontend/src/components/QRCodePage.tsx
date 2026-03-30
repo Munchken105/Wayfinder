@@ -24,7 +24,7 @@ export default function generateQRCode({ room, useElevator }: { room: string; us
         <div className="qr-code-block">
             <p className="qr-callout">
                 <strong>Continue on your phone</strong>
-                Scan to open this route in Wayfinder—take turn-by-turn directions with you while you walk.
+                Scan to open this route on your phone.
             </p>
             <QRCode value={link} size={150} />
         </div>
