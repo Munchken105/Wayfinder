@@ -403,6 +403,7 @@ function LibraryFloorMap() {
     // Room 526
     { id: "526-1", name: "Room 526", description: "", top: 378, left: 595, width: 65, height: 100, clipPath: "polygon(100% 100%, 0% 100%, 0% 90%, 73% 44%, 27% 17%, 50% 0%, 100% 34% )" },
   ];
+  //624, 593
 
   const floors = {
     "Basement": basementRooms,
@@ -608,7 +609,44 @@ function LibraryFloorMap() {
             })}
           </svg>
         )}
+          {activeFloor === "Floor 2" && (
+          <div style={{
+            position: "absolute",
+            left: `${(624 / mapSize.width) * 100}%`,
+            top: `${(593 / mapSize.height) * 100}%`,
+            width: "0px",   // Zero size container so it can't "push" anything
+            height: "0px",
+            zIndex: 15,
+          }}>
+            {/* THE DOT: Perfectly centered on the tip of the line */}
+            <div style={{
+              width: "10px",
+              height: "10px",
+              backgroundColor: "red",
+              borderRadius: "50%",
+              transform: "translate(-50%, -50%)",
+              position: "absolute"
+            }} />
 
+            {/* THE TEXT: Positioned below with no effect on dot alignment */}
+            <div style={{
+              position: "absolute",
+              top: "10px", 
+              left: "0",
+              transform: "translateX(-50%)",
+              fontSize: "15px",
+              fontWeight: "bold",
+              color: "red",
+              whiteSpace: "nowrap",
+              backgroundColor: "rgba(255, 255, 255, 0.8)",
+              padding: "2px 4px",
+              borderRadius: "4px",
+              pointerEvents: "none"
+            }}>
+              You are here.
+            </div>
+          </div>
+        )}
           {/* Render red dots only for nodes in the current path */}
           {wayfindClicked && currentPath.length > 0 && currentPath.map(node => {
             const location = backendRooms.find(r => r.id === node.id);
@@ -628,22 +666,20 @@ function LibraryFloorMap() {
                   transform: "translate(-50%, -50%)",
                   zIndex: 10,
                 }}
-                title={location.name}
               >{location.type === 'tablet' && (
                 <div style={{
                 position: 'absolute',
-                top: '10px',      // 15px below the red dot
+                top: '10px',      
                 left: '50%',
                 transform: 'translateX(-50%)',
                 fontSize: '15px',
                 fontWeight: 'bold',
                 color: 'red',
                 whiteSpace: 'nowrap',
-                backgroundColor: 'rgba(255, 255, 255, 0.8)', // Slight background to make it readable
+                backgroundColor: 'rgba(255, 255, 255, 0.8)', 
                 padding: '2px 4px',
                 borderRadius: '4px'
               }}>
-          You are here.
           </div>
         )}
         </div>
