@@ -13,6 +13,7 @@ Important: navigation graph is in `backend/src/server.ts`, not PostgreSQL.
 - Repo: `/home/wayfinder/WayfinderMain`
 - Nginx config: `/etc/nginx/sites-available/default` (from repo `nginx-default`)
 - Backend unit: `/etc/systemd/system/wayfinder-backend.service` (from repo template)
+- Ngrok auth/setup: done on Pi via Wayfinder shared Google sign-in + ngrok quickstart flow
 - Frontend deploy dir: `/var/www`
 - Logs: `/var/log/wayfinder/backend.log`, `/var/log/nginx/error.log`, `/var/log/nginx/access.log`
 
@@ -43,4 +44,5 @@ Expected: services `active`, health JSON, rooms JSON, ngrok `publicUrl` when tun
 
 - Nginx template proxies `/api` only; `/health` is backend-root on `:5000`.
 - QR handoff uses `/floors?q=<room>&mode=stairs|elevator`.
+- Ngrok and Nginx both auto-start on boot on current Pi; verify startup manager if re-imaging (`systemd` is likely but not guaranteed).
 - Keep secrets only in `backend/.env` and secret manager; never in docs.
