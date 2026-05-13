@@ -93,9 +93,11 @@ This should connect to the backend automatically.
 
 ## Tailscale SSH
 
-### Step 1 - Go to tailscale.com Login using the Wayfinder Gmail Account (Found on our private Doc)
+### Step 1 - Go to tailscale.com 
 
-### Step 2 Connect to tailnet
+Login using the Wayfinder Gmail Account (Found on our design document)
+
+### Step 2 - Connect to tailnet
 
 Open Terminal
 ```bash
@@ -106,4 +108,4 @@ tailscale up
 ```bash
 ssh wayfinder@2ndFloor
 ```
-you are now sshed into the our 2ndFloor rasbery pi as more pi's come along ill update each pi with its own ssh instructions
+You are now sshed into the 2ndFloor Raspberry Pi
